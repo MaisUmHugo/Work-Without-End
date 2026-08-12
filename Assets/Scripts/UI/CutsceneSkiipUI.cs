@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 
@@ -23,7 +24,7 @@ public class CutsceneSkipUI : MonoBehaviour
 
     private void Update()
     {
-        bool pressionando = Input.GetKey(KeyCode.Space);
+        bool pressionando = Keyboard.current != null && Keyboard.current.spaceKey.isPressed;
 
         if (pressionando)
         {
