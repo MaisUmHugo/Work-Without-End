@@ -158,7 +158,7 @@ public class Louco : Entregavel
             anim.SetTrigger("RecebeuEntrega");
 
         // base.ReceberEntrega();  // Executa a lógica da base (pontuação, combo, etc.)
-        ScoreManager.instance.AdicionarPontos(100);
+        ScoreManager.instance.AdicionarPontos(total);
         ComboManager.instance.AumentarCombo();
         if (HordaManager.instance != null)
             HordaManager.instance.AumentarEntrega();

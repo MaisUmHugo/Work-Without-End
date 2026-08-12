@@ -212,13 +212,13 @@ public class HordaManager : MonoBehaviour
         }
         else
         {
-            // nenhuma configuração -> escolher uma tag aleatória entre todas
+            // nenhuma configuracao -> libera todas as tags para o SpawnerManager sortear a cada spawn
             if (spawnerManager.todasAsTagsEntregaveis != null && spawnerManager.todasAsTagsEntregaveis.Count > 0)
             {
-                string tagAleatoria = spawnerManager.todasAsTagsEntregaveis[Random.Range(0, spawnerManager.todasAsTagsEntregaveis.Count)];
-                spawnerManager.DefinirTagsPermitidas(new List<string> { tagAleatoria });
+                List<string> tagsAleatorias = new List<string>(spawnerManager.todasAsTagsEntregaveis);
+                spawnerManager.DefinirTagsPermitidas(tagsAleatorias);
 
-                Debug.Log($"[HordaManager] Nenhuma tag configurada para a horda {NumeroHorda}. Escolhida aleatoriamente: {tagAleatoria}");
+                Debug.Log($"[HordaManager] Nenhuma tag configurada para a horda {NumeroHorda}. Inimigos serao sorteados a cada spawn.");
             }
             else
             {
