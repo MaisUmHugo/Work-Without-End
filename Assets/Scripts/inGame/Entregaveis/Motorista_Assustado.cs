@@ -121,15 +121,12 @@ public class Motorista_Assustado : Entregavel
     public override void ReceberEntrega()
     {
         //sr.color = corNormal;
-        base.ReceberEntrega();
+        int pontosRecebidos = ProcessarEntrega();
 
         entregavelPisca?.PiscarRecebendo();
 
         // Calcula pontuação com bônus
-        int multiplicador = ComboManager.instance.GetMultiplicador();
-        int total = 100 * multiplicador;
-
-        popupPontuacao?.MostrarPontuacao(total);
+        popupPontuacao?.MostrarPontuacao(pontosRecebidos);
         Color cor = sr.color;
         cor.a = 0.5f; // meio transparente
         sr.color = cor;

@@ -25,6 +25,7 @@ public class Zumbi : Entregavel
     public PontuacaoPopup popupPontuacao;
 
     private bool jaDeuDano = false;
+    private bool entregaFalhada = false;
 
     private void Awake()
     {
@@ -114,6 +115,7 @@ public class Zumbi : Entregavel
         correndo = false;
         ativoParaEntrega = false;
         entregavelPisca?.PararPiscar();
+        RegistrarFalhaEntrega();
 
         yTravado = transform.position.y;
 
@@ -137,15 +139,23 @@ public class Zumbi : Entregavel
         {
             jaDeuDano = true;
             Debug.Log("DANO DURANTE A ANIMAÇÃO DE CAIR!");
-            FalharEntrega();
+            VidaManager.instance.PerderVida();
         }
+    }
+
+    private void RegistrarFalhaEntrega()
+    {
+        if (entregaFalhada || recebeuEntrega) return;
+
+        entregaFalhada = true;
+        PerderCombo();
     }
 
     public override void ReceberEntrega()
     {
         if (!ativoParaEntrega) return;
 
-        base.ReceberEntrega();
+        int pontosRecebidos = ProcessarEntrega();
 
         anim.SetBool("RecebeuEntrega", true);
         ativoParaEntrega = false;
@@ -154,10 +164,7 @@ public class Zumbi : Entregavel
         yTravado = transform.position.y;
 
         // Calcula pontuação com bônus
-        int multiplicador = ComboManager.instance.GetMultiplicador();
-        int total = 100 * multiplicador;
-
-        popupPontuacao?.MostrarPontuacao(total);
+        popupPontuacao?.MostrarPontuacao(pontosRecebidos);
 
         entregavelPisca?.PiscarRecebendo();
         StartCoroutine(DelayTransparente());

@@ -123,7 +123,7 @@ public class Mao_Zumbi : Entregavel
     }
     public override void ReceberEntrega()
     {
-        base.ReceberEntrega();
+        int pontosRecebidos = ProcessarEntrega();
         Collider2D col = GetComponent<Collider2D>();
         if (col != null)
         {
@@ -133,10 +133,7 @@ public class Mao_Zumbi : Entregavel
         anim.SetTrigger("ReceberEntrega");
         //entregavelPisca.PararPiscar();
         // Calcula pontuação com bônus
-        int multiplicador = ComboManager.instance.GetMultiplicador();
-        int total = 100 * multiplicador;
-
-        popupPontuacao?.MostrarPontuacao(total);
+        popupPontuacao?.MostrarPontuacao(pontosRecebidos);
         entregavelPisca?.PiscarRecebendo();
         StartCoroutine(DelayTransparente());
         StartCoroutine(PararPiscar());

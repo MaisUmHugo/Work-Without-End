@@ -129,13 +129,10 @@ public class Malabarista : Entregavel
 
     public override void ReceberEntrega()
     {
-        base.ReceberEntrega();
+        int pontosRecebidos = ProcessarEntrega();
         recebeu = true;
         anim.SetTrigger("RecebeuEntrega");
-        int multiplicador = ComboManager.instance.GetMultiplicador();
-        int total = 100 * multiplicador;
-
-        popupPontuacao?.MostrarPontuacao(total);
+        popupPontuacao?.MostrarPontuacao(pontosRecebidos);
         entregavelPisca?.PiscarRecebendo();
 
         // Desativa colisão

@@ -109,10 +109,10 @@ public class Pessoa_janela : Entregavel
     }
     public override void ReceberEntrega()
     {
-        base.ReceberEntrega();
+        int pontosRecebidos = ProcessarEntrega();
 
         entregavelPisca?.PiscarRecebendo();
-        popupPontuacao?.MostrarPontuacao(100 * ComboManager.instance.GetMultiplicador());
+        popupPontuacao?.MostrarPontuacao(pontosRecebidos);
 
         if (anim != null)
             anim.SetTrigger("RecebeuEntrega");

@@ -10,22 +10,30 @@ public abstract class Entregavel : MonoBehaviour
         if (!ativoParaEntrega) return;
         Debug.Log("Base foi ativada");
         // Pontuação e combo
+        ProcessarEntrega();
+
+        Debug.Log($"{gameObject.name} recebeu a entrega!");
+    }
+
+    protected int ProcessarEntrega()
+    {
+        if (!ativoParaEntrega) return 0;
+
         int multiplicador = ComboManager.instance.GetMultiplicador();
         int pontosFinais = pontosBase * multiplicador;
 
         ScoreManager.instance.AdicionarPontos(pontosFinais);
         ComboManager.instance.AumentarCombo();
         if (HordaManager.instance != null)
-        HordaManager.instance.AumentarEntrega();
+            HordaManager.instance.AumentarEntrega();
 
-        Debug.Log($"{gameObject.name} recebeu a entrega!");
+        return pontosFinais;
     }
 
     public virtual void FalharEntrega()
     {
         // Reset de combo e vida
         VidaManager.instance.PerderVida();
-        ComboManager.instance.ResetarCombo();
 
         Debug.Log($"{gameObject.name} NÃO recebeu a entrega!");
     }

@@ -140,16 +140,16 @@ public class Louco : Entregavel
             Debug.Log("Entrega não ativa no momento!");  // Log para depuração
             return;  // Não faz nada se não estiver ativo para a entrega
         }
+
+        int pontosRecebidos = ProcessarEntrega();
+
         sr.color = Color.white;
         StartCoroutine(PararPiscar());
         ativoParaEntrega = false;  // Desativa entrega após processar
         entregaRecebida = true;
         //entregavelPisca?.PararPiscar();
         // Calcula pontuação com bônus
-        int multiplicador = ComboManager.instance.GetMultiplicador();
-        int total = 100 * multiplicador;
-
-        popupPontuacao?.MostrarPontuacao(total);
+        popupPontuacao?.MostrarPontuacao(pontosRecebidos);
         PiscarRecebendo();
         if (colisor != null)
             colisor.enabled = false;
@@ -158,11 +158,6 @@ public class Louco : Entregavel
             anim.SetTrigger("RecebeuEntrega");
 
         // base.ReceberEntrega();  // Executa a lógica da base (pontuação, combo, etc.)
-        ScoreManager.instance.AdicionarPontos(total);
-        ComboManager.instance.AumentarCombo();
-        if (HordaManager.instance != null)
-            HordaManager.instance.AumentarEntrega();
-
         StartCoroutine(PararPiscar());
         Debug.Log("Louco recebeu a entrega com sucesso!");
     }

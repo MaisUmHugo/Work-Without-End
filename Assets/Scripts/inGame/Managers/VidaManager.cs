@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System;
 using System.Collections;
 using UnityEngine.Rendering;
@@ -33,13 +34,13 @@ public class VidaManager : MonoBehaviour
     private void Update()
     {
         // Atalho de debug: perder 1 de vida com Shift + P
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.P))
+        if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.pKey.wasPressedThisFrame)
         {
             cheat = true;
-            PerderVida();
+            PerderVida(false);
         }
         // Atalho de debug: ganha 1 de vida com Shift + V
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.V))
+        if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.vKey.wasPressedThisFrame)
         {
             GanharVida();
         }
@@ -51,12 +52,15 @@ public class VidaManager : MonoBehaviour
         OnVidaMudou?.Invoke(vidasAtuais);
     }
 
-    public void PerderVida()
+    public void PerderVida(bool resetarCombo = true)
     {
         // evita perder vida se já estiver invulnerável ou morto
         if (invulneravel || vidasAtuais <= 0)
             return;
         vidasAtuais--;
+        if (resetarCombo)
+            ComboManager.instance?.ResetarCombo();
+
         anim.SetBool("Damage", true);
         OnVidaMudou?.Invoke(vidasAtuais);
         StartCoroutine(DelayVida());

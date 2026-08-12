@@ -135,15 +135,14 @@ public class Bebado : Entregavel
         if (!podeReceber) return;
 
         anim.SetTrigger("RecebeuEntrega");
-        base.ReceberEntrega();
+        int pontosRecebidos = ProcessarEntrega();
 
         parado = true;
         yTravado = transform.position.y;
         colisor.enabled = false;
 
         // pontuação com combo
-        int total = 100 * ComboManager.instance.GetMultiplicador();
-        popupPontuacao?.MostrarPontuacao(total);
+        popupPontuacao?.MostrarPontuacao(pontosRecebidos);
 
         entregavelPisca?.PiscarRecebendo();
         StartCoroutine(PararPiscar());
