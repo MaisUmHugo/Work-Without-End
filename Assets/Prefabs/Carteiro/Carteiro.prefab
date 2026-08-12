@@ -273,7 +273,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vidasIniciais: 3
   vidasAtuais: 0
-  tempoInvulneravel: 1.5
+  tempoInvulneravel: 0.75
+  tempoVermelhoDano: 0.15
+  intervaloPiscar: 0.1
+  alphaInvulneravel: 0.3
 --- !u!50 &471999647306375901
 Rigidbody2D:
   serializedVersion: 5
