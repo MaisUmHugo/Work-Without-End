@@ -25,12 +25,15 @@ public class Mov : MonoBehaviour
 
         // conecta o evento de input
         inputs.Gameplay.Move.started += OnMove;
+        inputs.Gameplay.Move.canceled += OnMoveCancelado;
     }
 
     private void OnDisable()
     {
         // desconecta o evento de input
         inputs.Gameplay.Move.started -= OnMove;
+        inputs.Gameplay.Move.canceled -= OnMoveCancelado;
+        inputTravado = false;
         inputs.Gameplay.Disable();
     }
 
@@ -82,6 +85,11 @@ public class Mov : MonoBehaviour
                 inputTravado = false;
             }
         }
+    }
+
+    private void OnMoveCancelado(InputAction.CallbackContext ctx)
+    {
+        inputTravado = false;
     }
 
     private void MudarLinha(int direcao)
