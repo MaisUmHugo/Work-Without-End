@@ -593,7 +593,8 @@ MonoBehaviour:
   E_Necessarias: 2
   TextoHorda: {fileID: 6311720834776184193}
   TextoEntrega: {fileID: 7031645082656350563}
-  aumentovelocidade: 0.3
+  aumentovelocidade: 0.2
+  multiplicadorMaximoVelocidade: 4
   aumentodistancia: 3
   ReduzirIntervalo: 0.2
   delayInicial: 3.5
@@ -729,6 +730,8 @@ MonoBehaviour:
   multiplicadorVelocidade: 1
   multiplicadorDistancia: 0
   spawnAtivo: 1
+  variacaoIntervaloSpawn: 0.5
+  intervaloMinimoSpawn: 1.5
   intervaloaleatorio: 0
   tagsPermitidas: []
 --- !u!1 &6001844302227023954

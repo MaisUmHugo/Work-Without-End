@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal.Internal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -21,7 +22,8 @@ public class HordaManager : MonoBehaviour
     public int E_Necessarias;
     public TextMeshProUGUI TextoHorda;
     public TextMeshProUGUI TextoEntrega;
-    public float aumentovelocidade;
+    [SerializeField] private float aumentovelocidade = 0.2f;
+    [SerializeField] private float multiplicadorMaximoVelocidade = 4f;
     public float aumentodistancia;
     public float ReduzirIntervalo;
 
@@ -69,11 +71,11 @@ public class HordaManager : MonoBehaviour
         TextoHorda.text = "Horda: " + NumeroHorda;
         TextoEntrega.text = $"Entregas:{N_Entregas}/{E_Necessarias}" ;
         AtualizarBarraProgresso();
-        if (Input.GetKeyDown(KeyCode.N))
+        if (Keyboard.current != null && Keyboard.current.nKey.wasPressedThisFrame)
         {
             AlterarHorda();
         }
-        if (Input.GetKeyDown(KeyCode.M))
+        if (Keyboard.current != null && Keyboard.current.mKey.wasPressedThisFrame)
         {
             int i = 0;
             Normal = false;
@@ -114,7 +116,10 @@ public class HordaManager : MonoBehaviour
         if (HordaMudou)
         {
             // velocidade dos inimigos da horda
-            float novoMultiplicador = spawnerManager.multiplicadorVelocidade + aumentovelocidade;
+            float novoMultiplicador = Mathf.Min(
+                spawnerManager.multiplicadorVelocidade + aumentovelocidade,
+                multiplicadorMaximoVelocidade
+            );
             bola.multiplicadorVelocidade = novoMultiplicador;
             spawnerManager.DefinirVelocidade(novoMultiplicador);
             //velocidade da distância

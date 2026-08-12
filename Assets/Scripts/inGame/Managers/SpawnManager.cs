@@ -34,14 +34,14 @@ public class SpawnerManager : MonoBehaviour
     public float multiplicadorVelocidade;
     public float multiplicadorDistancia;
     public bool spawnAtivo = true;
-    public float intervaloaleatorio;
+    [SerializeField] private float variacaoIntervaloSpawn = 0.5f;
+    [SerializeField] private float intervaloMinimoSpawn = 1.5f;
 
     private Dictionary<string, ConfiguracaoSpawn> dicionarioConfig = new Dictionary<string, ConfiguracaoSpawn>();
     private float proximoSpawn;
 
     private float intervaloPadrao;
     private float velocidadePadrao;
-    private bool velocidadeflutuante;
 
     public List<string> tagsPermitidas = new List<string>();
 
@@ -59,23 +59,10 @@ public class SpawnerManager : MonoBehaviour
         }
         intervaloPadrao = intervaloSpawn;
         velocidadePadrao = multiplicadorVelocidade;
-        intervaloaleatorio = Random.Range(-1.5f, 1.5f);
     }
 
     void Update()
     {
-        if (intervaloSpawn <= 2f)
-        {
-            intervaloSpawn = 2f;
-        }
-        if (multiplicadorVelocidade >= 13f)
-        {
-            velocidadeflutuante = true;
-        }
-        if (velocidadeflutuante)
-        {
-            multiplicadorVelocidade = Random.Range(11f, 13f);
-        }
         if (!spawnAtivo) return;
 
         if (Time.time >= proximoSpawn)
@@ -98,10 +85,17 @@ public class SpawnerManager : MonoBehaviour
                 Debug.LogWarning("[SpawnerManager] Nenhum inimigo elegível para spawn nesta horda!");
             }
 
-            proximoSpawn = Time.time + intervaloSpawn + intervaloaleatorio;
+            AgendarProximoSpawn();
         }
     }
 
+
+    private void AgendarProximoSpawn()
+    {
+        float variacao = Random.Range(-variacaoIntervaloSpawn, variacaoIntervaloSpawn);
+        float intervaloFinal = Mathf.Max(intervaloMinimoSpawn, intervaloSpawn + variacao);
+        proximoSpawn = Time.time + intervaloFinal;
+    }
 
     public void AtivarSpawn() => spawnAtivo = true;
     public void DesativarSpawn() => spawnAtivo = false;
@@ -176,7 +170,6 @@ public class SpawnerManager : MonoBehaviour
 
         GameObject go = Instantiate(config.prefab, posicaoSpawn, Quaternion.identity);
         AjustarVelocidade(go);
-        intervaloaleatorio = Random.Range(-1.5f, 1.5f);
         return go;
     }
 
