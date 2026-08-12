@@ -9,7 +9,6 @@ using UnityEngine.UI;
 
 public class HordaManager : MonoBehaviour
 {
-    public List<string> todasAsTagsEntregaveis;
     [Header("Referência ao Spawner")]
     public SpawnerManager spawnerManager;
     public Bola bola;

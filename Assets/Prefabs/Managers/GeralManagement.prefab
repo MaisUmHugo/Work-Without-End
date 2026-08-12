@@ -586,7 +586,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f69e7e63e231e9840ae1059d7a8c4eec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  todasAsTagsEntregaveis: []
   spawnerManager: {fileID: 6640490239518991581}
   bola: {fileID: -4777778775511443149, guid: e1fa043f34f9f904aba9222e970e0d4c, type: 3}
   barraProgresso: {fileID: 2196682696370664215}

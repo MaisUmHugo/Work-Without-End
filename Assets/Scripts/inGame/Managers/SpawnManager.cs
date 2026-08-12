@@ -23,6 +23,7 @@ public class SpawnerManager : MonoBehaviour
     }
 
     [Header("Tags disponíveis de entregáveis")]
+    [HideInInspector]
     public List<string> todasAsTagsEntregaveis = new List<string>();
 
     [Header("Configurações de Spawn")]
@@ -52,10 +53,40 @@ public class SpawnerManager : MonoBehaviour
 
         posicaoForaCameraX = Camera.main.ViewportToWorldPoint(new Vector3(1.2f, 0, 0)).x;
 
-        foreach (var c in configuracoes)
+        todasAsTagsEntregaveis.Clear();
+        dicionarioConfig.Clear();
+
+        foreach (var configuracao in configuracoes)
         {
-            if (!dicionarioConfig.ContainsKey(c.tagAssociada))
-                dicionarioConfig.Add(c.tagAssociada, c);
+            if (configuracao == null)
+            {
+                Debug.LogWarning("SpawnerManager: configura\u00e7\u00e3o de spawn nula ignorada.", this);
+                continue;
+            }
+
+            string tagAssociada = configuracao.tagAssociada?.Trim();
+
+            if (string.IsNullOrEmpty(tagAssociada))
+            {
+                Debug.LogWarning("SpawnerManager: configura\u00e7\u00e3o com tag vazia ignorada.", this);
+                continue;
+            }
+
+            if (configuracao.prefab == null)
+            {
+                Debug.LogWarning($"SpawnerManager: configura\u00e7\u00e3o da tag '{tagAssociada}' sem prefab foi ignorada.", this);
+                continue;
+            }
+
+            if (dicionarioConfig.ContainsKey(tagAssociada))
+            {
+                Debug.LogWarning($"SpawnerManager: tag duplicada '{tagAssociada}' ignorada. A primeira configura\u00e7\u00e3o v\u00e1lida ser\u00e1 usada.", this);
+                continue;
+            }
+
+            configuracao.tagAssociada = tagAssociada;
+            dicionarioConfig.Add(tagAssociada, configuracao);
+            todasAsTagsEntregaveis.Add(tagAssociada);
         }
         intervaloPadrao = intervaloSpawn;
         velocidadePadrao = multiplicadorVelocidade;
@@ -69,7 +100,7 @@ public class SpawnerManager : MonoBehaviour
         {
             List<ConfiguracaoSpawn> candidatos = new List<ConfiguracaoSpawn>();
 
-            foreach (var config in configuracoes)
+            foreach (var config in dicionarioConfig.Values)
             {
                 if (PodeSpawnar(config.tagAssociada))
                     candidatos.Add(config);
