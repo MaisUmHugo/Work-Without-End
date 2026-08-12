@@ -40,7 +40,12 @@ public class ComboManager : MonoBehaviour
     public int GetMultiplicador()
     {
         // 0–9 = 1x, 10–19 = 2x, etc.
-        return (comboAtual / 10) + 1;
+        return GetMultiplicadorParaCombo(comboAtual);
+    }
+
+    public int GetMultiplicadorParaCombo(int combo)
+    {
+        return (Mathf.Max(0, combo) / 10) + 1;
     }
 
 }

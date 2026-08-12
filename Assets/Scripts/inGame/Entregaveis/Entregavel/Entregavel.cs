@@ -19,7 +19,8 @@ public abstract class Entregavel : MonoBehaviour
     {
         if (!ativoParaEntrega) return 0;
 
-        int multiplicador = ComboManager.instance.GetMultiplicador();
+        int comboAposEntrega = ComboManager.instance.comboAtual + 1;
+        int multiplicador = ComboManager.instance.GetMultiplicadorParaCombo(comboAposEntrega);
         int pontosFinais = pontosBase * multiplicador;
 
         ScoreManager.instance.AdicionarPontos(pontosFinais);
