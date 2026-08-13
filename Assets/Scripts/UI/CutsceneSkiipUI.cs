@@ -10,11 +10,12 @@ public class CutsceneSkipUI : MonoBehaviour
     public Image fillImage;
     public TextMeshProUGUI skipText;
 
-    [Header("Configuração")]
+    [Header("ConfiguraÃ§Ã£o")]
     public float tempoSegurando;
 
     private float tempoAtual = 0f;
     private bool segurando = false;
+    private bool pulando = false;
 
     private void Start()
     {
@@ -24,6 +25,9 @@ public class CutsceneSkipUI : MonoBehaviour
 
     private void Update()
     {
+        if (pulando)
+            return;
+
         bool pressionando = Keyboard.current != null && Keyboard.current.spaceKey.isPressed;
 
         if (pressionando)
@@ -37,14 +41,14 @@ public class CutsceneSkipUI : MonoBehaviour
             tempoAtual += Time.deltaTime;
             fillImage.fillAmount = tempoAtual / tempoSegurando;
 
-            if (tempoAtual >= tempoSegurando)
+            if (tempoAtual >= tempoSegurando && !pulando)
             {
-                // dispara evento para o CutsceneManager
                 if (CutsceneManager.instance != null)
                 {
+                    pulando = true;
+                    fillImage.fillAmount = 1f;
                     CutsceneManager.instance.PularCutscene();
                 }
-
             }
         }
         else

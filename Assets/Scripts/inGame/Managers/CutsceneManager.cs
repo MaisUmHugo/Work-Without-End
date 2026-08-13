@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 
@@ -9,7 +9,6 @@ public class CutsceneManager : MonoBehaviour
     [Header("Configurações da Cutscene")]
     [SerializeField] private VideoPlayer videoPlayer;
     [SerializeField] private string cenaMenu = "MenuPrincipal";
-    [SerializeField] private bool podePular = true;
 
     private void Awake()
     {

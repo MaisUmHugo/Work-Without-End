@@ -579,7 +579,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneManager
   videoPlayer: {fileID: 115515629}
   cenaMenu: MenuPrincipal
-  podePular: 1
 --- !u!114 &952189138
 MonoBehaviour:
   m_ObjectHideFlags: 0
