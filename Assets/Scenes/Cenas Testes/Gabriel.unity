@@ -2045,10 +2045,6 @@ PrefabInstance:
       propertyPath: distanciaEntrega
       value: 20
       objectReference: {fileID: 0}
-    - target: {fileID: 1554191862308413471, guid: 05d66da6eb88e6f4fbcddd8da6a9184a, type: 3}
-      propertyPath: tempoAtivoEntrega
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 9061229168869557155, guid: 05d66da6eb88e6f4fbcddd8da6a9184a, type: 3}
       propertyPath: m_Name
       value: "M\xE3o Zumbi"

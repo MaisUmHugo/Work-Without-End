@@ -131,10 +131,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GeralManagement
       objectReference: {fileID: 0}
-    - target: {fileID: 6640490239518991581, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
-      propertyPath: multiplicadorDistancia
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7747549092625879713, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
       propertyPath: bola
       value: 
@@ -143,10 +139,6 @@ PrefabInstance:
       propertyPath: Malabarista
       value: 
       objectReference: {fileID: 1492970466}
-    - target: {fileID: 7747549092625879713, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
-      propertyPath: aumentodistancia
-      value: 0.01
-      objectReference: {fileID: 0}
     - target: {fileID: 7747549092625879713, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
       propertyPath: tagsPorHorda.Array.data[0].tagsPermitidas.Array.size
       value: 2
