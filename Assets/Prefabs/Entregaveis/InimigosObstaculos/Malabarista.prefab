@@ -565,6 +565,16 @@ MonoBehaviour:
   bola: {fileID: 5321252365096296630, guid: e1fa043f34f9f904aba9222e970e0d4c, type: 3}
   IntervaloTiro: 5
   DistanciaTiro: 200
+  intensidadeEscalaMovimento: 0.4
+  fatorMaximoMovimento: 7
+  intensidadeEscalaBola: 0.8
+  fatorMaximoBola: 6
+  intensidadeReducaoIntervaloTiro: 0.08
+  intervaloMinimoTiro: 2.5
+  intensidadeEscalaDistanciaEntrega: 0.07
+  fatorMaximoDistanciaEntrega: 1.8
+  intensidadeEscalaDistanciaTiro: 0.02
+  fatorMaximoDistanciaTiro: 1.2
   Exclamacao: {fileID: 2902982904923244336}
   tempoexclamacao: 1
   corNormal: {r: 1, g: 1, b: 1, a: 1}

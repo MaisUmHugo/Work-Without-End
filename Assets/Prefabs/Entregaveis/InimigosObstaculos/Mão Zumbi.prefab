@@ -587,10 +587,11 @@ MonoBehaviour:
   ativoParaEntrega: 1
   Exclamacao: {fileID: 4279375068704336945}
   velocidade: 6
-  tempoAtivoEntrega: 2
   intervaloPiscar: 0.15
   distanciaEntrega: 60
   tempoexclamacao: 1.5
+  intensidadeEscalaMovimento: 0.4
+  fatorMaximoMovimento: 8.5
   corNormal: {r: 1, g: 1, b: 1, a: 1}
   corAtivo: {r: 1, g: 0, b: 0, a: 1}
   entregavelPisca: {fileID: 803829001119571900}
@@ -608,3 +609,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6f1d26ba6d4f54fad6ac298a2548b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EntregavelPisca
+  spriteRendererAlvo: {fileID: 2236495508070839319}

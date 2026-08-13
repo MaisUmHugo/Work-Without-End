@@ -6,12 +6,22 @@ public class Bola : MonoBehaviour
 
     [Header("Velocidade")]
     public float velocidade = 10f;
-    public float multiplicadorVelocidade;
+    private float velocidadeAtual;
     private bool chegouNaLane = false;
+
+    private void Awake()
+    {
+        velocidadeAtual = velocidade;
+    }
 
     public void CaminhoBola(Vector3 destino)
     {
         pontoFinal = destino;
+    }
+
+    public void DefinirFatorVelocidade(float fator)
+    {
+        velocidadeAtual = velocidade * Mathf.Max(1f, fator);
     }
 
 
@@ -19,14 +29,14 @@ public class Bola : MonoBehaviour
     {
         if (!chegouNaLane)
         {
-            // move até a lane
+            // move atÃ© a lane
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 pontoFinal,
-                (velocidade * multiplicadorVelocidade) * Time.deltaTime
+                velocidadeAtual * Time.deltaTime
             );
 
-            // quando chegar na lane, começa mover para esquerda
+            // quando chegar na lane, comeÃ§a mover para esquerda
             if (Vector3.Distance(transform.position, pontoFinal) < 0.05f)
             {
                 chegouNaLane = true;
@@ -34,8 +44,8 @@ public class Bola : MonoBehaviour
         }
         else
         {
-            // movimento contínuo para a esquerda
-            transform.position += Vector3.left * (velocidade * multiplicadorVelocidade) * Time.deltaTime;
+            // movimento contÃ­nuo para a esquerda
+            transform.position += Vector3.left * velocidadeAtual * Time.deltaTime;
         }
 
         // destruir quando sair da tela

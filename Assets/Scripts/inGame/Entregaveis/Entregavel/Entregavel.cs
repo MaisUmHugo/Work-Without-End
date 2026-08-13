@@ -1,23 +1,51 @@
 using UnityEngine;
 
+public interface IAjustavelDificuldade
+{
+    void AplicarDificuldade(float multiplicadorGlobal);
+}
+
+public static class CalculoDificuldade
+{
+    public static float CalcularFator(float multiplicadorGlobal, float intensidade, float fatorMaximo)
+    {
+        float progresso = Mathf.Max(0f, multiplicadorGlobal - 1f);
+        float fator = 1f + progresso * Mathf.Max(0f, intensidade);
+        return Mathf.Clamp(fator, 1f, Mathf.Max(1f, fatorMaximo));
+    }
+}
+
 public abstract class Entregavel : MonoBehaviour
 {
-    [Header("Configuração do Entregável")]
-    public bool ativoParaEntrega = true; // booleana para alternar quando pode entregar ou n
+    private enum EstadoEntrega
+    {
+        Pendente,
+        Sucesso,
+        Falha
+    }
+
+    [Header("ConfiguraÃ§Ã£o do EntregÃ¡vel")]
+    public bool ativoParaEntrega = true;
     protected int pontosBase = 100;
+
+    private EstadoEntrega estadoEntrega = EstadoEntrega.Pendente;
+
+    protected bool EntregaPendente => estadoEntrega == EstadoEntrega.Pendente;
+
     public virtual void ReceberEntrega()
     {
-        if (!ativoParaEntrega) return;
-        Debug.Log("Base foi ativada");
-        // Pontuação e combo
-        ProcessarEntrega();
+        if (!ativoParaEntrega || !EntregaPendente) return;
 
+        ProcessarEntrega();
         Debug.Log($"{gameObject.name} recebeu a entrega!");
     }
 
     protected int ProcessarEntrega()
     {
-        if (!ativoParaEntrega) return 0;
+        if (!ativoParaEntrega || !EntregaPendente) return 0;
+
+        estadoEntrega = EstadoEntrega.Sucesso;
+        ativoParaEntrega = false;
 
         int comboAposEntrega = ComboManager.instance.comboAtual + 1;
         int multiplicador = ComboManager.instance.GetMultiplicadorParaCombo(comboAposEntrega);
@@ -25,6 +53,7 @@ public abstract class Entregavel : MonoBehaviour
 
         ScoreManager.instance.AdicionarPontos(pontosFinais);
         ComboManager.instance.AumentarCombo();
+
         if (HordaManager.instance != null)
             HordaManager.instance.AumentarEntrega();
 
@@ -33,15 +62,34 @@ public abstract class Entregavel : MonoBehaviour
 
     public virtual void FalharEntrega()
     {
-        // Reset de combo e vida
+        if (estadoEntrega == EstadoEntrega.Sucesso) return;
+
+        bool primeiraFalha = MarcarEntregaComoFalha();
         VidaManager.instance.PerderVida();
 
-        Debug.Log($"{gameObject.name} NÃO recebeu a entrega!");
+        if (primeiraFalha)
+            Debug.Log($"{gameObject.name} NÃƒO recebeu a entrega!");
     }
 
     public virtual void PerderCombo()
     {
-        // Reset Combo
         ComboManager.instance.ResetarCombo();
+    }
+
+    protected bool RegistrarFalhaEntrega()
+    {
+        if (!MarcarEntregaComoFalha()) return false;
+
+        PerderCombo();
+        return true;
+    }
+
+    private bool MarcarEntregaComoFalha()
+    {
+        if (!EntregaPendente) return false;
+
+        estadoEntrega = EstadoEntrega.Falha;
+        ativoParaEntrega = false;
+        return true;
     }
 }

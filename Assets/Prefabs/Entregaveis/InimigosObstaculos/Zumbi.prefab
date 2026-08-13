@@ -276,6 +276,12 @@ MonoBehaviour:
   dCorrida: 70
   dColisao: 12
   tempoexclamacao: 2
+  intensidadeEscalaCaminhada: 0.42
+  fatorMaximoCaminhada: 9
+  intensidadeEscalaCorrida: 0.32
+  fatorMaximoCorrida: 7
+  intensidadeEscalaTrocaLane: 0.115
+  fatorMaximoTrocaLane: 3.2
   entregavelPisca: {fileID: -5909581724401143014}
   popupPontuacao: {fileID: 9028810224810389186}
 --- !u!114 &-5909581724401143014
@@ -290,6 +296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6f1d26ba6d4f54fad6ac298a2548b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EntregavelPisca
+  spriteRendererAlvo: {fileID: 8195655357800814410}
 --- !u!1 &5016170064809286678
 GameObject:
   m_ObjectHideFlags: 0

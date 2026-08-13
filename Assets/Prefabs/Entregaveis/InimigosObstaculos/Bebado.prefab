@@ -440,6 +440,13 @@ MonoBehaviour:
   velocidadeTrocaLane: 5
   distanciaEntrega: 50
   tempoexclamacao: 3
+  intensidadeEscalaHorizontal: 0.5
+  fatorMaximoHorizontal: 10.5
+  intensidadeEscalaTrocaLane: 0.12
+  fatorMaximoTrocaLane: 4
+  intensidadeReducaoIntervaloTrocaLane: 0.06
+  fatorMaximoFrequenciaTrocaLane: 2
+  intervaloMinimoTrocaLane: 0.4
   entregavelPisca: {fileID: -1538667524945953015}
   popupPontuacao: {fileID: 2840320702199764024}
   offsetY: 4
@@ -455,6 +462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6f1d26ba6d4f54fad6ac298a2548b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EntregavelPisca
+  spriteRendererAlvo: {fileID: 3387964175657424534}
 --- !u!1 &3136623225874624623
 GameObject:
   m_ObjectHideFlags: 0

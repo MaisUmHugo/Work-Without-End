@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-public class Zumbi : Entregavel
+public class Zumbi : Entregavel, IAjustavelDificuldade
 {
     public Transform Exclamacao;
     [Header("Configuração do Zumbi")]
@@ -11,6 +11,18 @@ public class Zumbi : Entregavel
     public float dCorrida; // distancia de corrida
     public float dColisao; // Distancia De colisão
     public float tempoexclamacao;
+
+    [Header("Dificuldade")]
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaCaminhada = 0.42f;
+    [SerializeField, Min(1f)] private float fatorMaximoCaminhada = 9f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaCorrida = 0.32f;
+    [SerializeField, Min(1f)] private float fatorMaximoCorrida = 7f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaTrocaLane = 0.115f;
+    [SerializeField, Min(1f)] private float fatorMaximoTrocaLane = 3.2f;
+
+    private float velocidadeCaminhadaBase;
+    private float velocidadeCorridaBase;
+    private float velocidadeTrocaLaneBase;
 
     private bool correndo = false;
     private bool caiu = false;
@@ -25,14 +37,21 @@ public class Zumbi : Entregavel
     public PontuacaoPopup popupPontuacao;
 
     private bool jaDeuDano = false;
-    private bool entregaFalhada = false;
 
     private void Awake()
     {
         sr = GetComponentInChildren<SpriteRenderer>();
         anim = GetComponentInChildren<Animator>();
-    }
+        velocidadeCaminhadaBase = velocidadeCaminhada;
+        velocidadeCorridaBase = velocidadeCorrida;
+        velocidadeTrocaLaneBase = velocidadeTrocaLane;
 
+        if (entregavelPisca == null)
+            entregavelPisca = GetComponent<EntregavelPisca>();
+
+        if (entregavelPisca == null)
+            Debug.LogWarning(name + ": componente EntregavelPisca não encontrado.", this);
+    }
     private void Start()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -62,6 +81,7 @@ public class Zumbi : Entregavel
         }
         else
         {
+            float xAnterior = transform.position.x;
             float yAlvo = LanesController.instance.PosicaoY(jogador.linhaAtual);
             float novoY = Mathf.MoveTowards(transform.position.y, yAlvo, velocidadeTrocaLane * Time.deltaTime);
 
@@ -71,7 +91,10 @@ public class Zumbi : Entregavel
                 transform.position.z
             );
 
-            if (Vector3.Distance(transform.position, jogador.transform.position) <= dColisao)
+            float xJogador = jogador.transform.position.x;
+            bool ultrapassouJogador = xAnterior > xJogador && transform.position.x <= xJogador;
+
+            if (Vector3.Distance(transform.position, jogador.transform.position) <= dColisao || ultrapassouJogador)
                 CairECausarDano();
         }
 
@@ -143,17 +166,9 @@ public class Zumbi : Entregavel
         }
     }
 
-    private void RegistrarFalhaEntrega()
-    {
-        if (entregaFalhada || recebeuEntrega) return;
-
-        entregaFalhada = true;
-        PerderCombo();
-    }
-
     public override void ReceberEntrega()
     {
-        if (!ativoParaEntrega) return;
+        if (!correndo || !ativoParaEntrega || !EntregaPendente) return;
 
         int pontosRecebidos = ProcessarEntrega();
 
@@ -204,5 +219,16 @@ public class Zumbi : Entregavel
             Destroy(instancia);
             tempo = 0;
         }
+    }
+
+    public void AplicarDificuldade(float multiplicadorGlobal)
+    {
+        float fatorCaminhada = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaCaminhada, fatorMaximoCaminhada);
+        float fatorCorrida = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaCorrida, fatorMaximoCorrida);
+        float fatorTrocaLane = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaTrocaLane, fatorMaximoTrocaLane);
+
+        velocidadeCaminhada = velocidadeCaminhadaBase * fatorCaminhada;
+        velocidadeCorrida = velocidadeCorridaBase * fatorCorrida;
+        velocidadeTrocaLane = velocidadeTrocaLaneBase * fatorTrocaLane;
     }
 }

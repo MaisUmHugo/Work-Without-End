@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-public class Pessoa_janela : Entregavel
+public class Pessoa_janela : Entregavel, IAjustavelDificuldade
 {
     [Header("Configuração da Janela")]
     public float velocidade;
@@ -10,10 +10,17 @@ public class Pessoa_janela : Entregavel
     public float distanciaEntrega;
     public Vector3 offset;
 
+    [Header("Dificuldade")]
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaMovimento = 0.25f;
+    [SerializeField, Min(1f)] private float fatorMaximoMovimento = 6f;
+
+    private float velocidadeBase;
+    private float xAnterior;
     private SpriteRenderer sr;
     public Color corNormal = Color.blue; // cor padrão
     public Color corAtivo = Color.red;    // cor quando está ativo para receber entrega
     private bool coroutineIniciada = false;
+    private bool emFluxoDeSaida = false;
     private Mov jogador;
     private bool recebeu, podereceber;
     private Animator anim;
@@ -32,6 +39,7 @@ public class Pessoa_janela : Entregavel
         //sr = GetComponent<SpriteRenderer>();
         sr = GetComponentInChildren<SpriteRenderer>();
         anim = GetComponentInChildren<Animator>();
+        velocidadeBase = velocidade;
     }
     private void Start()
     {
@@ -47,6 +55,7 @@ public class Pessoa_janela : Entregavel
         Vector3 pos = transform.position;
         pos.y = LanesController.instance.PosicaoY((LanesController.Linhas.L1));
         transform.position = pos + offset;
+        xAnterior = transform.position.x;
     }
     private void Update()
     {
@@ -63,14 +72,17 @@ public class Pessoa_janela : Entregavel
         }
 
         // Se está em range de entrega, pode esperar pela caixa
-        if (!coroutineIniciada && Mathf.Abs(transform.position.x - jogador.transform.position.x) <= distanciaEntrega)
+        if (EntregaPendente && !coroutineIniciada && EntrouNoAlcance(distanciaEntrega))
         {
             coroutineIniciada = true;
+            emFluxoDeSaida = true;
             StartCoroutine(ProntoparaEntrega());
         }
 
+        xAnterior = transform.position.x;
+
         // --- MOVIMENTO ---
-        if (ativoParaEntrega && !recebeu)
+        if (emFluxoDeSaida)
         {
             // Continua andando para a esquerda mesmo que esteja esperando entrega
             transform.position += Vector3.left * velocidade * Time.deltaTime;
@@ -86,9 +98,9 @@ public class Pessoa_janela : Entregavel
         Vector3 viewPos = Camera.main.WorldToViewportPoint(transform.position);
         if (viewPos.x < -0.1f)
         {
-            if (!recebeu) // saiu sem receber -> falha
+            if (EntregaPendente) // saiu sem receber -> falha
             {
-                PerderCombo();
+                RegistrarFalhaEntrega();
                 Debug.Log($"{gameObject.name} saiu da tela sem entrega!");
             }
             else
@@ -100,15 +112,27 @@ public class Pessoa_janela : Entregavel
         }
     }
 
+    private bool EntrouNoAlcance(float distancia)
+    {
+        float xJogador = jogador.transform.position.x;
+        float limiteDireito = xJogador + distancia;
+        float xAtual = transform.position.x;
+
+        return Mathf.Abs(xAtual - xJogador) <= distancia ||
+               (xAnterior > limiteDireito && xAtual <= limiteDireito);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Caixa") && podereceber)
+        if (collision.CompareTag("Caixa") && podereceber && EntregaPendente)
         {
             ReceberEntrega();
         }
     }
     public override void ReceberEntrega()
     {
+        if (!podereceber || !EntregaPendente) return;
+
         int pontosRecebidos = ProcessarEntrega();
 
         entregavelPisca?.PiscarRecebendo();
@@ -132,6 +156,8 @@ public class Pessoa_janela : Entregavel
 
         yield return new WaitForSeconds(0.1f);
 
+        if (!EntregaPendente) yield break;
+
         podereceber = true;
         ativoParaEntrega = true;
 
@@ -143,11 +169,12 @@ public class Pessoa_janela : Entregavel
         // Mantém sua janela de entrega normal
         yield return new WaitForSeconds(tempoAtivoEntrega);
 
-        if (ativoParaEntrega && !recebeu)
+        if (!recebeu && RegistrarFalhaEntrega())
         {
-            PerderCombo();
+            entregavelPisca?.PararPiscar();
             sr.color = corNormal;
             podereceber = false;
+            ativoParaEntrega = false;
 
             if (anim != null)
                 anim.SetTrigger("FalhouEntrega");
@@ -163,11 +190,10 @@ public class Pessoa_janela : Entregavel
         GameObject instancia = Instantiate(prefab, Exclamacao.position, Quaternion.identity);
         instancia.transform.SetParent(transform, true);
 
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(tempoExclamacao);
 
         Destroy(instancia);
 
-        entregavelPisca?.PararPiscar();
     }
 
     private IEnumerator EsperarAnimacaoDepoisTransparente()
@@ -189,6 +215,12 @@ public class Pessoa_janela : Entregavel
         cor.a = 0.5f;
         sr.color = cor;
 
+    }
+
+    public void AplicarDificuldade(float multiplicadorGlobal)
+    {
+        float fatorMovimento = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaMovimento, fatorMaximoMovimento);
+        velocidade = velocidadeBase * fatorMovimento;
     }
 
 }

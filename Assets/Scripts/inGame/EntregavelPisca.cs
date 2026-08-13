@@ -3,54 +3,80 @@ using System.Collections;
 
 public class EntregavelPisca : MonoBehaviour
 {
-    private SpriteRenderer sr;
-    private Coroutine rotina;
+    [SerializeField] private SpriteRenderer spriteRendererAlvo;
 
-    [Header("Configurações - Piscar Ativo (pode receber)")]
+    private SpriteRenderer sr;
+    private Material materialAlvo;
+    private Coroutine rotina;
+    private Color corOriginal;
+
+    [Header("ConfiguraÃ§Ãµes - Piscar Ativo (pode receber)")]
     private float intervaloAtivo = 0.3f;
     private int quantidadePiscadasAtivo = 3;
     private Color corPiscarAtivo = new Color(1f, 0.4f, 0.5f, 0.6f);
 
-    [Header("Configurações - Piscar Recebendo")]
+    [Header("ConfiguraÃ§Ãµes - Piscar Recebendo")]
     private float intervaloRecebendo = 0.3f;
     private int quantidadePiscadasRecebendo = 3;
     private Color corPiscarRecebendo = new Color(0.7f, 0.7f, 0.7f, 0.4f);
 
     private void Awake()
     {
-        sr = GetComponentInChildren<SpriteRenderer>();
-        Debug.Log("SpriteRenderer encontrado para piscar: " + sr);
-        Debug.Log("SpriteRenderer usado no piscar: " + sr.gameObject.name);
-    }
+        sr = spriteRendererAlvo;
 
+        if (sr == null)
+            sr = GetComponent<SpriteRenderer>();
+
+        if (sr == null)
+            sr = GetComponentInChildren<SpriteRenderer>(true);
+
+        if (sr == null)
+        {
+            Debug.LogWarning($"{name}: nenhum SpriteRenderer foi encontrado para o efeito de piscar.", this);
+            return;
+        }
+
+        materialAlvo = sr.material;
+        if (materialAlvo == null)
+        {
+            Debug.LogWarning(name + ": o SpriteRenderer nÃ£o possui material para o efeito de piscar.", this);
+            return;
+        }
+
+        corOriginal = materialAlvo.color;
+    }
     public void PiscarAtivo()
     {
-        if (rotina != null) StopCoroutine(rotina);
-        rotina = StartCoroutine(Piscar(corPiscarAtivo, intervaloAtivo, quantidadePiscadasAtivo));
+        IniciarPiscar(corPiscarAtivo, intervaloAtivo, quantidadePiscadasAtivo);
     }
 
     public void PiscarRecebendo()
     {
-        if (rotina != null) StopCoroutine(rotina);
-        rotina = StartCoroutine(Piscar(corPiscarRecebendo, intervaloRecebendo, quantidadePiscadasRecebendo));
+        IniciarPiscar(corPiscarRecebendo, intervaloRecebendo, quantidadePiscadasRecebendo);
+    }
+
+    private void IniciarPiscar(Color corPiscar, float intervalo, int quantidade)
+    {
+        if (materialAlvo == null) return;
+
+        if (rotina != null)
+            StopCoroutine(rotina);
+
+        rotina = StartCoroutine(Piscar(corPiscar, intervalo, quantidade));
     }
 
     private IEnumerator Piscar(Color corPiscar, float intervalo, int quantidade)
     {
-        if (sr == null) yield break;
-        Color corOriginal = sr.material.color;
-
         for (int i = 0; i < quantidade; i++)
         {
-            sr.material.color = corPiscar;
+            materialAlvo.color = corPiscar;
             yield return new WaitForSeconds(intervalo);
 
-            sr.material.color = corOriginal;
+            materialAlvo.color = corOriginal;
             yield return new WaitForSeconds(intervalo);
         }
 
-        // garante volta final
-        sr.material.color = corOriginal;
+        materialAlvo.color = corOriginal;
         rotina = null;
     }
 
@@ -62,7 +88,12 @@ public class EntregavelPisca : MonoBehaviour
             rotina = null;
         }
 
-        if (sr != null)
-            sr.material.color = Color.white;
+        if (materialAlvo != null)
+            materialAlvo.color = corOriginal;
+    }
+
+    private void OnDisable()
+    {
+        PararPiscar();
     }
 }

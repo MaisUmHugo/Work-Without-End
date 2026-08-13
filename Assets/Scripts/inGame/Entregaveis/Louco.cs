@@ -1,7 +1,7 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 
-public class Louco : Entregavel
+public class Louco : Entregavel, IAjustavelDificuldade
 {
     public Transform Exclamacao;
     [Header("Configuração do Louco")]
@@ -10,6 +10,16 @@ public class Louco : Entregavel
     public float velocidadeSaida = 6f;      // velocidade depois que atravessou
     public float tempoAtivoEntrega = 1.2f;
     public float tempoexclamacao;
+
+    [Header("Dificuldade")]
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaFrente = 0.4f;
+    [SerializeField, Min(1f)] private float fatorMaximoFrente = 8.5f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaVertical = 0.115f;
+    [SerializeField, Min(1f)] private float fatorMaximoVertical = 3.2f;
+
+    private float velocidadeVerticalBase;
+    private float velocidadeFrenteBase;
+    private float velocidadeSaidaBase;
 
     private bool atravessando = true;
     private bool terminouTravessia = false;
@@ -34,6 +44,9 @@ public class Louco : Entregavel
     private void Awake()
     {
         sr = GetComponentInChildren<SpriteRenderer>();
+        velocidadeVerticalBase = velocidadeVertical;
+        velocidadeFrenteBase = velocidadeFrente;
+        velocidadeSaidaBase = velocidadeSaida;
     }
     private void Start()
     {
@@ -98,16 +111,14 @@ public class Louco : Entregavel
                 terminouTravessia = true;
                 StartCoroutine(PararPiscar());
 
-                if (!entregaRecebida)
+                if (!entregaRecebida && RegistrarFalhaEntrega())
                 {
                     if (anim != null)
                         anim.SetTrigger("FalhouEntrega");
 
-                    ativoParaEntrega = false;
                     if (colisor != null)
                         colisor.enabled = false;
 
-                    PerderCombo();
                     Debug.Log("Louco caiu sem receber entrega, fazueli");
                 }
                 else
@@ -233,4 +244,14 @@ public class Louco : Entregavel
             tempo = 0;
         }
     }
+    public void AplicarDificuldade(float multiplicadorGlobal)
+    {
+        float fatorFrente = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaFrente, fatorMaximoFrente);
+        float fatorVertical = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaVertical, fatorMaximoVertical);
+
+        velocidadeFrente = velocidadeFrenteBase * fatorFrente;
+        velocidadeSaida = velocidadeSaidaBase * fatorFrente;
+        velocidadeVertical = velocidadeVerticalBase * fatorVertical;
+    }
+
 }

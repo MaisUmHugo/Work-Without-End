@@ -137,7 +137,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bola
   velocidade: 10
-  multiplicadorVelocidade: 1
 --- !u!58 &2706188921474178530
 CircleCollider2D:
   m_ObjectHideFlags: 0

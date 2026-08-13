@@ -29,17 +29,11 @@ public class ComboManager : MonoBehaviour
 
         OnComboMudou?.Invoke(comboAtual);
 
-        // bônus a cada 20 entregas
-        if (comboAtual % 20 == 0)
-        {
-            VidaManager.instance.GanharVida();
-            Debug.Log("Ganhou 1 Vida pelo combo!");
-        }
     }
 
     public int GetMultiplicador()
     {
-        // 0–9 = 1x, 10–19 = 2x, etc.
+        // 0â€“9 = 1x, 10â€“19 = 2x, etc.
         return GetMultiplicadorParaCombo(comboAtual);
     }
 

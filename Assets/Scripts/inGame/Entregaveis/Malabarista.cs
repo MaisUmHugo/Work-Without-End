@@ -1,7 +1,7 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 
-public class Malabarista : Entregavel
+public class Malabarista : Entregavel, IAjustavelDificuldade
 {
     [Header("Configuração Principal")]
     public float velocidade;
@@ -15,6 +15,24 @@ public class Malabarista : Entregavel
     public float DistanciaTiro;
 
 
+    [Header("Dificuldade")]
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaMovimento = 0.4f;
+    [SerializeField, Min(1f)] private float fatorMaximoMovimento = 7f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaBola = 0.8f;
+    [SerializeField, Min(1f)] private float fatorMaximoBola = 6f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeReducaoIntervaloTiro = 0.08f;
+    [SerializeField, Min(0.1f)] private float intervaloMinimoTiro = 2.5f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaDistanciaEntrega = 0.07f;
+    [SerializeField, Min(1f)] private float fatorMaximoDistanciaEntrega = 1.8f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaDistanciaTiro = 0.02f;
+    [SerializeField, Min(1f)] private float fatorMaximoDistanciaTiro = 1.2f;
+
+    private float velocidadeBase;
+    private float intervaloTiroBase;
+    private float distanciaEntregaBase;
+    private float distanciaTiroBase;
+    private float fatorVelocidadeBola = 1f;
+
     [Header("Exclamação")]
     public Transform Exclamacao;
     public float tempoexclamacao;
@@ -25,11 +43,14 @@ public class Malabarista : Entregavel
     public Color corAtivo = Color.red;
 
     private bool coroutineIniciada = false;
+    private bool emFluxoDeSaida = false;
     private bool recebeu = false;
     private bool podereceber = false;
 
     private bool podeatirar = false;
-    private bool ComecouCoroutineAtirar = false;
+    private bool jaCausouDano = false;
+    private Coroutine rotinaAtaque;
+    private float xAnterior;
 
     private Mov jogador;
 
@@ -46,6 +67,10 @@ public class Malabarista : Entregavel
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        velocidadeBase = velocidade;
+        intervaloTiroBase = IntervaloTiro;
+        distanciaEntregaBase = distanciaEntrega;
+        distanciaTiroBase = DistanciaTiro;
         anim = GetComponent<Animator>();
         if (Exclamacao == null) Exclamacao = transform;
     }
@@ -63,6 +88,7 @@ public class Malabarista : Entregavel
         Vector3 pos = transform.position;
         pos.y = LanesController.instance.PosicaoY((LanesController.Linhas)Random.Range(0, 4)) + offsetY;
         transform.position = pos;
+        xAnterior = transform.position.x;
     }
 
     private void Update()
@@ -80,24 +106,27 @@ public class Malabarista : Entregavel
         }
 
         // SISTEMA DE TIRO
-        if (!ComecouCoroutineAtirar &&
-            Mathf.Abs(transform.position.x - jogador.transform.position.x) <= DistanciaTiro)
+        if (rotinaAtaque == null &&
+            EntrouNoAlcance(DistanciaTiro))
         {
-            ComecouCoroutineAtirar = true;
             podeatirar = true;
-            StartCoroutine(atirar());
+            rotinaAtaque = StartCoroutine(atirar());
         }
 
         // SISTEMA DE ENTREGA
-        if (!coroutineIniciada &&
-            Mathf.Abs(transform.position.x - jogador.transform.position.x) <= distanciaEntrega)
+        if (EntregaPendente &&
+            !coroutineIniciada &&
+            EntrouNoAlcance(distanciaEntrega))
         {
             coroutineIniciada = true;
+            emFluxoDeSaida = true;
             StartCoroutine(ProntoparaEntrega());
         }
 
+        xAnterior = transform.position.x;
+
         // MOVIMENTO
-        if (ativoParaEntrega && !recebeu) // já está no modo de espera
+        if (emFluxoDeSaida)
         {
             transform.position += Vector3.left * velocidade * Time.deltaTime;
         }
@@ -111,8 +140,8 @@ public class Malabarista : Entregavel
         Vector3 viewPos = Camera.main.WorldToViewportPoint(transform.position);
         if (viewPos.x < -0.1f)
         {
-            if (!recebeu)
-                PerderCombo();
+            if (EntregaPendente)
+                RegistrarFalhaEntrega();
 
             Destroy(gameObject);
         }
@@ -120,15 +149,26 @@ public class Malabarista : Entregavel
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Caixa") && podereceber)
+        if (collision.CompareTag("Caixa") && podereceber && EntregaPendente)
             ReceberEntrega();
 
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && !jaCausouDano)
+        {
+            jaCausouDano = true;
+            emFluxoDeSaida = true;
             FalharEntrega();
+            podereceber = false;
+            ativoParaEntrega = false;
+            podeatirar = true;
+
+            entregavelPisca?.PararPiscar();
+        }
     }
 
     public override void ReceberEntrega()
     {
+        if (!podereceber || !EntregaPendente) return;
+
         int pontosRecebidos = ProcessarEntrega();
         recebeu = true;
         anim.SetTrigger("RecebeuEntrega");
@@ -140,12 +180,20 @@ public class Malabarista : Entregavel
         if (col) col.enabled = false;
 
         StartCoroutine(DelayTransparente());
-        StartCoroutine(PararPiscar());
     }
 
     private IEnumerator ProntoparaEntrega()
     {
         yield return new WaitForSeconds(0.1f);
+
+        if (!EntregaPendente) yield break;
+
+        podeatirar = false;
+        if (rotinaAtaque != null)
+        {
+            StopCoroutine(rotinaAtaque);
+            rotinaAtaque = null;
+        }
 
         podereceber = true;
         ativoParaEntrega = true;
@@ -155,18 +203,22 @@ public class Malabarista : Entregavel
 
         yield return new WaitForSeconds(tempoAtivoEntrega);
 
-        entregavelPisca?.PararPiscar();
-
-        if (!recebeu)
+        if (!recebeu && RegistrarFalhaEntrega())
         {
-            PerderCombo();
+            entregavelPisca?.PararPiscar();
+            podereceber = false;
+            ativoParaEntrega = false;
+            podeatirar = true;
+
             sr.color = corNormal;
         }
     }
 
     private IEnumerator DelayTransparente()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
+        entregavelPisca?.PararPiscar();
+
         Color c = sr.color;
         c.a = 0.5f;
         sr.color = c;
@@ -175,42 +227,32 @@ public class Malabarista : Entregavel
     // TIRO 
     public IEnumerator atirar()
     {
-        if (!podeatirar || podereceber)
-            yield break;
-        
+        while (podeatirar && !podereceber && !recebeu)
+        {
             Vector3 posSpawn =
                 transform.position +
                 Vector3.left * offsetBolaX +
                 Vector3.up * offsetBolaY;
 
             GameObject novaBola = Instantiate(bola, posSpawn, Quaternion.identity);
-            
-            // deslocamento aleatório
+
             float randomOffsetX = Random.Range(10f, 25f);
-            // destino da bola - Lane onde vai cair
             Vector3 destino = new Vector3(
-                posSpawn.x - randomOffsetX, 
+                posSpawn.x - randomOffsetX,
                 LanesController.instance.PosicaoY(jogador.linhaAtual),
                 0f
             );
 
-
-            Bola b = novaBola.GetComponent<Bola>();
-            b.CaminhoBola(destino);
-
-
-
+            Bola componenteBola = novaBola.GetComponent<Bola>();
+            componenteBola.CaminhoBola(destino);
+            componenteBola.DefinirFatorVelocidade(fatorVelocidadeBola);
 
             yield return new WaitForSeconds(IntervaloTiro);
-            
-            StartCoroutine(atirar());
         }
 
-    private IEnumerator PararPiscar()
-    {
-        yield return new WaitForSeconds(1.5f);
-        entregavelPisca?.PararPiscar();
+        rotinaAtaque = null;
     }
+
 
     private IEnumerator exclamacao()
     {
@@ -227,5 +269,32 @@ public class Malabarista : Entregavel
             yield return new WaitForSeconds(tempoexclamacao);
             Destroy(instancia);
         }
+    }
+
+    private bool EntrouNoAlcance(float distancia)
+    {
+        float xJogador = jogador.transform.position.x;
+        float limiteDireito = xJogador + distancia;
+        float xAtual = transform.position.x;
+
+        return Mathf.Abs(xAtual - xJogador) <= distancia ||
+               (xAnterior > limiteDireito && xAtual <= limiteDireito);
+    }
+
+    public void AplicarDificuldade(float multiplicadorGlobal)
+    {
+        float fatorMovimento = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaMovimento, fatorMaximoMovimento);
+        fatorVelocidadeBola = Mathf.Clamp(
+            1f + (fatorMovimento - 1f) * intensidadeEscalaBola,
+            1f,
+            Mathf.Max(1f, fatorMaximoBola));
+        float fatorCadencia = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeReducaoIntervaloTiro, 2f);
+        float fatorDistanciaEntrega = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaDistanciaEntrega, fatorMaximoDistanciaEntrega);
+        float fatorDistanciaTiro = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaDistanciaTiro, fatorMaximoDistanciaTiro);
+
+        velocidade = velocidadeBase * fatorMovimento;
+        IntervaloTiro = Mathf.Max(intervaloMinimoTiro, intervaloTiroBase / fatorCadencia);
+        distanciaEntrega = distanciaEntregaBase * fatorDistanciaEntrega;
+        DistanciaTiro = distanciaTiroBase * fatorDistanciaTiro;
     }
 }

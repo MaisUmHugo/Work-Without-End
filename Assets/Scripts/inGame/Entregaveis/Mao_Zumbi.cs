@@ -1,23 +1,30 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-public class Mao_Zumbi : Entregavel
+public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
 {
     public Transform Exclamacao;
     [Header("Configuração da mão")]
     public float velocidade;
-    public float tempoAtivoEntrega;
     public float intervaloPiscar;
     public float distanciaEntrega;
     public float tempoexclamacao;
+
+    [Header("Dificuldade")]
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaMovimento = 0.4f;
+    [SerializeField, Min(1f)] private float fatorMaximoMovimento = 8.5f;
+    private float velocidadeBase;
 
     // Sprite renderer para fazer o efeito de piscar
     private SpriteRenderer sr;
     public Color corNormal = Color.white; // cor padrão
     public Color corAtivo = Color.red;    // cor quando está ativo para receber entrega
     private bool coroutineIniciada = false;
+    private bool emFluxoDeSaida = false;
     private Mov jogador;
     private bool recebeu, podereceber;
+    private bool jaCausouDano;
+    private float xAnterior;
     public EntregavelPisca entregavelPisca;
     public PontuacaoPopup popupPontuacao;
 
@@ -28,7 +35,14 @@ public class Mao_Zumbi : Entregavel
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
-        //sr = GetComponentInChildren<SpriteRenderer>();
+        velocidadeBase = velocidade;
+
+        if (entregavelPisca == null)
+            entregavelPisca = GetComponent<EntregavelPisca>();
+
+        if (entregavelPisca == null)
+            Debug.LogWarning(name + ": componente EntregavelPisca não encontrado.", this);
+
         anim = GetComponentInChildren<Animator>();
     }
     private void Start()
@@ -47,6 +61,7 @@ public class Mao_Zumbi : Entregavel
         Vector3 pos = transform.position;
         pos.y = LanesController.instance.PosicaoY(laneEscolhida) + offsetY;
         transform.position = pos;
+        xAnterior = transform.position.x;
 
         Debug.Log($" Y da lane = {LanesController.instance.PosicaoY(laneEscolhida)} | " +
                   $"OffsetY = {offsetY} | Y final = {transform.position.y}");
@@ -67,21 +82,22 @@ public class Mao_Zumbi : Entregavel
         }
 
         // Se está em range de entrega, pode esperar pela caixa
-        if (!coroutineIniciada && Mathf.Abs(transform.position.x - jogador.transform.position.x) <= distanciaEntrega)
+        if (EntregaPendente && !coroutineIniciada && EntrouNoAlcance(CalcularDistanciaInicioTelegraph()))
         {
             coroutineIniciada = true;
+            emFluxoDeSaida = true;
             StartCoroutine(ProntoparaEntrega());
         }
 
+        xAnterior = transform.position.x;
+
         // --- MOVIMENTO ---
-        if (ativoParaEntrega && !recebeu)
+        if (emFluxoDeSaida)
         {
-            // Continua andando para a esquerda mesmo que esteja esperando entrega
             transform.position += Vector3.left * velocidade * Time.deltaTime;
         }
         else
         {
-            // Se ainda não está em range → segue em direção ao jogador
             Vector3 direcao = (jogador.transform.position - transform.position).normalized;
             transform.position += new Vector3(direcao.x, 0, 0) * velocidade * Time.deltaTime;
         }
@@ -90,9 +106,9 @@ public class Mao_Zumbi : Entregavel
         Vector3 viewPos = Camera.main.WorldToViewportPoint(transform.position);
         if (viewPos.x < -0.1f)
         {
-            if (!recebeu) // saiu sem receber -> falha
+            if (EntregaPendente) // saiu sem receber -> falha
             {
-                PerderCombo();
+                RegistrarFalhaEntrega();
                 Debug.Log($"{gameObject.name} saiu da tela sem entrega!");
             }
             else
@@ -101,10 +117,14 @@ public class Mao_Zumbi : Entregavel
             }
 
             Destroy(gameObject);
+            return;
         }
 
         if (transform.position.x < jogador.transform.position.x - 20f)
         {
+            if (EntregaPendente)
+                RegistrarFalhaEntrega();
+
             Destroy(gameObject);
             return;
         }
@@ -112,17 +132,24 @@ public class Mao_Zumbi : Entregavel
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Caixa") && podereceber)
+        if (collision.CompareTag("Caixa") && podereceber && EntregaPendente)
         {
             ReceberEntrega();
         }
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && !jaCausouDano)
         {
+            jaCausouDano = true;
+            emFluxoDeSaida = true;
             FalharEntrega();
+            podereceber = false;
+            ativoParaEntrega = false;
+            entregavelPisca?.PararPiscar();
         }
     }
     public override void ReceberEntrega()
     {
+        if (!podereceber || !EntregaPendente) return;
+
         int pontosRecebidos = ProcessarEntrega();
         Collider2D col = GetComponent<Collider2D>();
         if (col != null)
@@ -142,38 +169,28 @@ public class Mao_Zumbi : Entregavel
     {
         anim.SetTrigger("Surgir");
         yield return new WaitForSeconds(1.5f);
+
+
+        if (!EntregaPendente) yield break;
+
         podereceber = true;
         ativoParaEntrega = true;
         anim.SetTrigger("MaoAberta");
         entregavelPisca?.PiscarAtivo();
-        // Exclamação
+
         GameObject prefab = Resources.Load<GameObject>("PontoExclamacao");
         if (prefab != null)
         {
             GameObject instancia = Instantiate(prefab, Exclamacao.position, Quaternion.identity);
             instancia.transform.SetParent(gameObject.transform, worldPositionStays: true);
-            float tempo = 0;
-            while (tempo < tempoexclamacao)
-            {
-                tempo += Time.deltaTime;
-                yield return null;
-            }
+
+            yield return new WaitForSeconds(tempoexclamacao);
             Destroy(instancia);
-            tempo = 0;
         }
-        Debug.Log("Mão proxima, entregue agora!");
 
-        // espera a janela de tempo para aceitar a entrega
-        yield return new WaitForSeconds(tempoAtivoEntrega);
-
-       /* if (ativoParaEntrega && !recebeu)
-        {
-            // não recebeu a entrega → falha
-            PerderCombo();
-            sr.color = corNormal;
-        }
-       */
+        Debug.Log("Mao proxima, entregue agora!");
     }
+
     private IEnumerator DelayTransparente()
     {
         yield return new WaitForSeconds(1.25f);
@@ -184,5 +201,26 @@ public class Mao_Zumbi : Entregavel
     {
         yield return new WaitForSeconds(1.5f);
         entregavelPisca?.PararPiscar();
+    }
+    private float CalcularDistanciaInicioTelegraph()
+    {
+        const float tempoTelegraph = 1.5f;
+        return distanciaEntrega + velocidade * tempoTelegraph;
+    }
+
+    private bool EntrouNoAlcance(float distancia)
+    {
+        float xJogador = jogador.transform.position.x;
+        float limiteDireito = xJogador + distancia;
+        float xAtual = transform.position.x;
+
+        return Mathf.Abs(xAtual - xJogador) <= distancia ||
+               (xAnterior > limiteDireito && xAtual <= limiteDireito);
+    }
+
+    public void AplicarDificuldade(float multiplicadorGlobal)
+    {
+        float fatorMovimento = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaMovimento, fatorMaximoMovimento);
+        velocidade = velocidadeBase * fatorMovimento;
     }
 }

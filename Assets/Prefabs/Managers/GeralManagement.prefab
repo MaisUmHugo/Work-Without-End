@@ -587,19 +587,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnerManager: {fileID: 6640490239518991581}
-  bola: {fileID: -4777778775511443149, guid: e1fa043f34f9f904aba9222e970e0d4c, type: 3}
   barraProgresso: {fileID: 2196682696370664215}
   E_Necessarias: 2
+  entregasMaximasAntesLateGame: 15
+  hordaRetomarAumentoEntregas: 25
+  intervaloHordasAumentoEntregas: 10
+  aumentoEntregasPorEtapa: 5
   TextoHorda: {fileID: 6311720834776184193}
   TextoEntrega: {fileID: 7031645082656350563}
-  aumentovelocidade: 0.2
-  multiplicadorMaximoVelocidade: 4
-  aumentodistancia: 3
-  ReduzirIntervalo: 0.2
+  hordaInicioLateGame: 50
+  velocidadeMinimaLateGame: 18
+  velocidadeMaximaLateGame: 20
+  mudancaMaximaVelocidadePorHorda: 0.5
+  toleranciaAlvoLateGame: 0.05
   delayInicial: 3.5
   delayEntreHordas: 2
-  multiplicadorParallax: 1
-  aumentoParallaxPorHorda: 0.4
   aumentarParallax: 1
   tagsPorHorda:
   - horda: 1
@@ -725,11 +727,8 @@ MonoBehaviour:
     tagAssociada: Malabarista
     tipoSpawn: 0
     pontosFixos: []
-  intervaloSpawn: 5
-  multiplicadorVelocidade: 1
-  multiplicadorDistancia: 0
   spawnAtivo: 1
-  variacaoIntervaloSpawn: 0.5
+  variacaoIntervaloSpawn: 0.3
   intervaloMinimoSpawn: 1.5
   intervaloaleatorio: 0
   tagsPermitidas: []

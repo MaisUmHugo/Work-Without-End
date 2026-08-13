@@ -1,7 +1,7 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 
-public class Bebado : Entregavel
+public class Bebado : Entregavel, IAjustavelDificuldade
 {
     public Transform Exclamacao;
 
@@ -13,6 +13,19 @@ public class Bebado : Entregavel
     [Header("Entrega")]
     public float distanciaEntrega;
     public float tempoexclamacao;
+
+    [Header("Dificuldade")]
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaHorizontal = 0.5f;
+    [SerializeField, Min(1f)] private float fatorMaximoHorizontal = 10.5f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaTrocaLane = 0.12f;
+    [SerializeField, Min(1f)] private float fatorMaximoTrocaLane = 4f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeReducaoIntervaloTrocaLane = 0.06f;
+    [SerializeField, Min(1f)] private float fatorMaximoFrequenciaTrocaLane = 2f;
+    [SerializeField, Min(0.1f)] private float intervaloMinimoTrocaLane = 0.4f;
+
+    private float velocidadeBase;
+    private float velocidadeTrocaLaneBase;
+    private float trocaLaneIntervaloBase;
 
     private Mov jogador;
     private float tempoUltimaTroca;
@@ -35,6 +48,18 @@ public class Bebado : Entregavel
     public float offsetY;
 
 
+    private void Awake()
+    {
+        velocidadeBase = velocidade;
+        velocidadeTrocaLaneBase = velocidadeTrocaLane;
+        trocaLaneIntervaloBase = trocaLaneIntervalo;
+
+        if (entregavelPisca == null)
+            entregavelPisca = GetComponent<EntregavelPisca>();
+
+        if (entregavelPisca == null)
+            Debug.LogWarning(name + ": componente EntregavelPisca não encontrado.", this);
+    }
     private void Start()
     {
         colisor = GetComponent<Collider2D>();
@@ -84,7 +109,7 @@ public class Bebado : Entregavel
 
             float distancia = Mathf.Abs(transform.position.x - jogador.transform.position.x);
 
-            if (!podeReceber && distancia <= distanciaEntrega)
+            if (EntregaPendente && !podeReceber && distancia <= distanciaEntrega)
             {
                 podeReceber = true;        
                 colisor.enabled = true;  
@@ -110,10 +135,10 @@ public class Bebado : Entregavel
         Vector3 viewPos = Camera.main.WorldToViewportPoint(transform.position);
         if (viewPos.x < -0.1f)
         {
-            if (!parado)
+            if (EntregaPendente)
             {
                 Debug.Log("Saiu sem entrega -> perdeu combo");
-                PerderCombo();
+                RegistrarFalhaEntrega();
             }
 
             Destroy(gameObject);
@@ -132,7 +157,7 @@ public class Bebado : Entregavel
     }
     public override void ReceberEntrega()
     {
-        if (!podeReceber) return;
+        if (!podeReceber || !EntregaPendente) return;
 
         anim.SetTrigger("RecebeuEntrega");
         int pontosRecebidos = ProcessarEntrega();
@@ -156,10 +181,14 @@ public class Bebado : Entregavel
         if (collision.CompareTag("Player"))
         {
             FalharEntrega();
+            podeReceber = false;
+            ativoParaEntrega = false;
+            colisor.enabled = false;
+            entregavelPisca?.PararPiscar();
         }
         else if (collision.CompareTag("Caixa"))
         {
-            if (podeReceber)
+            if (podeReceber && EntregaPendente)
                 ReceberEntrega();
         }
     }
@@ -193,7 +222,15 @@ public class Bebado : Entregavel
         if (instancia != null)
             Destroy(instancia);
 
-        // para o piscar
-        entregavelPisca?.PararPiscar();
+    }
+    public void AplicarDificuldade(float multiplicadorGlobal)
+    {
+        float fatorHorizontal = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaHorizontal, fatorMaximoHorizontal);
+        float fatorTrocaLane = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaTrocaLane, fatorMaximoTrocaLane);
+        float fatorFrequenciaTrocaLane = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeReducaoIntervaloTrocaLane, fatorMaximoFrequenciaTrocaLane);
+
+        velocidade = velocidadeBase * fatorHorizontal;
+        velocidadeTrocaLane = velocidadeTrocaLaneBase * fatorTrocaLane;
+        trocaLaneIntervalo = Mathf.Max(intervaloMinimoTrocaLane, trocaLaneIntervaloBase / fatorFrequenciaTrocaLane);
     }
 }

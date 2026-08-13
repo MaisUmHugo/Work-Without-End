@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-public class Motorista_Assustado : Entregavel
+public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
 {
     public Transform Exclamacao;
     [Header("Configuração Motorista")]
@@ -11,12 +11,20 @@ public class Motorista_Assustado : Entregavel
     public float distanciaEntrega;
     public float tempoexclamacao;
 
+    [Header("Dificuldade")]
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaMovimento = 0.4f;
+    [SerializeField, Min(1f)] private float fatorMaximoMovimento = 8.5f;
+    private float velocidadeBase;
+
     private SpriteRenderer sr;
     //public Color corNormal = Color.white; // cor padrão
     //public Color corAtivo = Color.red;    // cor quando está ativo para receber entrega
     private bool coroutineIniciada = false;
+    private bool emFluxoDeSaida = false;
     private Mov jogador;
     private bool recebeu, podereceber;
+    private bool jaCausouDano;
+    private float xAnterior;
     private Animator anim;
 
     [Header("Efeito Visual")]
@@ -26,6 +34,7 @@ public class Motorista_Assustado : Entregavel
     {
         //sr = GetComponent<SpriteRenderer>();
         sr = GetComponentInChildren<SpriteRenderer>();
+        velocidadeBase = velocidade;
         anim = GetComponentInChildren<Animator>();
     }
     private void Start()
@@ -54,6 +63,7 @@ public class Motorista_Assustado : Entregavel
         );
         }
         transform.position = pos;
+        xAnterior = transform.position.x;
     }
     private void Update()
     {
@@ -70,14 +80,17 @@ public class Motorista_Assustado : Entregavel
         }
 
         // Se está em range de entrega, pode esperar pela caixa
-        if (!coroutineIniciada && Mathf.Abs(transform.position.x - jogador.transform.position.x) <= distanciaEntrega)
+        if (EntregaPendente && !coroutineIniciada && EntrouNoAlcance(distanciaEntrega))
         {
             coroutineIniciada = true;
+            emFluxoDeSaida = true;
             StartCoroutine(ProntoparaEntrega());
         }
 
+        xAnterior = transform.position.x;
+
         // --- MOVIMENTO ---
-        if (ativoParaEntrega && !recebeu)
+        if (emFluxoDeSaida)
         {
             // Continua andando para a esquerda mesmo que esteja esperando entrega
             transform.position += Vector3.left * velocidade * Time.deltaTime;
@@ -93,9 +106,9 @@ public class Motorista_Assustado : Entregavel
         Vector3 viewPos = Camera.main.WorldToViewportPoint(transform.position);
         if (viewPos.x < -0.1f)
         {
-            if (!recebeu) // saiu sem receber -> falha
+            if (EntregaPendente) // saiu sem receber -> falha
             {
-                PerderCombo();
+                RegistrarFalhaEntrega();
                 Debug.Log($"{gameObject.name} saiu da tela sem entrega!");
             }
             else
@@ -109,17 +122,24 @@ public class Motorista_Assustado : Entregavel
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Caixa") && podereceber)
+        if (collision.CompareTag("Caixa") && podereceber && EntregaPendente)
         {
             ReceberEntrega();
         }
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && !jaCausouDano)
         {
+            jaCausouDano = true;
+            emFluxoDeSaida = true;
             FalharEntrega();
+            podereceber = false;
+            ativoParaEntrega = false;
+            entregavelPisca?.PararPiscar();
         }
     }
     public override void ReceberEntrega()
     {
+        if (!podereceber || !EntregaPendente) return;
+
         //sr.color = corNormal;
         int pontosRecebidos = ProcessarEntrega();
 
@@ -127,9 +147,6 @@ public class Motorista_Assustado : Entregavel
 
         // Calcula pontuação com bônus
         popupPontuacao?.MostrarPontuacao(pontosRecebidos);
-        Color cor = sr.color;
-        cor.a = 0.5f; // meio transparente
-        sr.color = cor;
         anim.SetTrigger("ReceberEntrega");
 
 
@@ -140,10 +157,12 @@ public class Motorista_Assustado : Entregavel
         }
         recebeu = true;
 
-        StartCoroutine(PararPiscar());
+        StartCoroutine(FinalizarFeedbackRecebimento());
     }
     private System.Collections.IEnumerator ProntoparaEntrega()
     {
+        if (!EntregaPendente) yield break;
+
         podereceber = true;
         ativoParaEntrega = true;
         //sr.color = corAtivo; // piscar (feedback visual)
@@ -167,17 +186,36 @@ public class Motorista_Assustado : Entregavel
         // espera a janela de tempo para aceitar a entrega
         yield return new WaitForSeconds(tempoAtivoEntrega);
 
-        if (ativoParaEntrega && !recebeu)
+        if (!recebeu && RegistrarFalhaEntrega())
         {
-            // não recebeu a entrega → falha
+            podereceber = false;
+            ativoParaEntrega = false;
             anim.SetTrigger("FalhouEntrega");
-            PerderCombo();
-            PararPiscar();
+            entregavelPisca?.PararPiscar();
         }
     }
-    private IEnumerator PararPiscar()
+    private IEnumerator FinalizarFeedbackRecebimento()
     {
         yield return new WaitForSeconds(0.75f);
         entregavelPisca?.PararPiscar();
+
+        Color cor = sr.color;
+        cor.a = 0.5f;
+        sr.color = cor;
+    }
+    private bool EntrouNoAlcance(float distancia)
+    {
+        float xJogador = jogador.transform.position.x;
+        float limiteDireito = xJogador + distancia;
+        float xAtual = transform.position.x;
+
+        return Mathf.Abs(xAtual - xJogador) <= distancia ||
+               (xAnterior > limiteDireito && xAtual <= limiteDireito);
+    }
+
+    public void AplicarDificuldade(float multiplicadorGlobal)
+    {
+        float fatorMovimento = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaMovimento, fatorMaximoMovimento);
+        velocidade = velocidadeBase * fatorMovimento;
     }
 }

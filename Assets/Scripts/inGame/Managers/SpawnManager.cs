@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,18 +31,20 @@ public class SpawnerManager : MonoBehaviour
     private float posicaoForaCameraX; // agora só a variável
 
     [Header("Controle Dinâmico")]
-    public float intervaloSpawn;
-    public float multiplicadorVelocidade;
-    public float multiplicadorDistancia;
     public bool spawnAtivo = true;
-    [SerializeField] private float variacaoIntervaloSpawn = 0.5f;
+    [SerializeField] private float variacaoIntervaloSpawn = 0.3f;
     [SerializeField] private float intervaloMinimoSpawn = 1.5f;
+    private float intervaloSpawnAtual = 5f;
+    private float multiplicadorDificuldadeAtual = 1f;
+    private bool stressTestMaximoAtivo;
+
+    public float IntervaloMinimoSpawn => intervaloMinimoSpawn;
+
 
     private Dictionary<string, ConfiguracaoSpawn> dicionarioConfig = new Dictionary<string, ConfiguracaoSpawn>();
+    private readonly List<GameObject> inimigosAtivos = new List<GameObject>();
     private float proximoSpawn;
 
-    private float intervaloPadrao;
-    private float velocidadePadrao;
 
     public List<string> tagsPermitidas = new List<string>();
 
@@ -88,8 +90,6 @@ public class SpawnerManager : MonoBehaviour
             dicionarioConfig.Add(tagAssociada, configuracao);
             todasAsTagsEntregaveis.Add(tagAssociada);
         }
-        intervaloPadrao = intervaloSpawn;
-        velocidadePadrao = multiplicadorVelocidade;
     }
 
     void Update()
@@ -123,25 +123,44 @@ public class SpawnerManager : MonoBehaviour
 
     private void AgendarProximoSpawn()
     {
-        float variacao = Random.Range(-variacaoIntervaloSpawn, variacaoIntervaloSpawn);
-        float intervaloFinal = Mathf.Max(intervaloMinimoSpawn, intervaloSpawn + variacao);
+        float intervaloFinal;
+
+        if (stressTestMaximoAtivo)
+        {
+            intervaloFinal = intervaloMinimoSpawn;
+        }
+        else
+        {
+            float variacao = Random.Range(-variacaoIntervaloSpawn, variacaoIntervaloSpawn);
+            intervaloFinal = Mathf.Max(intervaloMinimoSpawn, intervaloSpawnAtual + variacao);
+        }
+
         proximoSpawn = Time.time + intervaloFinal;
     }
 
-    public void AtivarSpawn() => spawnAtivo = true;
+    public void AtivarSpawn()
+    {
+        spawnAtivo = true;
+
+        if (stressTestMaximoAtivo)
+            AgendarProximoSpawn();
+    }
+
     public void DesativarSpawn() => spawnAtivo = false;
 
-    public void DefinirIntervalo(float intervalo) => intervaloSpawn = intervalo;
-    public void DefinirVelocidade(float mult) => multiplicadorVelocidade = mult;
-    
-    public void DefinirDistancia(float dist) => multiplicadorDistancia = dist;
-
-    public void ResetarConfig()
+    public void DefinirDificuldade(float multiplicador, float intervaloSpawn)
     {
-        intervaloSpawn = intervaloPadrao;
-        multiplicadorVelocidade = velocidadePadrao;
-        spawnAtivo = true;
-        tagsPermitidas.Clear();
+        multiplicadorDificuldadeAtual = Mathf.Max(1f, multiplicador);
+        intervaloSpawnAtual = Mathf.Max(intervaloMinimoSpawn, intervaloSpawn);
+        AtualizarDificuldadeInimigosAtivos();
+    }
+
+    public void DefinirStressTestMaximo(bool ativo)
+    {
+        stressTestMaximoAtivo = ativo;
+
+        if (spawnAtivo)
+            AgendarProximoSpawn();
     }
 
     public void DefinirTagsPermitidas(List<string> tags)
@@ -200,7 +219,8 @@ public class SpawnerManager : MonoBehaviour
         }
 
         GameObject go = Instantiate(config.prefab, posicaoSpawn, Quaternion.identity);
-        AjustarVelocidade(go);
+        inimigosAtivos.Add(go);
+        AplicarDificuldade(go);
         return go;
     }
 
@@ -213,48 +233,33 @@ public class SpawnerManager : MonoBehaviour
         }
     }
 
-    private void AjustarVelocidade(GameObject inimigo)
+    private void AtualizarDificuldadeInimigosAtivos()
     {
-        var componentes = inimigo.GetComponents<MonoBehaviour>();
-
-        foreach (var c in componentes)
+        for (int i = inimigosAtivos.Count - 1; i >= 0; i--)
         {
-            var campos = c.GetType().GetFields(System.Reflection.BindingFlags.Public |
-                                               System.Reflection.BindingFlags.NonPublic |
-                                               System.Reflection.BindingFlags.Instance);
-
-            foreach (var campo in campos)
+            GameObject inimigo = inimigosAtivos[i];
+            if (inimigo == null)
             {
-                // verifica se o nome do campo contém "velocidade"
-                if (campo.Name.ToLower().Contains("velocidade") && campo.FieldType == typeof(float))
-                {
-                    float vOriginal = (float)campo.GetValue(c);
-                    campo.SetValue(c, vOriginal * multiplicadorVelocidade);
-                    // Debug.Log($"[{c.GetType().Name}] {campo.Name} alterado para {vOriginal * multiplicadorVelocidade}");
-                }
-                if (campo.Name.ToLower().Contains("distancia") && campo.FieldType == typeof(float))
-                {
-                    float vOriginal = (float)campo.GetValue(c);
-                    campo.SetValue(c, vOriginal + multiplicadorDistancia);
-                    // Debug.Log($"[{c.GetType().Name}] {campo.Name} alterado para {vOriginal * multiplicadorVelocidade}");
-                }
+                inimigosAtivos.RemoveAt(i);
+                continue;
+            }
+
+            AplicarDificuldade(inimigo);
+        }
+    }
+    private void AplicarDificuldade(GameObject inimigo)
+    {
+        MonoBehaviour[] componentes = inimigo.GetComponentsInChildren<MonoBehaviour>(true);
+
+        foreach (MonoBehaviour componente in componentes)
+        {
+            if (componente is IAjustavelDificuldade ajustavel)
+            {
+                ajustavel.AplicarDificuldade(multiplicadorDificuldadeAtual);
             }
         }
     }
 
 
-    //private void AjustarVelocidade(GameObject inimigo)
-    //{
-    //    var componentes = inimigo.GetComponents<MonoBehaviour>();
-    //    foreach (var c in componentes)
-    //    {
-    //        var campo = c.GetType().GetField("velocidade");
-    //        if (campo != null && campo.FieldType == typeof(float))
-    //        {
-    //            float vOriginal = (float)campo.GetValue(c);
-    //            campo.SetValue(c, vOriginal * multiplicadorVelocidade);
-    //        }
-    //    }
-    //}
 
 }
