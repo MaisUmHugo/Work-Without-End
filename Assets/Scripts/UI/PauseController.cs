@@ -5,7 +5,7 @@ public class PauseController : MonoBehaviour
 {
     private INPUTS inputs;
 
-    [Header("PainÈis")]
+    [Header("Pain√©is")]
     [SerializeField] private GameObject FundoCinza;
     [SerializeField] private GameObject painelPause;
     [SerializeField] private GameObject painelConfirmacao;
@@ -22,7 +22,7 @@ public class PauseController : MonoBehaviour
         {
             if (JogoPausado)
                 FecharPause();
-            else
+            else if (!BloqueioGameplay.Bloqueado)
                 AbrirPause();
         };
 
@@ -46,6 +46,7 @@ public class PauseController : MonoBehaviour
     public void AbrirPause()
     {
         JogoPausado = true;
+        BloqueioGameplay.Definir(MotivoBloqueioGameplay.Pause, true);
         Time.timeScale = 0f;
 
         FundoCinza.SetActive(true);
@@ -58,6 +59,7 @@ public class PauseController : MonoBehaviour
     public void FecharPause()
     {
         JogoPausado = false;
+        BloqueioGameplay.Definir(MotivoBloqueioGameplay.Pause, false);
         Time.timeScale = 1f;
 
         painelPause.SetActive(false);
@@ -68,7 +70,7 @@ public class PauseController : MonoBehaviour
         Debug.Log("Pause fechado");
     }
 
-    // --- Botıes ---
+    // --- Bot√µes ---
     public void BotaoContinuar()
     {
         FecharPause();
@@ -118,6 +120,8 @@ public class PauseController : MonoBehaviour
 
     private void OnDestroy()
     {
+        BloqueioGameplay.Definir(MotivoBloqueioGameplay.Pause, false);
+
         if (JogoPausado)
         {
             Time.timeScale = 1f;

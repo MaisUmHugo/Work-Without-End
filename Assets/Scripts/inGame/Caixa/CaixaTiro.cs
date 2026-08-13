@@ -3,9 +3,9 @@ using UnityEngine.InputSystem;
 
 public class CaixaTiro : MonoBehaviour
 {
-    [Header("Configuração do Tiro")]
+    [Header("ConfiguraÃ§Ã£o do Tiro")]
     public GameObject prefabCaixa; // Prefab da caixa
-    public Transform pontoLancamento; // De onde a caixa sai (pode ser a posição do jogador)
+    public Transform pontoLancamento; // De onde a caixa sai (pode ser a posiÃ§Ã£o do jogador)
     public float velocidadeCaixa;
     public float delayLancamento;
 
@@ -27,7 +27,7 @@ public class CaixaTiro : MonoBehaviour
     private void OnEnable()
     {
         inputs.Gameplay.Enable();
-        inputs.Gameplay.Shoot.performed += Atirar; // ação no Input Actions
+        inputs.Gameplay.Shoot.performed += Atirar; // aÃ§Ã£o no Input Actions
     }
 
     private void OnDisable()
@@ -38,10 +38,11 @@ public class CaixaTiro : MonoBehaviour
 
     public void SpawnCaixa()
     {
-        // Pega posição da mira
+        if (BloqueioGameplay.Bloqueado) return;
+        // Pega posiÃ§Ã£o da mira
         Vector3 posMira = mira.transform.position;
 
-        // Direção da caixa (da origem até a mira)
+        // DireÃ§Ã£o da caixa (da origem atÃ© a mira)
         Vector3 direcao = (posMira - pontoLancamento.position).normalized;
 
         // Instancia a caixa
@@ -55,6 +56,7 @@ public class CaixaTiro : MonoBehaviour
 
     private void Atirar(InputAction.CallbackContext ctx)
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (Time.time < tempoUltimoLancamento + delayLancamento) return;
         if (prefabCaixa == null) return;
 

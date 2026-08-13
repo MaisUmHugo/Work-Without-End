@@ -8,7 +8,7 @@ public class VidaManager : MonoBehaviour
 {
     public static VidaManager instance;
 
-    [Header("ConfiguraÁ„o de Vidas")]
+    [Header("Configura√ß√£o de Vidas")]
     public int vidasIniciais = 3;
     [HideInInspector] public int vidasAtuais;
 
@@ -51,6 +51,8 @@ public class VidaManager : MonoBehaviour
     }
     private void Update()
     {
+        if (BloqueioGameplay.Bloqueado) return;
+
         // Atalho de debug: perder 1 de vida com Shift + P
         if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.pKey.wasPressedThisFrame)
         {
@@ -88,7 +90,7 @@ public class VidaManager : MonoBehaviour
 
     private void ProcessarPerdaVida(bool resetarCombo, bool aplicarInvulnerabilidade)
     {
-        // evita perder vida se j· estiver invulner·vel ou morto
+        // evita perder vida se j√° estiver invulner√°vel ou morto
         if (invulneravel || vidasAtuais <= 0)
             return;
         vidasAtuais--;

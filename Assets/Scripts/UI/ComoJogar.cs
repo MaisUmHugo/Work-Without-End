@@ -17,25 +17,24 @@ public class ComoJogarController : MonoBehaviour
 
     private void Start()
     {
-        // Se o jogador marcou "não mostrar novamente", não abre mais
         if (PlayerPrefs.GetInt(PREF_NAO_MOSTRAR, 0) == 1)
         {
             hudCanvas.SetActive(true);
+            BloqueioGameplay.Definir(MotivoBloqueioGameplay.Tutorial, false);
             Time.timeScale = 1f;
             return;
         }
 
-        // Caso contrário, abre sempre que a fase começar
         AbrirTutorial();
     }
 
     private void AbrirTutorial()
     {
+        BloqueioGameplay.Definir(MotivoBloqueioGameplay.Tutorial, true);
         Time.timeScale = 0f;
 
         fundoCinza.SetActive(true);
         painelComoJogar.SetActive(true);
-
         hudCanvas.SetActive(false);
 
         if (videoTutorial != null)
@@ -44,7 +43,6 @@ public class ComoJogarController : MonoBehaviour
             videoTutorial.Play();
         }
     }
-
 
     public void BotaoComecar()
     {
@@ -58,7 +56,12 @@ public class ComoJogarController : MonoBehaviour
             videoTutorial.Stop();
 
         hudCanvas.SetActive(true);
-
+        BloqueioGameplay.Definir(MotivoBloqueioGameplay.Tutorial, false);
         Time.timeScale = 1f;
+    }
+
+    private void OnDestroy()
+    {
+        BloqueioGameplay.Definir(MotivoBloqueioGameplay.Tutorial, false);
     }
 }

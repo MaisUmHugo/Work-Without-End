@@ -5,7 +5,7 @@ using static UnityEngine.EventSystems.StandaloneInputModule;
 
 public class GameOverController : MonoBehaviour
 {
-    [Header("Painéis")]
+    [Header("PainÃ©is")]
     public GameObject fundoCinza;
     public GameObject painelGameOver;
     public GameObject painelRanking;
@@ -32,18 +32,22 @@ public class GameOverController : MonoBehaviour
         painelGameOver.SetActive(false);
         painelRanking.SetActive(false);
         painelConfirmacao.SetActive(false);
+        BloqueioGameplay.Definir(MotivoBloqueioGameplay.GameOver, false);
 
         VidaManager.instance.OnGameOver += MostrarGameOver;
     }
 
     private void OnDestroy()
     {
+        BloqueioGameplay.Definir(MotivoBloqueioGameplay.GameOver, false);
+
         if (VidaManager.instance != null)
             VidaManager.instance.OnGameOver -= MostrarGameOver;
     }
 
     private void MostrarGameOver()
     {
+        BloqueioGameplay.Definir(MotivoBloqueioGameplay.GameOver, true);
         Time.timeScale = 0f;
 
         hudCanvas.SetActive(false);
@@ -54,14 +58,14 @@ public class GameOverController : MonoBehaviour
         grupoPadrao.SetActive(false);
 
         int score = ScoreManager.instance.pontuacaoAtual;
-        textoPontuacaoGameOver.text = "Pontuação Final: " + score;
+        textoPontuacaoGameOver.text = "PontuaÃ§Ã£o Final: " + score;
 
         if (LeaderboardManager.instance.Top10(score))
             grupoSalvarNome.SetActive(true);
         else
             grupoPadrao.SetActive(true);
     }
-    // NAVEGAÇÃO ENTRE PAINÉIS
+    // NAVEGAÃ‡ÃƒO ENTRE PAINÃ‰IS
 
     public void BotaoSalvarNome()
     {
@@ -70,7 +74,7 @@ public class GameOverController : MonoBehaviour
 
         int score = ScoreManager.instance.pontuacaoAtual;
 
-        // Isso já salva no disco e atualiza a RAM
+        // Isso jÃ¡ salva no disco e atualiza a RAM
         LeaderboardManager.instance.AdicionarEntrada(nome, score);
 
         AbrirRanking();
@@ -82,13 +86,13 @@ public class GameOverController : MonoBehaviour
         painelRanking.SetActive(true);
 
         int score = ScoreManager.instance.pontuacaoAtual;
-        textoPontuacaoRanking.text = "Pontuação Final: " + score;
+        textoPontuacaoRanking.text = "PontuaÃ§Ã£o Final: " + score;
 
         Debug.Log("Chamando AtualizarRanking...");
         var exibir = painelRanking.GetComponentInChildren<ExibirRanking>(true);
 
         if (exibir == null)
-            Debug.LogError("Não encontrou ExibirRanking no painel!");
+            Debug.LogError("NÃ£o encontrou ExibirRanking no painel!");
         else
         {
             Debug.Log("ExibirRanking encontrado! Atualizando...");
@@ -103,7 +107,7 @@ public class GameOverController : MonoBehaviour
         grupoPadrao.SetActive(true);
     }
 
-    // BOTÕES GERAIS (USADOS EM AMBOS PAINÉIS)
+    // BOTÃ•ES GERAIS (USADOS EM AMBOS PAINÃ‰IS)
 
     public void BotaoReiniciar(GameObject painelOrigem)
     {

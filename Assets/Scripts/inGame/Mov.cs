@@ -4,7 +4,7 @@ using UnityEngine.Windows;
 
 public class Mov : MonoBehaviour
 {
-    public LanesController.Linhas linhaAtual = LanesController.Linhas.L2; // comeÁa no meio
+    public LanesController.Linhas linhaAtual = LanesController.Linhas.L2; // come√ßa no meio
     private int indiceLinha;
 
     private INPUTS inputs;
@@ -12,7 +12,7 @@ public class Mov : MonoBehaviour
     [SerializeField] private bool isVerticalScrolling = true; // alterna entre vertical, horizontal
     [SerializeField] private bool podeMover = true; // flag para pausar/travar input
 
-    // flag para evitar que o jogador fique pulando v·rias linhas de uma vez
+    // flag para evitar que o jogador fique pulando v√°rias linhas de uma vez
     private bool inputTravado = false;
     private void Awake()
     {
@@ -46,22 +46,22 @@ public class Mov : MonoBehaviour
 
     private void OnMove(InputAction.CallbackContext ctx)
     {
-        if (!podeMover) return; // se estiver pausado/travado, ignora
+        if (!podeMover || BloqueioGameplay.Bloqueado) return; // se estiver pausado/travado, ignora
 
         Vector2 input = ctx.ReadValue<Vector2>();
 
         if (isVerticalScrolling) // jogo horizontal - troca no eixo X
         {
-            // sÛ muda uma vez enquanto o bot„o/analÛgico est· pressionado
+            // s√≥ muda uma vez enquanto o bot√£o/anal√≥gico est√° pressionado
             if (!inputTravado && input.x > 0.5f)
             {
                 MudarLinha(1);
-                inputTravado = true; // trava atÈ soltar
+                inputTravado = true; // trava at√© soltar
             }
             else if (!inputTravado && input.x < -0.5f)
             {
                 MudarLinha(-1);
-                inputTravado = true; // trava atÈ soltar
+                inputTravado = true; // trava at√© soltar
             }
             else if (Mathf.Abs(input.x) < 0.2f)
             {
@@ -94,7 +94,7 @@ public class Mov : MonoBehaviour
 
     private void MudarLinha(int direcao)
     {
-        int novaLinha = Mathf.Clamp(indiceLinha + direcao, 0, 3); // 0ñ3 (L1ñL4)
+        int novaLinha = Mathf.Clamp(indiceLinha + direcao, 0, 3); // 0‚Äì3 (L1‚ÄìL4)
 
         if (novaLinha != indiceLinha)
         {
@@ -118,7 +118,7 @@ public class Mov : MonoBehaviour
         }
     }
 
-    // MÈtodos p˙blicos para pausar e voltar
+    // M√©todos p√∫blicos para pausar e voltar
     public void PausarInput() => podeMover = false;
     public void VoltarInput() => podeMover = true;
 }
