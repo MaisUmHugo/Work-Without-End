@@ -12,10 +12,10 @@ public class Louco : Entregavel, IAjustavelDificuldade
     public float tempoexclamacao;
 
     [Header("Dificuldade")]
-    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaFrente = 0.4f;
-    [SerializeField, Min(1f)] private float fatorMaximoFrente = 8.5f;
-    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaVertical = 0.115f;
-    [SerializeField, Min(1f)] private float fatorMaximoVertical = 3.2f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaFrente = 0.635f;
+    [SerializeField, Min(1f)] private float fatorMaximoFrente = 13f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaVertical = 0.475f;
+    [SerializeField, Min(1f)] private float fatorMaximoVertical = 10f;
 
     private float velocidadeVerticalBase;
     private float velocidadeFrenteBase;

@@ -565,10 +565,10 @@ MonoBehaviour:
   bola: {fileID: 5321252365096296630, guid: e1fa043f34f9f904aba9222e970e0d4c, type: 3}
   IntervaloTiro: 5
   DistanciaTiro: 200
-  intensidadeEscalaMovimento: 0.4
-  fatorMaximoMovimento: 7
-  intensidadeEscalaBola: 0.8
-  fatorMaximoBola: 6
+  intensidadeEscalaMovimento: 0.58
+  fatorMaximoMovimento: 12
+  intensidadeEscalaBola: 1.09
+  fatorMaximoBola: 13
   intensidadeReducaoIntervaloTiro: 0.08
   intervaloMinimoTiro: 2.5
   intensidadeEscalaDistanciaEntrega: 0.07

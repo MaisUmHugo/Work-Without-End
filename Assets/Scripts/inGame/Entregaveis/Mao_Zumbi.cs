@@ -11,8 +11,8 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
     public float tempoexclamacao;
 
     [Header("Dificuldade")]
-    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaMovimento = 0.4f;
-    [SerializeField, Min(1f)] private float fatorMaximoMovimento = 8.5f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaMovimento = 0.79f;
+    [SerializeField, Min(1f)] private float fatorMaximoMovimento = 16f;
     private float velocidadeBase;
 
     // Sprite renderer para fazer o efeito de piscar
@@ -25,6 +25,14 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
     private bool recebeu, podereceber;
     private bool jaCausouDano;
     private float xAnterior;
+    [Header("Telegraph")]
+    [SerializeField, Min(0.05f)] private float duracaoTelegraphBase = 1.5f;
+    [SerializeField, Min(0.05f)] private float duracaoTelegraphMinima = 0.45f;
+    private float duracaoTelegraphAtual;
+    private float momentoFimTelegraph;
+
+    private float velocidadeAnimatorOriginal = 1f;
+
     public EntregavelPisca entregavelPisca;
     public PontuacaoPopup popupPontuacao;
 
@@ -44,6 +52,8 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
             Debug.LogWarning(name + ": componente EntregavelPisca não encontrado.", this);
 
         anim = GetComponentInChildren<Animator>();
+        velocidadeAnimatorOriginal = anim != null ? anim.speed : 1f;
+        duracaoTelegraphAtual = Mathf.Max(0.05f, duracaoTelegraphBase);
     }
     private void Start()
     {
@@ -61,6 +71,7 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
         Vector3 pos = transform.position;
         pos.y = LanesController.instance.PosicaoY(laneEscolhida) + offsetY;
         transform.position = pos;
+        GarantirDistanciaTelegraph(duracaoTelegraphAtual);
         xAnterior = transform.position.x;
 
         Debug.Log($" Y da lane = {LanesController.instance.PosicaoY(laneEscolhida)} | " +
@@ -86,6 +97,7 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
         {
             coroutineIniciada = true;
             emFluxoDeSaida = true;
+            momentoFimTelegraph = Time.time + duracaoTelegraphAtual;
             StartCoroutine(ProntoparaEntrega());
         }
 
@@ -167,9 +179,18 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
     }
     private IEnumerator ProntoparaEntrega()
     {
-        anim.SetTrigger("Surgir");
-        yield return new WaitForSeconds(1.5f);
+        float duracao = duracaoTelegraphAtual;
+        if (anim != null)
+        {
+            float duracaoBase = Mathf.Max(0.05f, duracaoTelegraphBase);
+            anim.speed = velocidadeAnimatorOriginal * (duracaoBase / duracao);
+            anim.SetTrigger("Surgir");
+        }
 
+        yield return new WaitForSeconds(duracao);
+
+        if (anim != null)
+            anim.speed = velocidadeAnimatorOriginal;
 
         if (!EntregaPendente) yield break;
 
@@ -204,8 +225,21 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
     }
     private float CalcularDistanciaInicioTelegraph()
     {
-        const float tempoTelegraph = 1.5f;
-        return distanciaEntrega + velocidade * tempoTelegraph;
+        return distanciaEntrega + velocidade * duracaoTelegraphAtual;
+    }
+
+    private void GarantirDistanciaTelegraph(float tempoRestante)
+    {
+        if (jogador == null) return;
+
+        float distanciaNecessaria = distanciaEntrega + velocidade * Mathf.Max(0f, tempoRestante);
+        float xMinimo = jogador.transform.position.x + distanciaNecessaria;
+        if (transform.position.x >= xMinimo) return;
+
+        Vector3 posicao = transform.position;
+        posicao.x = xMinimo;
+        transform.position = posicao;
+        xAnterior = posicao.x;
     }
 
     private bool EntrouNoAlcance(float distancia)
@@ -222,5 +256,31 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
     {
         float fatorMovimento = CalculoDificuldade.CalcularFator(multiplicadorGlobal, intensidadeEscalaMovimento, fatorMaximoMovimento);
         velocidade = velocidadeBase * fatorMovimento;
+        duracaoTelegraphAtual = CalcularDuracaoTelegraph(fatorMovimento);
+
+        if (jogador != null && !podereceber && EntregaPendente)
+        {
+            float tempoRestante = coroutineIniciada
+                ? Mathf.Max(0f, momentoFimTelegraph - Time.time)
+                : duracaoTelegraphAtual;
+
+            GarantirDistanciaTelegraph(tempoRestante);
+        }
+    }
+
+    private float CalcularDuracaoTelegraph(float fatorMovimento)
+    {
+        float duracaoBase = Mathf.Max(0.05f, duracaoTelegraphBase);
+        float duracaoMinima = Mathf.Clamp(duracaoTelegraphMinima, 0.05f, duracaoBase);
+        float fatorMaximo = Mathf.Max(1f, fatorMaximoMovimento);
+        float progresso = Mathf.InverseLerp(1f, fatorMaximo, Mathf.Clamp(fatorMovimento, 1f, fatorMaximo));
+
+        return Mathf.Lerp(duracaoBase, duracaoMinima, progresso);
+    }
+
+    private void OnDisable()
+    {
+        if (anim != null)
+            anim.speed = velocidadeAnimatorOriginal;
     }
 }

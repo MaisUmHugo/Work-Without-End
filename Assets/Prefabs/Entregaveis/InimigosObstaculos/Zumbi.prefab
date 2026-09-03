@@ -276,12 +276,12 @@ MonoBehaviour:
   dCorrida: 70
   dColisao: 12
   tempoexclamacao: 2
-  intensidadeEscalaCaminhada: 0.42
-  fatorMaximoCaminhada: 9
-  intensidadeEscalaCorrida: 0.32
-  fatorMaximoCorrida: 7
-  intensidadeEscalaTrocaLane: 0.115
-  fatorMaximoTrocaLane: 3.2
+  intensidadeEscalaCaminhada: 0.58
+  fatorMaximoCaminhada: 12
+  intensidadeEscalaCorrida: 0.475
+  fatorMaximoCorrida: 10
+  intensidadeEscalaTrocaLane: 0.137
+  fatorMaximoTrocaLane: 3.6
   entregavelPisca: {fileID: -5909581724401143014}
   popupPontuacao: {fileID: 9028810224810389186}
 --- !u!114 &-5909581724401143014

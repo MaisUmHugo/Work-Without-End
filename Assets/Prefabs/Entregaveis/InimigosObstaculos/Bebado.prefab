@@ -440,12 +440,12 @@ MonoBehaviour:
   velocidadeTrocaLane: 5
   distanciaEntrega: 50
   tempoexclamacao: 3
-  intensidadeEscalaHorizontal: 0.5
-  fatorMaximoHorizontal: 10.5
-  intensidadeEscalaTrocaLane: 0.12
-  fatorMaximoTrocaLane: 4
-  intensidadeReducaoIntervaloTrocaLane: 0.06
-  fatorMaximoFrequenciaTrocaLane: 2
+  intensidadeEscalaHorizontal: 0.79
+  fatorMaximoHorizontal: 16
+  intensidadeEscalaTrocaLane: 0.37
+  fatorMaximoTrocaLane: 8
+  intensidadeReducaoIntervaloTrocaLane: 0.105
+  fatorMaximoFrequenciaTrocaLane: 2.8
   intervaloMinimoTrocaLane: 0.4
   entregavelPisca: {fileID: -1538667524945953015}
   popupPontuacao: {fileID: 2840320702199764024}

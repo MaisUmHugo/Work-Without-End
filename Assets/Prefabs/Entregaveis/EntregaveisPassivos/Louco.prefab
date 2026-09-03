@@ -372,10 +372,10 @@ MonoBehaviour:
   velocidadeSaida: 3
   tempoAtivoEntrega: 3.5
   tempoexclamacao: 1.5
-  intensidadeEscalaFrente: 0.4
-  fatorMaximoFrente: 8.5
-  intensidadeEscalaVertical: 0.115
-  fatorMaximoVertical: 3.2
+  intensidadeEscalaFrente: 0.635
+  fatorMaximoFrente: 13
+  intensidadeEscalaVertical: 0.475
+  fatorMaximoVertical: 10
   popupPontuacao: {fileID: 8905584891220059948}
 --- !u!1 &8625399158413746503
 GameObject:

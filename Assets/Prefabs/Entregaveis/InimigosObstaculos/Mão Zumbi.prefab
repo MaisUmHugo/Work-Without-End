@@ -590,8 +590,10 @@ MonoBehaviour:
   intervaloPiscar: 0.15
   distanciaEntrega: 60
   tempoexclamacao: 1.5
-  intensidadeEscalaMovimento: 0.4
-  fatorMaximoMovimento: 8.5
+  intensidadeEscalaMovimento: 0.79
+  fatorMaximoMovimento: 16
+  duracaoTelegraphBase: 1.5
+  duracaoTelegraphMinima: 0.45
   corNormal: {r: 1, g: 1, b: 1, a: 1}
   corAtivo: {r: 1, g: 0, b: 0, a: 1}
   entregavelPisca: {fileID: 803829001119571900}

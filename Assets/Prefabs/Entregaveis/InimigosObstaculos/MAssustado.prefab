@@ -408,13 +408,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ativoParaEntrega: 1
   Exclamacao: {fileID: 1112210427296886493}
-  velocidade: 12
+  velocidade: 15
   tempoAtivoEntrega: 2
   intervaloPiscar: 0.15
   distanciaEntrega: 70
   tempoexclamacao: 1
-  intensidadeEscalaMovimento: 0.4
-  fatorMaximoMovimento: 8.5
+  intensidadeEscalaMovimento: 0.35
+  fatorMaximoMovimento: 7.6
   corNormal: {r: 1, g: 1, b: 1, a: 1}
   corAtivo: {r: 1, g: 0, b: 0, a: 1}
   entregavelPisca: {fileID: 1384444554199040168}

@@ -13,12 +13,12 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
     public float tempoexclamacao;
 
     [Header("Dificuldade")]
-    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaCaminhada = 0.42f;
-    [SerializeField, Min(1f)] private float fatorMaximoCaminhada = 9f;
-    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaCorrida = 0.32f;
-    [SerializeField, Min(1f)] private float fatorMaximoCorrida = 7f;
-    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaTrocaLane = 0.115f;
-    [SerializeField, Min(1f)] private float fatorMaximoTrocaLane = 3.2f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaCaminhada = 0.58f;
+    [SerializeField, Min(1f)] private float fatorMaximoCaminhada = 12f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaCorrida = 0.475f;
+    [SerializeField, Min(1f)] private float fatorMaximoCorrida = 10f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaTrocaLane = 0.137f;
+    [SerializeField, Min(1f)] private float fatorMaximoTrocaLane = 3.6f;
 
     private float velocidadeCaminhadaBase;
     private float velocidadeCorridaBase;

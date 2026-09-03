@@ -238,8 +238,8 @@ MonoBehaviour:
   intervaloPiscar: 0.15
   distanciaEntrega: 80
   offset: {x: 0, y: 13, z: 0}
-  intensidadeEscalaMovimento: 0.25
-  fatorMaximoMovimento: 6
+  intensidadeEscalaMovimento: 0.37
+  fatorMaximoMovimento: 8
   corNormal: {r: 0.07075471, g: 0.36427745, b: 1, a: 1}
   corAtivo: {r: 1, g: 0, b: 0, a: 1}
   entregavelPisca: {fileID: 1230551791462745207}

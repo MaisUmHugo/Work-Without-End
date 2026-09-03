@@ -15,12 +15,12 @@ public class Bebado : Entregavel, IAjustavelDificuldade
     public float tempoexclamacao;
 
     [Header("Dificuldade")]
-    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaHorizontal = 0.5f;
-    [SerializeField, Min(1f)] private float fatorMaximoHorizontal = 10.5f;
-    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaTrocaLane = 0.12f;
-    [SerializeField, Min(1f)] private float fatorMaximoTrocaLane = 4f;
-    [SerializeField, Range(0f, 1f)] private float intensidadeReducaoIntervaloTrocaLane = 0.06f;
-    [SerializeField, Min(1f)] private float fatorMaximoFrequenciaTrocaLane = 2f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaHorizontal = 0.79f;
+    [SerializeField, Min(1f)] private float fatorMaximoHorizontal = 16f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaTrocaLane = 0.37f;
+    [SerializeField, Min(1f)] private float fatorMaximoTrocaLane = 8f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeReducaoIntervaloTrocaLane = 0.105f;
+    [SerializeField, Min(1f)] private float fatorMaximoFrequenciaTrocaLane = 2.8f;
     [SerializeField, Min(0.1f)] private float intervaloMinimoTrocaLane = 0.4f;
 
     private float velocidadeBase;

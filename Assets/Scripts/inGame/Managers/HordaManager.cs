@@ -18,10 +18,8 @@ public class HordaManager : MonoBehaviour
     private int NumeroHorda, N_Entregas;
     [Header("Controle Hordas")]
     public int E_Necessarias;
-    [SerializeField, Min(1)] private int entregasMaximasAntesLateGame = 15;
-    [SerializeField, Min(1)] private int hordaRetomarAumentoEntregas = 25;
-    [SerializeField, Min(1)] private int intervaloHordasAumentoEntregas = 10;
-    [SerializeField, Min(1)] private int aumentoEntregasPorEtapa = 5;
+    [SerializeField, Min(1)] private int entregasHordasIniciais = 5;
+    [SerializeField, Min(1)] private int maxEntregasPorHorda = 50;
     public TextMeshProUGUI TextoHorda;
     public TextMeshProUGUI TextoEntrega;
     [Header("Progressao de Dificuldade")]
@@ -70,6 +68,7 @@ public class HordaManager : MonoBehaviour
     {
         aumentarParallax = PlayerPrefs.GetInt("parallaxAumentar", 1) == 1;
         NumeroHorda = 1;
+        AtualizarEntregasNecessarias();
         AplicarDificuldadeDaHorda();
         AtualizarParallax();
         spawnerManager.DesativarSpawn();
@@ -143,7 +142,7 @@ public class HordaManager : MonoBehaviour
             ? Mathf.Max(1f, velocidadeMaximaLateGame)
             : multiplicadorHorda;
         float intervaloSpawn = modoTesteMaximo
-            ? spawnerManager.IntervaloMinimoSpawn
+            ? spawnerManager.IntervaloStressMaximo
             : AvaliarCurva(curvaIntervaloSpawn, NumeroHorda, 5f);
 
         spawnerManager.DefinirDificuldade(multiplicador, intervaloSpawn);
@@ -154,10 +153,11 @@ public class HordaManager : MonoBehaviour
         modoTesteMaximo = !modoTesteMaximo;
         AplicarDificuldadeDaHorda(false);
         spawnerManager.DefinirStressTestMaximo(modoTesteMaximo);
+        AtualizarParallax();
 
         if (modoTesteMaximo)
         {
-            Debug.Log($"[DEBUG] Stress Test MAX ativado\nDificuldade global: {velocidadeMaximaLateGame:0.##}x\nSpawn: {spawnerManager.IntervaloMinimoSpawn:0.##}s");
+            Debug.Log($"[DEBUG] Stress Test MAX ativado\nDificuldade global: {velocidadeMaximaLateGame:0.##}x\nSpawn: {spawnerManager.IntervaloStressMaximo:0.##}s");
         }
         else
         {
@@ -216,10 +216,8 @@ public class HordaManager : MonoBehaviour
         velocidadeMinimaLateGame = Mathf.Max(1f, velocidadeMinimaLateGame);
         velocidadeMaximaLateGame = Mathf.Max(velocidadeMinimaLateGame, velocidadeMaximaLateGame);
         mudancaMaximaVelocidadePorHorda = Mathf.Max(0.01f, mudancaMaximaVelocidadePorHorda);
-        entregasMaximasAntesLateGame = Mathf.Max(1, entregasMaximasAntesLateGame);
-        hordaRetomarAumentoEntregas = Mathf.Max(1, hordaRetomarAumentoEntregas);
-        intervaloHordasAumentoEntregas = Mathf.Max(1, intervaloHordasAumentoEntregas);
-        aumentoEntregasPorEtapa = Mathf.Max(1, aumentoEntregasPorEtapa);
+        entregasHordasIniciais = Mathf.Max(1, entregasHordasIniciais);
+        maxEntregasPorHorda = Mathf.Max(1, maxEntregasPorHorda);
     }
     private static AnimationCurve CriarCurvaVelocidadePadrao()
     {
@@ -227,13 +225,13 @@ public class HordaManager : MonoBehaviour
             new Keyframe(1f, 1f),
             new Keyframe(5f, 1.8f),
             new Keyframe(10f, 3f),
-            new Keyframe(15f, 4.5f),
-            new Keyframe(20f, 6.5f),
-            new Keyframe(25f, 8.5f),
-            new Keyframe(30f, 11f),
-            new Keyframe(35f, 13.5f),
-            new Keyframe(40f, 16f),
-            new Keyframe(45f, 18.5f),
+            new Keyframe(15f, 6f),
+            new Keyframe(20f, 9f),
+            new Keyframe(25f, 11.5f),
+            new Keyframe(30f, 14f),
+            new Keyframe(35f, 16f),
+            new Keyframe(40f, 17.5f),
+            new Keyframe(45f, 19f),
             new Keyframe(50f, 20f));
     }
 
@@ -241,36 +239,62 @@ public class HordaManager : MonoBehaviour
     {
         return new AnimationCurve(
             new Keyframe(1f, 4.5f),
-            new Keyframe(5f, 4f),
-            new Keyframe(10f, 3.4f),
-            new Keyframe(20f, 2.7f),
-            new Keyframe(30f, 2.25f),
-            new Keyframe(40f, 1.9f),
-            new Keyframe(50f, 1.7f),
-            new Keyframe(60f, 1.6f));
+            new Keyframe(5f, 3.8f),
+            new Keyframe(7f, 3.5f),
+            new Keyframe(10f, 3.1f),
+            new Keyframe(11f, 2.8f),
+            new Keyframe(15f, 2.4f),
+            new Keyframe(20f, 2f),
+            new Keyframe(25f, 1.6f),
+            new Keyframe(30f, 1.3f),
+            new Keyframe(35f, 1.1f),
+            new Keyframe(40f, 1f));
     }
 
     private static AnimationCurve CriarCurvaParallaxPadrao()
     {
         return new AnimationCurve(
             new Keyframe(1f, 1f),
-            new Keyframe(5f, 1.05f),
-            new Keyframe(10f, 1.15f),
-            new Keyframe(20f, 1.3f),
-            new Keyframe(30f, 1.45f),
-            new Keyframe(40f, 1.6f),
-            new Keyframe(50f, 1.75f),
-            new Keyframe(60f, 1.85f));
+            new Keyframe(5f, 1.08f),
+            new Keyframe(10f, 1.2f),
+            new Keyframe(15f, 1.45f),
+            new Keyframe(20f, 1.7f),
+            new Keyframe(25f, 1.95f),
+            new Keyframe(30f, 2.2f),
+            new Keyframe(35f, 2.45f),
+            new Keyframe(40f, 2.7f),
+            new Keyframe(45f, 2.9f),
+            new Keyframe(50f, 3.05f),
+            new Keyframe(60f, 3.2f));
     }
 
     private void AtualizarParallax()
     {
+        float fatorConfigurado = modoTesteMaximo
+            ? ObterMaiorValorCurva(curvaParallax, 1f)
+            : AvaliarCurva(curvaParallax, NumeroHorda, 1f);
+
         multiplicadorParallax = aumentarParallax
-            ? Mathf.Max(1f, AvaliarCurva(curvaParallax, NumeroHorda, 1f))
+            ? Mathf.Max(1f, fatorConfigurado)
             : 1f;
 
         foreach (Parallax parallax in FindObjectsByType<Parallax>(FindObjectsSortMode.None))
             parallax.AtualizarVelocidadeParallax(multiplicadorParallax);
+    }
+
+    private static float ObterMaiorValorCurva(AnimationCurve curva, float valorPadrao)
+    {
+        if (curva == null || curva.length == 0)
+            return valorPadrao;
+
+        float maiorValor = valorPadrao;
+        foreach (Keyframe chave in curva.keys)
+        {
+            if (!float.IsNaN(chave.value) && !float.IsInfinity(chave.value))
+                maiorValor = Mathf.Max(maiorValor, chave.value);
+        }
+
+        return maiorValor;
     }
 
     private void verificarhorda()
@@ -318,18 +342,24 @@ public class HordaManager : MonoBehaviour
 
     private void AtualizarEntregasNecessarias()
     {
-        if (E_Necessarias < entregasMaximasAntesLateGame)
-        {
-            E_Necessarias++;
-            return;
-        }
+        E_Necessarias = CalcularEntregasNecessarias(NumeroHorda);
+    }
 
-        if (NumeroHorda < hordaRetomarAumentoEntregas)
-            return;
+    private int CalcularEntregasNecessarias(int horda)
+    {
+        int hordaValida = Mathf.Max(1, horda);
+        int valorCalculado;
 
-        int hordasDesdeRetomada = NumeroHorda - hordaRetomarAumentoEntregas;
-        if (hordasDesdeRetomada % intervaloHordasAumentoEntregas == 0)
-            E_Necessarias += aumentoEntregasPorEtapa;
+        if (hordaValida <= 10)
+            valorCalculado = entregasHordasIniciais;
+        else if (hordaValida <= 15)
+            valorCalculado = 10 + (hordaValida - 11);
+        else if (hordaValida <= 19)
+            valorCalculado = 15;
+        else
+            valorCalculado = 20 + ((hordaValida - 20) / 5) * 5;
+
+        return Mathf.Min(valorCalculado, maxEntregasPorHorda);
     }
 
     private IEnumerator DelayProximaHorda()
@@ -350,6 +380,8 @@ public class HordaManager : MonoBehaviour
     }
     private void AtualizarInimigosPermitidos()
     {
+        spawnerManager.IniciarHorda(NumeroHorda);
+
         // tenta encontrar uma configuracao para a horda atual
         TagsPorHorda config = tagsPorHorda.Find(t => t.horda == NumeroHorda);
 

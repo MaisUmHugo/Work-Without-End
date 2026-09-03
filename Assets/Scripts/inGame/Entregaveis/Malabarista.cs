@@ -16,10 +16,10 @@ public class Malabarista : Entregavel, IAjustavelDificuldade
 
 
     [Header("Dificuldade")]
-    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaMovimento = 0.4f;
-    [SerializeField, Min(1f)] private float fatorMaximoMovimento = 7f;
-    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaBola = 0.8f;
-    [SerializeField, Min(1f)] private float fatorMaximoBola = 6f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaMovimento = 0.58f;
+    [SerializeField, Min(1f)] private float fatorMaximoMovimento = 12f;
+    [SerializeField, Range(0f, 2f)] private float intensidadeEscalaBola = 1.09f;
+    [SerializeField, Min(1f)] private float fatorMaximoBola = 13f;
     [SerializeField, Range(0f, 1f)] private float intensidadeReducaoIntervaloTiro = 0.08f;
     [SerializeField, Min(0.1f)] private float intervaloMinimoTiro = 2.5f;
     [SerializeField, Range(0f, 1f)] private float intensidadeEscalaDistanciaEntrega = 0.07f;

@@ -12,8 +12,8 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
     public float tempoexclamacao;
 
     [Header("Dificuldade")]
-    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaMovimento = 0.4f;
-    [SerializeField, Min(1f)] private float fatorMaximoMovimento = 8.5f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaMovimento = 0.35f;
+    [SerializeField, Min(1f)] private float fatorMaximoMovimento = 7.6f;
     private float velocidadeBase;
 
     private SpriteRenderer sr;
