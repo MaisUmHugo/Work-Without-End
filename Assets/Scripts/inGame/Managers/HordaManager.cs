@@ -12,6 +12,10 @@ public class HordaManager : MonoBehaviour
     [Header("Refer\u00EAncia ao Spawner")]
     public SpawnerManager spawnerManager;
 
+    [Header("Teste isolado")]
+    [Tooltip("Suspende hordas e atalhos de progressao nesta cena. Configure antes de entrar em Play Mode.")]
+    [SerializeField] private bool _suspenderHordasParaTeste;
+
     [Header("Barra de Progresso")]
     public Slider barraProgresso; 
 
@@ -72,7 +76,8 @@ public class HordaManager : MonoBehaviour
         AplicarDificuldadeDaHorda();
         AtualizarParallax();
         spawnerManager.DesativarSpawn();
-        StartCoroutine(IniciarHordaComDelay(delayInicial));
+        if (!_suspenderHordasParaTeste)
+            StartCoroutine(IniciarHordaComDelay(delayInicial));
     }
     private void Awake()
     {
@@ -86,12 +91,12 @@ public class HordaManager : MonoBehaviour
 
     private void Update()
     {
-        if (!BloqueioGameplay.Bloqueado)
+        if (!_suspenderHordasParaTeste && !BloqueioGameplay.Bloqueado)
             verificarhorda();
         TextoHorda.text = "Horda: " + NumeroHorda;
         TextoEntrega.text = $"Entregas:{N_Entregas}/{E_Necessarias}" ;
         AtualizarBarraProgresso();
-        if (!BloqueioGameplay.Bloqueado && Keyboard.current != null)
+        if (!_suspenderHordasParaTeste && !BloqueioGameplay.Bloqueado && Keyboard.current != null)
         {
             bool shiftPressionado = Keyboard.current.leftShiftKey.isPressed
                 || Keyboard.current.rightShiftKey.isPressed;
@@ -318,7 +323,7 @@ public class HordaManager : MonoBehaviour
 
     private void AvancarHordas(int quantidade)
     {
-        if (trocandoHorda || quantidade <= 0) return;
+        if (_suspenderHordasParaTeste || trocandoHorda || quantidade <= 0) return;
 
         trocandoHorda = true;
 
@@ -373,7 +378,7 @@ public class HordaManager : MonoBehaviour
 
     public void AumentarEntrega()
     {
-        if (trocandoHorda) return;
+        if (_suspenderHordasParaTeste || trocandoHorda) return;
 
         N_Entregas++;
         Debug.Log(N_Entregas);
