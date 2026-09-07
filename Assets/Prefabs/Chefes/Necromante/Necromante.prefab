@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 910010003}
   - component: {fileID: 910020001}
   - component: {fileID: 910020002}
+  - component: {fileID: 910030001}
   m_Layer: 0
   m_Name: Necromante
   m_TagString: Untagged
@@ -642,6 +643,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ComportamentoBossNecromante
   _vida: {fileID: 910020001}
+  _ataquePrincipal: {fileID: 910030001}
   _direitaSuperior: {fileID: 0}
   _direitaInferior: {fileID: 0}
   _centroSuperior: {fileID: 0}
@@ -710,3 +712,23 @@ MonoBehaviour:
   _corBloqueio: {r: 0.35, g: 0.55, b: 1, a: 1}
   _corEsgotado: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   _duracaoFeedback: 0.12
+--- !u!114 &910030001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649569884267953559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f60a1224d7e84cdfa8b016750346c5a9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::AtaqueProjetilNecromante
+  _prefabProjetil: {fileID: 920030002, guid: 65d68ba71b764bb4c9abfe34a3eace1e, type: 3}
+  _projectileRoot: {fileID: 860588345486713658}
+  _pontoAviso: {fileID: 6792749868548559501}
+  _prefabAviso: {fileID: 1127054739601164410, guid: 31754b68d7fbffa4a92bee90e79f9d49, type: 3}
+  _alvoPadrao: {fileID: 0}
+  _tempoPreparacao: 0.8
+  _tempoRecuperacao: 0.35
+  _velocidadeProjetil: 15
