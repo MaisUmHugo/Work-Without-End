@@ -3,13 +3,15 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class ComportamentoBossNecromante : ComportamentoBossBase
 {
+    [Header("Combate")]
+    [SerializeField] private VidaBoss _vida;
     [Header("Destinos fixos na cena, fora da hierarquia do boss")]
     [SerializeField] private Transform _direitaSuperior;
     [SerializeField] private Transform _direitaInferior;
     [SerializeField] private Transform _centroSuperior;
-    [Header("Permanencia em segundos")]
+    [Header("Tempos em segundos")]
     [SerializeField] private Vector2 _esperaPrincipal = new Vector2(3f, 5f);
-    [SerializeField] private Vector2 _esperaSecundaria = new Vector2(1.5f, 3f);
+    [SerializeField] private Vector2 _janelaVulnerabilidade = new Vector2(1.5f, 3f);
     [Header("Area de combate")]
     [Tooltip("Altura minima do centro da raiz. Considere tamanho do sprite e flutuacao.")]
     [SerializeField] private float _alturaMinima = 11.2f;
@@ -25,10 +27,11 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
 
     public override bool Inicializar(MovimentoBossBase movimento)
     {
-        if (movimento == null || !PontoValido(_direitaSuperior)
+        if (movimento == null || _vida == null || _vida.gameObject != gameObject
+            || !PontoValido(_direitaSuperior)
             || !PontoValido(_direitaInferior) || !PontoValido(_centroSuperior))
         {
-            Debug.LogError("Necromante: atribua os tres destinos fora da hierarquia do boss.", this);
+            Debug.LogError("Necromante: atribua a vida da raiz e os tres destinos fora da hierarquia do boss.", this);
             return false;
         }
 
@@ -43,6 +46,7 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
 
     public override void Iniciar()
     {
+        _vida.DefinirVulneravel(false);
         _proximaVisitaInferior = true;
         _naPrincipal = true;
         _estado = EstadoBoss.Entrando;
@@ -56,8 +60,9 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
         if (_estado == EstadoBoss.Entrando || _estado == EstadoBoss.Reposicionando)
         {
             if (_movimento.EmMovimento) return;
-            _estado = EstadoBoss.Aguardando;
-            _tempoEspera = SortearEspera(_naPrincipal ? _esperaPrincipal : _esperaSecundaria);
+            _estado = _naPrincipal ? EstadoBoss.Aguardando : EstadoBoss.Vulneravel;
+            _tempoEspera = SortearEspera(_naPrincipal ? _esperaPrincipal : _janelaVulnerabilidade);
+            _vida.DefinirVulneravel(!_naPrincipal);
             return;
         }
 
@@ -82,6 +87,7 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
         }
 
         _naPrincipal = !_naPrincipal;
+        _vida.DefinirVulneravel(false);
         _estado = EstadoBoss.Reposicionando;
         _movimento.MoverPara(LimitarDestino(destino.position));
     }
@@ -102,6 +108,7 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
 
     public override void Cancelar()
     {
+        _vida?.DefinirVulneravel(false);
         _movimento?.Cancelar();
         _estado = EstadoBoss.Inativo;
         _tempoEspera = 0f;

@@ -3,5 +3,6 @@ public enum EstadoBoss
     Inativo,
     Entrando,
     Aguardando,
-    Reposicionando
+    Reposicionando,
+    Vulneravel
 }

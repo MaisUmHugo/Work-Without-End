@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 910010001}
   - component: {fileID: 910010002}
   - component: {fileID: 910010003}
+  - component: {fileID: 910020001}
   m_Layer: 0
   m_Name: Necromante
   m_TagString: Untagged
@@ -609,6 +610,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ControladorBoss
   _comportamento: {fileID: 910010003}
   _movimento: {fileID: 910010002}
+  _vida: {fileID: 910020001}
   _iniciarAutomaticamente: 1
 --- !u!114 &910010002
 MonoBehaviour:
@@ -637,11 +639,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49f3f060a0ce496f891eed702c9a471f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ComportamentoBossNecromante
+  _vida: {fileID: 910020001}
   _direitaSuperior: {fileID: 0}
   _direitaInferior: {fileID: 0}
   _centroSuperior: {fileID: 0}
   _esperaPrincipal: {x: 3, y: 5}
-  _esperaSecundaria: {x: 1.5, y: 3}
+  _janelaVulnerabilidade: {x: 1.5, y: 3}
   _alturaMinima: 11.2
   _limitesX: {x: 8, y: 44.8}
 --- !u!114 &910010004
@@ -659,3 +662,16 @@ MonoBehaviour:
   _controlador: {fileID: 910010001}
   _amplitude: 0.4
   _periodo: 3
+--- !u!114 &910020001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649569884267953559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1b5c8d9e2f3418aa36bd120ce917054, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::VidaBoss
+  _vidaMaxima: 10

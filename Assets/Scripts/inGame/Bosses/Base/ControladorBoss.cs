@@ -6,6 +6,7 @@ public class ControladorBoss : MonoBehaviour
     [Header("Componentes")]
     [SerializeField] private ComportamentoBossBase _comportamento;
     [SerializeField] private MovimentoBossBase _movimento;
+    [SerializeField] private VidaBoss _vida;
     [Header("Inicio")]
     [SerializeField] private bool _iniciarAutomaticamente = true;
 
@@ -19,6 +20,9 @@ public class ControladorBoss : MonoBehaviour
 
     private void OnEnable()
     {
+        if (_vida != null)
+            _vida.VidaEsgotada += AoEsgotarVida;
+
         _inicioSolicitado = _iniciarAutomaticamente;
     }
 
@@ -32,10 +36,11 @@ public class ControladorBoss : MonoBehaviour
     {
         if (_inicializado) return true;
 
-        if (_comportamento == null || _movimento == null
-            || _comportamento.gameObject != gameObject || _movimento.gameObject != gameObject)
+        if (_comportamento == null || _movimento == null || _vida == null
+            || _comportamento.gameObject != gameObject || _movimento.gameObject != gameObject
+            || _vida.gameObject != gameObject)
         {
-            Debug.LogError("Boss: atribua o comportamento e o movimento da mesma raiz.", this);
+            Debug.LogError("Boss: atribua comportamento, movimento e vida da mesma raiz.", this);
             return false;
         }
 
@@ -60,6 +65,7 @@ public class ControladorBoss : MonoBehaviour
                 return;
             }
 
+            _vida.RestaurarVida();
             _emExecucao = true;
             _comportamento.Iniciar();
         }
@@ -87,8 +93,16 @@ public class ControladorBoss : MonoBehaviour
         }
     }
 
+    private void AoEsgotarVida()
+    {
+        EncerrarExecucao();
+    }
+
     private void OnDisable()
     {
+        if (_vida != null)
+            _vida.VidaEsgotada -= AoEsgotarVida;
+
         EncerrarExecucao();
         _inicializado = false;
     }
