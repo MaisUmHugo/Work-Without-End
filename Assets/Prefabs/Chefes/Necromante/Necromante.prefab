@@ -157,6 +157,7 @@ GameObject:
   - component: {fileID: 1041377764812238141}
   - component: {fileID: 8511946102748384679}
   - component: {fileID: 910010004}
+  - component: {fileID: 910020003}
   m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
@@ -690,3 +691,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ReceptorEntregaBoss
   _vida: {fileID: 910020001}
   _danoPorEntrega: 1
+--- !u!114 &910020003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2756935137198723993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3d7e0f1a4b543acc58df342e0139276, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackBoss
+  _vida: {fileID: 910020001}
+  _spriteRenderer: {fileID: 8511946102748384679}
+  _corVulneravel: {r: 1, g: 0.85, b: 0.2, a: 1}
+  _corDano: {r: 1, g: 1, b: 1, a: 1}
+  _corBloqueio: {r: 0.35, g: 0.55, b: 1, a: 1}
+  _corEsgotado: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  _duracaoFeedback: 0.12
