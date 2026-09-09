@@ -5,7 +5,7 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
 {
     [Header("Combate")]
     [SerializeField] private VidaBoss _vida;
-    [SerializeField] private AtaqueBossBase _ataquePrincipal;
+    [SerializeField] private SeletorAtaquesBoss _seletorAtaques;
     [Header("Destinos fixos na cena, fora da hierarquia do boss")]
     [SerializeField] private Transform _direitaSuperior;
     [SerializeField] private Transform _direitaInferior;
@@ -23,13 +23,14 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
     private bool _naPrincipal;
     private bool _proximaVisitaInferior;
     private EstadoBoss _estado = EstadoBoss.Inativo;
+    private AtaqueBossBase _ataqueAtual;
 
     public override EstadoBoss EstadoAtual => _estado;
 
     public override bool Inicializar(MovimentoBossBase movimento)
     {
-        if (movimento == null || _vida == null || _ataquePrincipal == null
-            || _vida.gameObject != gameObject || _ataquePrincipal.gameObject != gameObject
+        if (movimento == null || _vida == null || _seletorAtaques == null
+            || _vida.gameObject != gameObject || _seletorAtaques.gameObject != gameObject
             || !PontoValido(_direitaSuperior)
             || !PontoValido(_direitaInferior) || !PontoValido(_centroSuperior))
         {
@@ -38,7 +39,7 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
         }
 
         _movimento = movimento;
-        return _ataquePrincipal.Inicializar();
+        return _seletorAtaques.Inicializar();
     }
 
     private bool PontoValido(Transform ponto)
@@ -48,7 +49,7 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
 
     public override void Iniciar()
     {
-        _ataquePrincipal.Cancelar();
+        _seletorAtaques.Reiniciar();
         _vida.DefinirVulneravel(false);
         _proximaVisitaInferior = true;
         _naPrincipal = true;
@@ -59,6 +60,8 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
     public override void Atualizar(float deltaTime)
     {
         if (_estado == EstadoBoss.Inativo || deltaTime <= 0f) return;
+
+        _seletorAtaques.AtualizarCooldowns(deltaTime);
 
         if (_estado == EstadoBoss.Entrando || _estado == EstadoBoss.Reposicionando)
         {
@@ -72,15 +75,16 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
 
         if (_estado == EstadoBoss.PreparandoAtaque || _estado == EstadoBoss.Atacando)
         {
-            _ataquePrincipal.Atualizar(deltaTime);
-            if (_ataquePrincipal.EmExecucao)
+            _ataqueAtual.Atualizar(deltaTime);
+            if (_ataqueAtual.EmExecucao)
             {
-                _estado = _ataquePrincipal.EmPreparacao
+                _estado = _ataqueAtual.EmPreparacao
                     ? EstadoBoss.PreparandoAtaque
                     : EstadoBoss.Atacando;
                 return;
             }
 
+            _ataqueAtual = null;
             MoverParaPontoSecundario();
             return;
         }
@@ -90,13 +94,13 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
 
         if (_naPrincipal)
         {
-            if (!_ataquePrincipal.TentarIniciar(null))
+            if (!_seletorAtaques.TentarIniciar(null, out _ataqueAtual))
             {
                 Cancelar();
                 return;
             }
 
-            _estado = _ataquePrincipal.EmPreparacao
+            _estado = _ataqueAtual.EmPreparacao
                 ? EstadoBoss.PreparandoAtaque
                 : EstadoBoss.Atacando;
             return;
@@ -142,7 +146,8 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
 
     public override void Cancelar()
     {
-        _ataquePrincipal?.Cancelar();
+        _seletorAtaques?.CancelarTodos();
+        _ataqueAtual = null;
         _vida?.DefinirVulneravel(false);
         _movimento?.Cancelar();
         _estado = EstadoBoss.Inativo;

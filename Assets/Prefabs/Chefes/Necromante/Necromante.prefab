@@ -48,6 +48,9 @@ GameObject:
   - component: {fileID: 910020001}
   - component: {fileID: 910020002}
   - component: {fileID: 910030001}
+  - component: {fileID: 910040001}
+  - component: {fileID: 910040002}
+  - component: {fileID: 910040003}
   m_Layer: 0
   m_Name: Necromante
   m_TagString: Untagged
@@ -643,7 +646,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ComportamentoBossNecromante
   _vida: {fileID: 910020001}
-  _ataquePrincipal: {fileID: 910030001}
+  _seletorAtaques: {fileID: 910040001}
   _direitaSuperior: {fileID: 0}
   _direitaInferior: {fileID: 0}
   _centroSuperior: {fileID: 0}
@@ -732,3 +735,60 @@ MonoBehaviour:
   _tempoPreparacao: 0.8
   _tempoRecuperacao: 0.35
   _velocidadeProjetil: 15
+--- !u!114 &910040001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649569884267953559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45b3b34e9d3a45ac90d2ee91b45cf7a1, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::SeletorAtaquesBoss
+  _ataques:
+  - {fileID: 910030001}
+  - {fileID: 910040003}
+  _usarOrdemSequencial: 1
+  _evitarRepeticao: 1
+--- !u!114 &910040002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649569884267953559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c8d9ea0b1f24a51a3290eefc77a324b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::AvisoLanesBoss
+  _corAviso: {r: 1, g: 0.15, b: 0.15, a: 0.38}
+  _variacaoAlpha: 0.14
+  _pulsosPorSegundo: 4
+--- !u!114 &910040003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649569884267953559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdbd74e20f6f49c4b36c545bc87e4a7d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::AtaqueTiroCarregadoNecromante
+  _cooldown: 5
+  _prefabProjetil: {fileID: 920030002, guid: 65d68ba71b764bb4c9abfe34a3eace1e, type: 3}
+  _projectileRoot: {fileID: 860588345486713658}
+  _avisoLanes: {fileID: 910040002}
+  _pontoAviso: {fileID: 6792749868548559501}
+  _prefabAviso: {fileID: 1127054739601164410, guid: 31754b68d7fbffa4a92bee90e79f9d49, type: 3}
+  _alvoPadrao: {fileID: 0}
+  _chanceMirarJogador: 0.85
+  _tempoCarregamento: 1.5
+  _tempoRecuperacao: 0.6
+  _velocidadeProjetil: 12
+  _danoProjetil: 1
+  _escalaVisual: 1.5

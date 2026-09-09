@@ -10,6 +10,7 @@ public class ProjetilNecromante : MonoBehaviour
 
     private Vector2 _direcao;
     private float _velocidade;
+    private int _dano = 1;
     private float _tempoAtivo;
     private bool _configurado;
     private bool _impactou;
@@ -22,8 +23,14 @@ public class ProjetilNecromante : MonoBehaviour
 
     public void Configurar(Vector2 direcao, float velocidade)
     {
+        Configurar(direcao, velocidade, 1);
+    }
+
+    public void Configurar(Vector2 direcao, float velocidade, int dano)
+    {
         _direcao = direcao.sqrMagnitude > 0f ? direcao.normalized : Vector2.left;
         _velocidade = Mathf.Max(0.1f, velocidade);
+        _dano = Mathf.Max(1, dano);
         _tempoAtivo = 0f;
         _impactou = false;
         _configurado = true;
@@ -67,7 +74,7 @@ public class ProjetilNecromante : MonoBehaviour
         if (_impactou || BloqueioGameplay.Bloqueado || !colisao.CompareTag("Player")) return;
 
         _impactou = true;
-        VidaManager.instance?.PerderVida();
+        VidaManager.instance?.PerderVidas(_dano);
         Destruir();
     }
 

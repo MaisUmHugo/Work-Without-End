@@ -85,15 +85,20 @@ public class VidaManager : MonoBehaviour
 
     public void PerderVida(bool resetarCombo = true)
     {
-        ProcessarPerdaVida(resetarCombo, true);
+        PerderVidas(1, resetarCombo);
     }
 
-    private void ProcessarPerdaVida(bool resetarCombo, bool aplicarInvulnerabilidade)
+    public void PerderVidas(int quantidade, bool resetarCombo = true)
+    {
+        ProcessarPerdaVida(resetarCombo, true, quantidade);
+    }
+
+    private void ProcessarPerdaVida(bool resetarCombo, bool aplicarInvulnerabilidade, int quantidade = 1)
     {
         // evita perder vida se já estiver invulnerável ou morto
         if (invulneravel || vidasAtuais <= 0)
             return;
-        vidasAtuais--;
+        vidasAtuais = Mathf.Max(0, vidasAtuais - Mathf.Max(1, quantidade));
         if (resetarCombo)
             ComboManager.instance?.ResetarCombo();
 
