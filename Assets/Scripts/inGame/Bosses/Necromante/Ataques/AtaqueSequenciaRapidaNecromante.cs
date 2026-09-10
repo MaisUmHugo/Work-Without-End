@@ -25,12 +25,12 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
     [SerializeField, Min(1)] private int _quantidadeDisparos = 4;
     [SerializeField] private bool _evitarRepeticaoLane = true;
     [Header("Tempos em segundos")]
-    [SerializeField, Min(0f)] private float _tempoPreparacao = 0.8f;
-    [SerializeField, Min(0f)] private float _tempoAvisoPorDisparo = 0.35f;
-    [SerializeField, Min(0f)] private float _intervaloEntreDisparos = 0.2f;
-    [SerializeField, Min(0f)] private float _tempoRecuperacao = 0.5f;
+    [SerializeField, Min(0f)] private float _tempoPreparacao = 0.35f;
+    [SerializeField, Min(0f)] private float _tempoAvisoPorDisparo = 0.15f;
+    [SerializeField, Min(0f)] private float _intervaloEntreDisparos = 0.02f;
+    [SerializeField, Min(0f)] private float _tempoRecuperacao = 0.3f;
     [Header("Projetil")]
-    [SerializeField, Min(0.1f)] private float _velocidadeProjetil = 25f;
+    [SerializeField, Min(0.1f)] private float _velocidadeProjetil = 40f;
     [SerializeField, Min(1)] private int _danoProjetil = 1;
     [SerializeField, Min(0.1f)] private float _escalaVisual = 1f;
     [Header("Integracoes futuras")]

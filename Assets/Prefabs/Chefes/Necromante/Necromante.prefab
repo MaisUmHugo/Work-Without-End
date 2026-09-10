@@ -815,10 +815,10 @@ MonoBehaviour:
   _alvoPadrao: {fileID: 0}
   _quantidadeDisparos: 4
   _evitarRepeticaoLane: 1
-  _tempoPreparacao: 0.8
-  _tempoAvisoPorDisparo: 0.35
-  _intervaloEntreDisparos: 0.2
-  _tempoRecuperacao: 0.5
-  _velocidadeProjetil: 25
+  _tempoPreparacao: 0.35
+  _tempoAvisoPorDisparo: 0.15
+  _intervaloEntreDisparos: 0.02
+  _tempoRecuperacao: 0.3
+  _velocidadeProjetil: 40
   _danoProjetil: 1
   _escalaVisual: 1
