@@ -4,10 +4,12 @@ public class Parallax : MonoBehaviour
 {
     Material mat;
     float distance;
-    float multiplicadorAtual = 1f;
+    float MultiplicadorAtual = 1f;
 
     [Range(0f, 0.5f)]
     public float speed = 0.2f;
+
+    public float multiplicadorIndividual = 1f;
 
     void Start()
     {
@@ -16,12 +18,12 @@ public class Parallax : MonoBehaviour
 
     void Update()
     {
-        distance += Time.deltaTime * speed * multiplicadorAtual;
+        distance += Time.deltaTime * speed * MultiplicadorAtual;
         mat.SetTextureOffset("_MainTex", Vector2.right * distance);
     }
 
     public void AtualizarVelocidadeParallax(float novoMultiplicador)
     {
-        multiplicadorAtual = novoMultiplicador;
+        MultiplicadorAtual = novoMultiplicador * multiplicadorIndividual;
     }
 }
