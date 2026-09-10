@@ -593,6 +593,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Parallax
   speed: 0.1
   multiplicadorIndividual: 3
+  materialAtual: {fileID: 0}
+  materiais:
+  - {fileID: 2100000, guid: bc5db357b9e4ea54b9e1284a2693b0ef, type: 2}
+  - {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -749,6 +753,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Parallax
   speed: 0.13333334
   multiplicadorIndividual: 6
+  materialAtual: {fileID: 0}
+  materiais:
+  - {fileID: 2100000, guid: 0ca778ac9811a4341bafd07ac32c1679, type: 2}
+  - {fileID: 2100000, guid: 2d9c951f50a68724d994ba760be49329, type: 2}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -852,6 +860,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Parallax
   speed: 0.07
   multiplicadorIndividual: 4
+  materialAtual: {fileID: 0}
+  materiais:
+  - {fileID: 2100000, guid: 33d270797968f6d44a87443b35a5c015, type: 2}
+  - {fileID: 0}
 --- !u!1001 &998861243
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -876,6 +888,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 1.49971
       objectReference: {fileID: 0}
+    - target: {fileID: 1208012836282366132, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0ca778ac9811a4341bafd07ac32c1679, type: 2}
     - target: {fileID: 3454033119658295028, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
       propertyPath: m_LocalPosition.y
       value: 2.293

@@ -11,9 +11,18 @@ public class Parallax : MonoBehaviour
 
     public float multiplicadorIndividual = 1f;
 
+    [Header("Materiais")]
+    public Material materialAtual;
+    public Material[] materiais;
+
     void Start()
     {
-        mat = GetComponent<Renderer>().material;
+        Renderer renderer = GetComponent<Renderer>();
+
+        if (materialAtual != null)
+            renderer.material = materialAtual;
+
+        mat = renderer.material;
     }
 
     void Update()
@@ -25,5 +34,19 @@ public class Parallax : MonoBehaviour
     public void AtualizarVelocidadeParallax(float novoMultiplicador)
     {
         MultiplicadorAtual = novoMultiplicador * multiplicadorIndividual;
+    }
+
+    public void TrocarMaterial(int indice)
+    {
+        if (materiais == null || materiais.Length == 0)
+            return;
+
+        if (indice < 0 || indice >= materiais.Length)
+            return;
+
+        Renderer renderer = GetComponent<Renderer>();
+
+        renderer.material = materiais[indice];
+        mat = renderer.material;
     }
 }
