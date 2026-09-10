@@ -13,7 +13,7 @@ public class HordaManager : MonoBehaviour
     public SpawnerManager spawnerManager;
 
     [Header("Barra de Progresso")]
-    public Slider barraProgresso; 
+    public Slider barraProgresso;
 
     private int NumeroHorda, N_Entregas;
     [Header("Controle Hordas")]
@@ -48,6 +48,7 @@ public class HordaManager : MonoBehaviour
 
     [Header("Parallax")]
     [SerializeField] private AnimationCurve curvaParallax = CriarCurvaParallaxPadrao();
+    [SerializeField] private int HordaTrocaParallax = 5;
     public bool aumentarParallax = true;
     private float multiplicadorParallax = 1f;
 
@@ -278,14 +279,12 @@ public class HordaManager : MonoBehaviour
             ? Mathf.Max(1f, fatorConfigurado)
             : 1f;
 
+        int indiceMaterial = ((NumeroHorda - 1) / HordaTrocaParallax) % 2;
+
         foreach (Parallax parallax in FindObjectsByType<Parallax>(FindObjectsSortMode.None))
         {
             parallax.AtualizarVelocidadeParallax(multiplicadorParallax);
-
-            if (NumeroHorda >= 2)
-                parallax.TrocarMaterial(1);
-            else
-                parallax.TrocarMaterial(0);
+            parallax.TrocarMaterial(indiceMaterial);
         }
     }
 

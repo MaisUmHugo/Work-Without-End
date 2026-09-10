@@ -236,6 +236,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7747549092625879713, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
+      propertyPath: E_Necessarias
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7747549092625879713, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
+      propertyPath: entregasHordasIniciais
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7747549092625879713, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
       propertyPath: tagsPorHorda.Array.data[2].tagsPermitidas.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -596,7 +604,7 @@ MonoBehaviour:
   materialAtual: {fileID: 0}
   materiais:
   - {fileID: 2100000, guid: bc5db357b9e4ea54b9e1284a2693b0ef, type: 2}
-  - {fileID: 0}
+  - {fileID: 2100000, guid: bc5db357b9e4ea54b9e1284a2693b0ef, type: 2}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -863,7 +871,7 @@ MonoBehaviour:
   materialAtual: {fileID: 0}
   materiais:
   - {fileID: 2100000, guid: 33d270797968f6d44a87443b35a5c015, type: 2}
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 33d270797968f6d44a87443b35a5c015, type: 2}
 --- !u!1001 &998861243
 PrefabInstance:
   m_ObjectHideFlags: 0
