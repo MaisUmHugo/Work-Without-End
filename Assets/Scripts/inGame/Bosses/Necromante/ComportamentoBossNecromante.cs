@@ -144,6 +144,43 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
         return Random.Range(minimo, maximo);
     }
 
+    public bool TentarIniciarAtaqueTeste(AtaqueBossBase ataque)
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        if (_estado == EstadoBoss.Inativo || _movimento == null || ataque == null
+            || ataque.gameObject != gameObject)
+            return false;
+
+        AtaqueBossBase ataqueAnterior = _ataqueAtual;
+        ataqueAnterior?.Cancelar();
+        if (ataque != ataqueAnterior && ataque.EmExecucao)
+            ataque.Cancelar();
+
+        _ataqueAtual = null;
+        _movimento.Cancelar();
+        _vida.DefinirVulneravel(false);
+        ataque.RestaurarDisponibilidade();
+
+        if (!ataque.TentarIniciar(null))
+        {
+            _naPrincipal = true;
+            _tempoEspera = 0f;
+            _estado = EstadoBoss.Aguardando;
+            return false;
+        }
+
+        _ataqueAtual = ataque;
+        _naPrincipal = true;
+        _tempoEspera = 0f;
+        _estado = ataque.EmPreparacao
+            ? EstadoBoss.PreparandoAtaque
+            : EstadoBoss.Atacando;
+        return true;
+#else
+        return false;
+#endif
+    }
+
     public override void Cancelar()
     {
         _seletorAtaques?.CancelarTodos();
