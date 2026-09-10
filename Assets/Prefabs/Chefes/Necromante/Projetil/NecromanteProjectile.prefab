@@ -202,5 +202,6 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::ProjetilNecromante
   _corpo: {fileID: 920030001}
-  _tempoMaximo: 6
+  _tempoMaximo: 20
+  _margemSaidaCamera: 0.1
   _rotacionarComDirecao: 1

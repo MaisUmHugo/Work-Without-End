@@ -25,7 +25,7 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase
     [SerializeField, Min(0f)] private float _tempoCarregamento = 1.5f;
     [SerializeField, Min(0f)] private float _tempoRecuperacao = 0.6f;
     [Header("Projeteis placeholder")]
-    [SerializeField, Min(0.1f)] private float _velocidadeProjetil = 12f;
+    [SerializeField, Min(0.1f)] private float _velocidadeProjetil = 25f;
     [SerializeField, Min(1)] private int _danoProjetil = 1;
     [SerializeField, Min(0.1f)] private float _escalaVisual = 1.5f;
     [Header("Integracoes futuras")]
@@ -37,6 +37,7 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase
     private Transform _alvoAtual;
     private GameObject _avisoAtual;
     private ParLanes _parEscolhido;
+    private float _xAlvoTravado;
     private float _tempoRestante;
     private EtapaAtaque _etapa;
 
@@ -70,6 +71,7 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase
             return false;
         }
 
+        _xAlvoTravado = _alvoAtual.position.x;
         int laneAlvo = _avisoLanes.ObterLaneMaisProxima(_alvoAtual.position);
         if (!SeletorParLanes.TentarSortear(
                 _avisoLanes.QuantidadeLanes,
@@ -132,10 +134,14 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase
     private void CriarProjetil(int indiceLane)
     {
         Vector3 posicaoLane = _avisoLanes.ObterPosicao(indiceLane);
-        Vector3 posicao = new Vector3(_projectileRoot.position.x, posicaoLane.y, _projectileRoot.position.z);
-        ProjetilNecromante projetil = Instantiate(_prefabProjetil, posicao, Quaternion.identity);
+        Vector2 destino = new Vector2(_xAlvoTravado, posicaoLane.y);
+        Vector2 direcao = destino - (Vector2)_projectileRoot.position;
+        if (direcao.sqrMagnitude <= 0f)
+            direcao = Vector2.left;
+
+        ProjetilNecromante projetil = Instantiate(_prefabProjetil, _projectileRoot.position, Quaternion.identity);
         projetil.transform.localScale *= Mathf.Max(0.1f, _escalaVisual);
-        projetil.Configurar(Vector2.left, _velocidadeProjetil, _danoProjetil);
+        projetil.Configurar(direcao, _velocidadeProjetil, _danoProjetil);
 
         _projeteisAtivos.RemoveAll(item => item == null);
         _projeteisAtivos.Add(projetil);
@@ -162,6 +168,7 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase
         bool estavaEmExecucao = EmExecucao;
         RemoverAvisos();
         _alvoAtual = null;
+        _xAlvoTravado = 0f;
         _tempoRestante = 0f;
         _etapa = EtapaAtaque.Inativo;
 

@@ -5,7 +5,9 @@ using UnityEngine;
 public class ProjetilNecromante : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D _corpo;
-    [SerializeField, Min(0.1f)] private float _tempoMaximo = 6f;
+    [Tooltip("Protecao para projeteis que nunca alcancem uma camera valida.")]
+    [SerializeField, Min(1f)] private float _tempoMaximo = 20f;
+    [SerializeField, Min(0f)] private float _margemSaidaCamera = 0.1f;
     [SerializeField] private bool _rotacionarComDirecao = true;
 
     private Vector2 _direcao;
@@ -14,6 +16,8 @@ public class ProjetilNecromante : MonoBehaviour
     private float _tempoAtivo;
     private bool _configurado;
     private bool _impactou;
+    private Camera _camera;
+    private bool _entrouNaCamera;
 
     private void Awake()
     {
@@ -34,9 +38,13 @@ public class ProjetilNecromante : MonoBehaviour
         _tempoAtivo = 0f;
         _impactou = false;
         _configurado = true;
+        _camera = Camera.main;
+        _entrouNaCamera = false;
 
         if (_rotacionarComDirecao)
             transform.right = _direcao;
+
+        AtualizarVisibilidade(transform.position);
     }
 
     private void FixedUpdate()
@@ -50,13 +58,37 @@ public class ProjetilNecromante : MonoBehaviour
         }
 
         _tempoAtivo += Time.fixedDeltaTime;
-        if (_tempoAtivo >= Mathf.Max(0.1f, _tempoMaximo))
+        if (_tempoAtivo >= Mathf.Max(1f, _tempoMaximo) && (!_entrouNaCamera || _camera == null))
         {
             Destruir();
             return;
         }
 
-        _corpo.MovePosition(_corpo.position + _direcao * (_velocidade * Time.fixedDeltaTime));
+        Vector2 proximaPosicao = _corpo.position + _direcao * (_velocidade * Time.fixedDeltaTime);
+        _corpo.MovePosition(proximaPosicao);
+        AtualizarVisibilidade(proximaPosicao);
+    }
+
+    private void AtualizarVisibilidade(Vector3 posicao)
+    {
+        if (_camera == null)
+            _camera = Camera.main;
+        if (_camera == null) return;
+
+        Vector3 viewport = _camera.WorldToViewportPoint(posicao);
+        bool dentro = viewport.z > 0f && viewport.x >= 0f && viewport.x <= 1f
+            && viewport.y >= 0f && viewport.y <= 1f;
+        if (dentro)
+        {
+            _entrouNaCamera = true;
+            return;
+        }
+
+        float margem = Mathf.Max(0f, _margemSaidaCamera);
+        bool foraComMargem = viewport.z <= 0f || viewport.x < -margem || viewport.x > 1f + margem
+            || viewport.y < -margem || viewport.y > 1f + margem;
+        if (_entrouNaCamera && foraComMargem)
+            Destruir();
     }
 
     private void OnTriggerEnter2D(Collider2D colisao)
@@ -88,6 +120,7 @@ public class ProjetilNecromante : MonoBehaviour
 
     private void OnValidate()
     {
-        _tempoMaximo = Mathf.Max(0.1f, _tempoMaximo);
+        _tempoMaximo = Mathf.Max(1f, _tempoMaximo);
+        _margemSaidaCamera = Mathf.Max(0f, _margemSaidaCamera);
     }
 }

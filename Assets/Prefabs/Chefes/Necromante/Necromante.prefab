@@ -789,6 +789,6 @@ MonoBehaviour:
   _chanceMirarJogador: 0.85
   _tempoCarregamento: 1.5
   _tempoRecuperacao: 0.6
-  _velocidadeProjetil: 12
+  _velocidadeProjetil: 25
   _danoProjetil: 1
   _escalaVisual: 1.5
