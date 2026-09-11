@@ -810,17 +810,20 @@ MonoBehaviour:
   _cooldown: 6
   _prefabProjetil: {fileID: 920030002, guid: 65d68ba71b764bb4c9abfe34a3eace1e, type: 3}
   _projectileRoot: {fileID: 860588345486713658}
+  _movimento: {fileID: 910010002}
   _avisoLanes: {fileID: 910040002}
   _pontoAviso: {fileID: 6792749868548559501}
   _prefabAviso: {fileID: 1127054739601164410, guid: 31754b68d7fbffa4a92bee90e79f9d49, type: 3}
   _alvoPadrao: {fileID: 0}
   _quantidadeDisparos: 4
   _evitarRepeticaoLane: 1
+  _duracaoMovimentoEntreLanes: 0.18
+  _duracaoRetorno: 0.25
   _tempoPreparacao: 0.35
-  _tempoAvisoPorDisparo: 0.15
-  _intervaloEntreDisparos: 0.02
-  _tempoRecuperacao: 0.3
-  _velocidadeProjetil: 40
+  _tempoAvisoPorDisparo: 0.25
+  _intervaloEntreDisparos: 0.05
+  _tempoRecuperacao: 0.35
+  _velocidadeProjetil: 32
   _danoProjetil: 1
   _escalaVisual: 1
 --- !u!114 &910040005

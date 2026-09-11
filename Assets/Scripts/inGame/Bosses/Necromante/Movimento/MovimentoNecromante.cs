@@ -34,13 +34,23 @@ public class MovimentoNecromante : MovimentoBossBase
 
     public override void MoverPara(Vector2 destino)
     {
+        float distancia = Vector2.Distance(_corpo.position, destino);
+        IniciarMovimento(destino, distancia / Mathf.Max(0.1f, _velocidade));
+    }
+
+    public void MoverParaEmDuracao(Vector2 destino, float duracao)
+    {
+        IniciarMovimento(destino, Mathf.Max(0.01f, duracao));
+    }
+
+    private void IniciarMovimento(Vector2 destino, float duracao)
+    {
         Cancelar();
         _origem = _corpo.position;
         _destino = destino;
-        float distancia = Vector2.Distance(_origem, _destino);
-        if (distancia <= Mathf.Max(0.01f, _toleranciaChegada)) return;
+        if (Vector2.Distance(_origem, _destino) <= Mathf.Max(0.01f, _toleranciaChegada)) return;
 
-        _duracao = distancia / Mathf.Max(0.1f, _velocidade);
+        _duracao = Mathf.Max(0.01f, duracao);
         _tempo = 0f;
         _emMovimento = true;
     }

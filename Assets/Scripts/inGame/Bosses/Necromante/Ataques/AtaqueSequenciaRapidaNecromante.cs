@@ -11,12 +11,13 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
         Preparando,
         AvisandoDisparo,
         Intervalo,
-        Recuperando
+        Retornando
     }
 
     [Header("Referencias")]
     [SerializeField] private ProjetilNecromante _prefabProjetil;
     [SerializeField] private Transform _projectileRoot;
+    [SerializeField] private MovimentoNecromante _movimento;
     [SerializeField] private AvisoLanesBoss _avisoLanes;
     [SerializeField] private Transform _pontoAviso;
     [SerializeField] private GameObject _prefabAviso;
@@ -24,13 +25,16 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
     [Header("Sequencia")]
     [SerializeField, Min(1)] private int _quantidadeDisparos = 4;
     [SerializeField] private bool _evitarRepeticaoLane = true;
+    [Header("Movimento entre lanes")]
+    [SerializeField, Min(0.01f)] private float _duracaoMovimentoEntreLanes = 0.18f;
+    [SerializeField, Min(0.01f)] private float _duracaoRetorno = 0.25f;
     [Header("Tempos em segundos")]
     [SerializeField, Min(0f)] private float _tempoPreparacao = 0.35f;
-    [SerializeField, Min(0f)] private float _tempoAvisoPorDisparo = 0.15f;
-    [SerializeField, Min(0f)] private float _intervaloEntreDisparos = 0.02f;
-    [SerializeField, Min(0f)] private float _tempoRecuperacao = 0.3f;
+    [SerializeField, Min(0f)] private float _tempoAvisoPorDisparo = 0.25f;
+    [SerializeField, Min(0f)] private float _intervaloEntreDisparos = 0.05f;
+    [SerializeField, Min(0f)] private float _tempoRecuperacao = 0.35f;
     [Header("Projetil")]
-    [SerializeField, Min(0.1f)] private float _velocidadeProjetil = 40f;
+    [SerializeField, Min(0.1f)] private float _velocidadeProjetil = 32f;
     [SerializeField, Min(1)] private int _danoProjetil = 1;
     [SerializeField, Min(0.1f)] private float _escalaVisual = 1f;
     [Header("Integracoes futuras")]
@@ -46,7 +50,7 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
     private int _laneEscolhida = -1;
     private int _ultimaLane = -1;
     private int _disparosRealizados;
-    private float _xAlvoTravado;
+    private Vector2 _posicaoInicial;
     private float _tempoRestante;
     private EtapaAtaque _etapa;
 
@@ -59,9 +63,10 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
         Cancelar();
         RestaurarDisponibilidade();
 
-        if (_prefabProjetil == null || _projectileRoot == null || _avisoLanes == null
+        if (_prefabProjetil == null || _projectileRoot == null || _movimento == null || _avisoLanes == null
             || _pontoAviso == null || !_projectileRoot.IsChildOf(transform)
-            || !_pontoAviso.IsChildOf(transform) || _avisoLanes.gameObject != gameObject)
+            || !_pontoAviso.IsChildOf(transform) || _avisoLanes.gameObject != gameObject
+            || _movimento.gameObject != gameObject)
         {
             Debug.LogError("Necromante: configure projetil, ProjectileRoot, lanes e aviso da sequencia rapida.", this);
             return false;
@@ -81,6 +86,8 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
             return false;
         }
 
+        _movimento.Cancelar();
+        _posicaoInicial = transform.position;
         _ordemLanes.Clear();
         _laneEscolhida = -1;
         _ultimaLane = -1;
@@ -101,6 +108,9 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
 
         _tempoRestante -= deltaTime;
         if (_tempoRestante > 0f) return;
+        if ((_etapa == EtapaAtaque.AvisandoDisparo || _etapa == EtapaAtaque.Retornando)
+            && _movimento.EmMovimento)
+            return;
 
         switch (_etapa)
         {
@@ -116,10 +126,7 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
 
                 if (_disparosRealizados >= Mathf.Max(1, _quantidadeDisparos))
                 {
-                    _tempoRestante = Mathf.Max(0f, _tempoRecuperacao);
-                    _etapa = EtapaAtaque.Recuperando;
-                    if (_tempoRestante <= 0f)
-                        FinalizarExecucao(true);
+                    IniciarRetorno();
                 }
                 else
                 {
@@ -132,7 +139,7 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
                 PrepararProximoDisparo();
                 break;
 
-            case EtapaAtaque.Recuperando:
+            case EtapaAtaque.Retornando:
                 FinalizarExecucao(true);
                 break;
         }
@@ -157,7 +164,10 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
         }
 
         _ultimaLane = _laneEscolhida;
-        _xAlvoTravado = _alvoAtual.position.x;
+        Vector3 posicaoLane = _avisoLanes.ObterPosicao(_laneEscolhida);
+        Vector2 destinoBoss = transform.position;
+        destinoBoss.y += posicaoLane.y - _projectileRoot.position.y;
+        _movimento.MoverParaEmDuracao(destinoBoss, _duracaoMovimentoEntreLanes);
         _tempoRestante = Mathf.Max(0f, _tempoAvisoPorDisparo);
         _etapa = EtapaAtaque.AvisandoDisparo;
         _aoAvisarDisparo?.Invoke();
@@ -214,19 +224,23 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
 
     private void Disparar()
     {
-        Vector3 posicaoLane = _avisoLanes.ObterPosicao(_laneEscolhida);
-        Vector2 destino = new Vector2(_xAlvoTravado, posicaoLane.y);
-        Vector2 direcao = destino - (Vector2)_projectileRoot.position;
-        if (direcao.sqrMagnitude <= 0f)
-            direcao = Vector2.left;
-
         ProjetilNecromante projetil = Instantiate(_prefabProjetil, _projectileRoot.position, Quaternion.identity);
         projetil.transform.localScale *= Mathf.Max(0.1f, _escalaVisual);
-        projetil.Configurar(direcao, _velocidadeProjetil, _danoProjetil);
+        projetil.Configurar(Vector2.left, _velocidadeProjetil, _danoProjetil);
 
         _projeteisAtivos.RemoveAll(item => item == null);
         _projeteisAtivos.Add(projetil);
         _aoDisparar?.Invoke();
+    }
+
+    private void IniciarRetorno()
+    {
+        _movimento.MoverParaEmDuracao(_posicaoInicial, _duracaoRetorno);
+        _tempoRestante = Mathf.Max(0f, _tempoRecuperacao);
+        _etapa = EtapaAtaque.Retornando;
+
+        if (_tempoRestante <= 0f && !_movimento.EmMovimento)
+            FinalizarExecucao(true);
     }
 
     private void CriarAvisoGeral()
@@ -248,6 +262,7 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
     private void FinalizarExecucao(bool iniciarCooldown)
     {
         bool estavaEmExecucao = EmExecucao;
+        _movimento?.Cancelar();
         _avisoLanes?.Ocultar();
         RemoverAvisoGeral();
         _ordemLanes.Clear();
@@ -255,7 +270,7 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
         _laneEscolhida = -1;
         _ultimaLane = -1;
         _disparosRealizados = 0;
-        _xAlvoTravado = 0f;
+        _posicaoInicial = Vector2.zero;
         _tempoRestante = 0f;
         _etapa = EtapaAtaque.Inativo;
 
@@ -284,6 +299,8 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase
     private void OnValidate()
     {
         _quantidadeDisparos = Mathf.Max(1, _quantidadeDisparos);
+        _duracaoMovimentoEntreLanes = Mathf.Max(0.01f, _duracaoMovimentoEntreLanes);
+        _duracaoRetorno = Mathf.Max(0.01f, _duracaoRetorno);
         _tempoPreparacao = Mathf.Max(0f, _tempoPreparacao);
         _tempoAvisoPorDisparo = Mathf.Max(0f, _tempoAvisoPorDisparo);
         _intervaloEntreDisparos = Mathf.Max(0f, _intervaloEntreDisparos);
