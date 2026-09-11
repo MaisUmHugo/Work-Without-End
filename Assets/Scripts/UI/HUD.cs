@@ -3,7 +3,7 @@ using TMPro;
 
 public class HUDManager : MonoBehaviour
 {
-    [Header("ReferÍncias UI")]
+    [Header("Refer√™ncias UI")]
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI vidasText;
     [SerializeField] private TextMeshProUGUI comboText;
@@ -37,7 +37,7 @@ public class HUDManager : MonoBehaviour
 
     private void AtualizarScore(int pontos)
     {
-        scoreText.text = $"PONTUA«√O: {pontos}";
+        scoreText.text = $"PONTUA√á√ÉO: {pontos}";
     }
 
     private void AtualizarVidas(int vida)
@@ -50,6 +50,6 @@ public class HUDManager : MonoBehaviour
         if (combo > 0)
             comboText.text = $"COMBO: {combo}";
         else
-            comboText.text = ""; // esconde quando n„o h· combo
+            comboText.text = ""; // esconde quando n√£o h√° combo
     }
 }
