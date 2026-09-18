@@ -55,6 +55,7 @@ GameObject:
   - component: {fileID: 910040005}
   - component: {fileID: 910050001}
   - component: {fileID: 910050002}
+  - component: {fileID: 910060001}
   - component: {fileID: 6285394227119160127}
   m_Layer: 0
   m_Name: Necromante
@@ -657,6 +658,7 @@ MonoBehaviour:
   _direitaInferior: {fileID: 0}
   _centroSuperior: {fileID: 0}
   _esperaPrincipal: {x: 3, y: 5}
+  _esperaSecundaria: {x: 0.5, y: 1.2}
   _janelaVulnerabilidade: {x: 1.5, y: 3}
   _alturaMinima: 11.2
   _limitesX: {x: 8, y: 44.8}
@@ -898,6 +900,54 @@ MonoBehaviour:
   _tempoAvisoOnda: 0.7
   _intervaloEntreOndas: 1
   _tempoRecuperacao: 0.5
+--- !u!114 &910060001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649569884267953559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b82d6f1a4c734e09a528f6137d90bc45, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::ControladorFasesNecromante
+  _vida: {fileID: 910020001}
+  _inicioFase2: 0.66
+  _inicioFase3: 0.33
+  _faseMaxima: 3
+  _faseAtual: 1
+  _seletorAtaques: {fileID: 910040001}
+  _ataqueInvocacao: {fileID: 910050002}
+  _gerenciadorInvocados: {fileID: 910050001}
+  _configuracoes:
+  - _fase: 1
+    _ataquesDisponiveis:
+    - {fileID: 910030001}
+    - {fileID: 910050002}
+    _quantidadeOndas: 1
+    _limiteInvocados: 3
+    _chanceZumbiSombrio: 0
+    _garantirZumbiSombrio: 0
+  - _fase: 2
+    _ataquesDisponiveis:
+    - {fileID: 910030001}
+    - {fileID: 910040004}
+    - {fileID: 910050002}
+    _quantidadeOndas: 2
+    _limiteInvocados: 6
+    _chanceZumbiSombrio: 0.25
+    _garantirZumbiSombrio: 1
+  - _fase: 3
+    _ataquesDisponiveis:
+    - {fileID: 910030001}
+    - {fileID: 910040003}
+    - {fileID: 910040004}
+    - {fileID: 910050002}
+    _quantidadeOndas: 3
+    _limiteInvocados: 9
+    _chanceZumbiSombrio: 0.4
+    _garantirZumbiSombrio: 1
 --- !u!114 &6285394227119160127
 MonoBehaviour:
   m_ObjectHideFlags: 0

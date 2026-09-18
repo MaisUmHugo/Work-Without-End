@@ -9,6 +9,8 @@ public class SeletorAtaquesBoss : MonoBehaviour
     [SerializeField] private bool _evitarRepeticao = true;
 
     private int _ultimoIndice = -1;
+    private readonly HashSet<AtaqueBossBase> _ataquesPermitidos = new HashSet<AtaqueBossBase>();
+    private bool _usarFiltroAtaques;
 
     public bool Inicializar()
     {
@@ -74,7 +76,8 @@ public class SeletorAtaquesBoss : MonoBehaviour
         for (int i = 0; i < _ataques.Length; i++)
         {
             AtaqueBossBase ataque = _ataques[i];
-            if (ataque != null && ataque.isActiveAndEnabled && ataque.Disponivel)
+            if (ataque != null && ataque.isActiveAndEnabled && ataque.Disponivel
+                && (!_usarFiltroAtaques || _ataquesPermitidos.Contains(ataque)))
                 candidatos.Add(i);
         }
 
@@ -109,6 +112,61 @@ public class SeletorAtaquesBoss : MonoBehaviour
         }
 
         _ultimoIndice = -1;
+    }
+
+    public bool DefinirAtaquesPermitidos(IReadOnlyList<AtaqueBossBase> ataquesPermitidos)
+    {
+        _ataquesPermitidos.Clear();
+
+        if (ataquesPermitidos == null || ataquesPermitidos.Count == 0)
+        {
+            Debug.LogError("Boss: configure pelo menos um ataque permitido para a fase.", this);
+            _usarFiltroAtaques = false;
+            return false;
+        }
+
+        for (int i = 0; i < ataquesPermitidos.Count; i++)
+        {
+            AtaqueBossBase ataque = ataquesPermitidos[i];
+            if (ataque == null || !ContemAtaque(ataque))
+            {
+                Debug.LogError($"Boss: ataque permitido invalido no indice {i}.", this);
+                _ataquesPermitidos.Clear();
+                _usarFiltroAtaques = false;
+                return false;
+            }
+
+            _ataquesPermitidos.Add(ataque);
+        }
+
+        _usarFiltroAtaques = true;
+        if (_ultimoIndice >= 0 && !_ataquesPermitidos.Contains(_ataques[_ultimoIndice]))
+            _ultimoIndice = -1;
+        return true;
+    }
+
+    public void LiberarTodosAtaques()
+    {
+        _ataquesPermitidos.Clear();
+        _usarFiltroAtaques = false;
+    }
+
+    public bool AtaquePermitido(AtaqueBossBase ataque)
+    {
+        return ataque != null && (!_usarFiltroAtaques || _ataquesPermitidos.Contains(ataque));
+    }
+
+    private bool ContemAtaque(AtaqueBossBase ataque)
+    {
+        if (_ataques == null) return false;
+
+        for (int i = 0; i < _ataques.Length; i++)
+        {
+            if (_ataques[i] == ataque)
+                return true;
+        }
+
+        return false;
     }
 
     public void CancelarTodos()

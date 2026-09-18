@@ -51,7 +51,18 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
     public override bool EmExecucao => _etapa != EtapaAtaque.Inativo;
     public override bool EmPreparacao => _etapa == EtapaAtaque.Preparando
         || _etapa == EtapaAtaque.AvisandoOnda;
+    public override bool AbreVulnerabilidadeAoFinalizar => true;
     public TipoAtaqueNecromante TipoAnimacao => TipoAtaqueNecromante.Invocacao;
+    public int QuantidadeOndas => _quantidadeOndas;
+    public float ChanceZumbiSombrio => _chanceZumbiSombrio;
+    public bool GaranteZumbiSombrio => _garantirZumbiSombrio;
+
+    public void ConfigurarFase(int quantidadeOndas, float chanceZumbiSombrio, bool garantirZumbiSombrio)
+    {
+        _quantidadeOndas = Mathf.Max(1, quantidadeOndas);
+        _chanceZumbiSombrio = Mathf.Clamp01(chanceZumbiSombrio);
+        _garantirZumbiSombrio = garantirZumbiSombrio;
+    }
 
     public override bool Inicializar()
     {

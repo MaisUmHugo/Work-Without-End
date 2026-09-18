@@ -26,6 +26,12 @@ public class GerenciadorInvocadosNecromante : MonoBehaviour
     }
 
     public int EspacosDisponiveis => Mathf.Max(0, _limiteSimultaneo - QuantidadeAtiva);
+    public int LimiteSimultaneo => _limiteSimultaneo;
+
+    public void DefinirLimiteSimultaneo(int limiteSimultaneo)
+    {
+        _limiteSimultaneo = Mathf.Max(1, limiteSimultaneo);
+    }
 
     public bool TentarInvocarZumbi(int indiceLane, out Zumbi invocado)
     {

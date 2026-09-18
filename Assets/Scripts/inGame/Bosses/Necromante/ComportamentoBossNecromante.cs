@@ -12,6 +12,7 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
     [SerializeField] private Transform _centroSuperior;
     [Header("Tempos em segundos")]
     [SerializeField] private Vector2 _esperaPrincipal = new Vector2(3f, 5f);
+    [SerializeField] private Vector2 _esperaSecundaria = new Vector2(0.5f, 1.2f);
     [SerializeField] private Vector2 _janelaVulnerabilidade = new Vector2(1.5f, 3f);
     [Header("Area de combate")]
     [Tooltip("Altura minima do centro da raiz. Considere tamanho do sprite e flutuacao.")]
@@ -22,6 +23,7 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
     private float _tempoEspera;
     private bool _naPrincipal;
     private bool _proximaVisitaInferior;
+    private bool _vulneravelNoDestinoSecundario;
     private EstadoBoss _estado = EstadoBoss.Inativo;
     private AtaqueBossBase _ataqueAtual;
 
@@ -53,6 +55,7 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
         _seletorAtaques.Reiniciar();
         _vida.DefinirVulneravel(false);
         _proximaVisitaInferior = true;
+        _vulneravelNoDestinoSecundario = false;
         _naPrincipal = true;
         _estado = EstadoBoss.Entrando;
         _movimento.MoverPara(LimitarDestino(_direitaSuperior.position));
@@ -68,9 +71,13 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
         {
             if (_movimento.EmMovimento) return;
 
-            _estado = _naPrincipal ? EstadoBoss.Aguardando : EstadoBoss.Vulneravel;
-            _tempoEspera = SortearEspera(_naPrincipal ? _esperaPrincipal : _janelaVulnerabilidade);
-            _vida.DefinirVulneravel(!_naPrincipal);
+            bool vulneravel = !_naPrincipal && _vulneravelNoDestinoSecundario;
+            _estado = vulneravel ? EstadoBoss.Vulneravel : EstadoBoss.Aguardando;
+            Vector2 intervaloEspera = _naPrincipal
+                ? _esperaPrincipal
+                : (vulneravel ? _janelaVulnerabilidade : _esperaSecundaria);
+            _tempoEspera = SortearEspera(intervaloEspera);
+            _vida.DefinirVulneravel(vulneravel);
             return;
         }
 
@@ -85,8 +92,9 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
                 return;
             }
 
+            bool abrirVulnerabilidade = _ataqueAtual.AbreVulnerabilidadeAoFinalizar;
             _ataqueAtual = null;
-            MoverParaPontoSecundario();
+            MoverParaPontoSecundario(abrirVulnerabilidade);
             return;
         }
 
@@ -110,10 +118,11 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
         IniciarMovimento(_direitaSuperior, true);
     }
 
-    private void MoverParaPontoSecundario()
+    private void MoverParaPontoSecundario(bool abrirVulnerabilidade)
     {
         Transform destino = _proximaVisitaInferior ? _direitaInferior : _centroSuperior;
         _proximaVisitaInferior = !_proximaVisitaInferior;
+        _vulneravelNoDestinoSecundario = abrirVulnerabilidade;
         IniciarMovimento(destino, false);
     }
 
@@ -126,6 +135,8 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
         }
 
         _naPrincipal = paraPrincipal;
+        if (paraPrincipal)
+            _vulneravelNoDestinoSecundario = false;
         _vida.DefinirVulneravel(false);
         _estado = EstadoBoss.Reposicionando;
         _movimento.MoverPara(LimitarDestino(destino.position));
@@ -190,6 +201,7 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
         _movimento?.Cancelar();
         _estado = EstadoBoss.Inativo;
         _tempoEspera = 0f;
+        _vulneravelNoDestinoSecundario = false;
     }
 
     private void OnDrawGizmosSelected()

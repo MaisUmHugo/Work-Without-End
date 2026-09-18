@@ -9,6 +9,7 @@ public abstract class AtaqueBossBase : MonoBehaviour
 
     public abstract bool EmExecucao { get; }
     public abstract bool EmPreparacao { get; }
+    public virtual bool AbreVulnerabilidadeAoFinalizar => false;
     public bool Disponivel => !EmExecucao && _cooldownRestante <= 0f;
     public float CooldownRestante => _cooldownRestante;
 
