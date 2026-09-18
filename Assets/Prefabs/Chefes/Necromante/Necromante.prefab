@@ -55,6 +55,7 @@ GameObject:
   - component: {fileID: 910040005}
   - component: {fileID: 910050001}
   - component: {fileID: 910050002}
+  - component: {fileID: 6285394227119160127}
   m_Layer: 0
   m_Name: Necromante
   m_TagString: Untagged
@@ -166,6 +167,7 @@ GameObject:
   - component: {fileID: 8511946102748384679}
   - component: {fileID: 910010004}
   - component: {fileID: 910020003}
+  - component: {fileID: 5934384873557170418}
   m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
@@ -896,3 +898,41 @@ MonoBehaviour:
   _tempoAvisoOnda: 0.7
   _intervaloEntreOndas: 1
   _tempoRecuperacao: 0.5
+--- !u!114 &6285394227119160127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649569884267953559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c4d5e6f7084192a3b4c5d6e7f8091a, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::ControleAnimatorNecromante
+  _animator: {fileID: 5934384873557170418}
+  _comportamento: {fileID: 910010003}
+  _movimento: {fileID: 910010002}
+  _vida: {fileID: 910020001}
+--- !u!95 &5934384873557170418
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2756935137198723993}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3fa5d466d5842cf428ace01e7ee1a5c1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage:
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
