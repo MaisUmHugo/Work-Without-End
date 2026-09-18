@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [DisallowMultipleComponent]
-public class ControladorEncontroNecromante : MonoBehaviour
+public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontroBoss
 {
     [Header("Componentes")]
     [SerializeField] private ControladorBoss _controladorBoss;
@@ -36,10 +36,12 @@ public class ControladorEncontroNecromante : MonoBehaviour
     private Vector3 _posicaoInicial;
     private Coroutine _sequenciaEncerramento;
     private bool _encerramentoIniciado;
+    private bool _encontroConcluido;
 
     public TipoEncontroNecromante TipoEncontro => _tipoEncontro;
     public ResultadoEncontroBoss ResultadoAtual => _resultadoAtual;
     public bool Encerrado => _encerramentoIniciado;
+    public bool Concluido => _encontroConcluido;
 
     public event Action<ResultadoEncontroBoss> EncerramentoIniciado;
     public event Action<ResultadoEncontroBoss> EncontroEncerrado;
@@ -184,6 +186,7 @@ public class ControladorEncontroNecromante : MonoBehaviour
     private void ConcluirEncontro()
     {
         _sequenciaEncerramento = null;
+        _encontroConcluido = true;
         EncontroEncerrado?.Invoke(_resultadoAtual);
         _aoConcluirEncontro?.Invoke();
     }
@@ -195,6 +198,7 @@ public class ControladorEncontroNecromante : MonoBehaviour
 
         _sequenciaEncerramento = null;
         _encerramentoIniciado = false;
+        _encontroConcluido = false;
         _resultadoAtual = ResultadoEncontroBoss.Nenhum;
         transform.position = _posicaoInicial;
         _colisor.enabled = true;
