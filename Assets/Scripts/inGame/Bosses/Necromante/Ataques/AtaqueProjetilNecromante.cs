@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class AtaqueProjetilNecromante : AtaqueBossBase
+public class AtaqueProjetilNecromante : AtaqueBossBase, IAtaqueVisualNecromante
 {
     private enum EtapaAtaque
     {
@@ -31,6 +31,7 @@ public class AtaqueProjetilNecromante : AtaqueBossBase
 
     public override bool EmExecucao => _etapa != EtapaAtaque.Inativo;
     public override bool EmPreparacao => _etapa == EtapaAtaque.Preparando;
+    public TipoAtaqueNecromante TipoAnimacao => TipoAtaqueNecromante.Projetil;
 
     public override bool Inicializar()
     {

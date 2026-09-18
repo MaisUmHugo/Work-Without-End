@@ -26,6 +26,7 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
     private AtaqueBossBase _ataqueAtual;
 
     public override EstadoBoss EstadoAtual => _estado;
+    public AtaqueBossBase AtaqueAtual => _ataqueAtual;
 
     public override bool Inicializar(MovimentoBossBase movimento)
     {

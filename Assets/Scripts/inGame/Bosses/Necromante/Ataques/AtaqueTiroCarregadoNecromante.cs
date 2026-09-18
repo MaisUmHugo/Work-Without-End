@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [DisallowMultipleComponent]
-public class AtaqueTiroCarregadoNecromante : AtaqueBossBase
+public class AtaqueTiroCarregadoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
 {
     private enum EtapaAtaque
     {
@@ -43,6 +43,7 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase
 
     public override bool EmExecucao => _etapa != EtapaAtaque.Inativo;
     public override bool EmPreparacao => _etapa == EtapaAtaque.Carregando;
+    public TipoAtaqueNecromante TipoAnimacao => TipoAtaqueNecromante.TiroCarregado;
 
     public override bool Inicializar()
     {
