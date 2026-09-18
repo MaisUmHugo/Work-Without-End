@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -10,8 +12,7 @@ public class AvisoLanesBoss : MonoBehaviour
     private LanesController _lanes;
     private SpriteRenderer[] _renderizadores;
     private Color[] _coresOriginais;
-    private int _primeiraLane = -1;
-    private int _segundaLane = -1;
+    private int[] _lanesAtivas = Array.Empty<int>();
     private float _tempoPulso;
 
     public int QuantidadeLanes => _lanes != null && _lanes.linhas != null ? _lanes.linhas.Length : 0;
@@ -69,14 +70,21 @@ public class AvisoLanesBoss : MonoBehaviour
         return IndiceValido(indiceLane) ? _lanes.linhas[indiceLane].position : Vector3.zero;
     }
 
-    public bool Exibir(int primeiraLane, int segundaLane = -1)
+    public bool Exibir(params int[] indicesLanes)
     {
-        if (!IndiceValido(primeiraLane) || (segundaLane >= 0 && !IndiceValido(segundaLane)))
+        if (indicesLanes == null || indicesLanes.Length == 0)
             return false;
 
+        var lanesValidas = new List<int>();
+        foreach (int indiceLane in indicesLanes)
+        {
+            if (!IndiceValido(indiceLane)) return false;
+            if (!lanesValidas.Contains(indiceLane))
+                lanesValidas.Add(indiceLane);
+        }
+
         Ocultar();
-        _primeiraLane = primeiraLane;
-        _segundaLane = segundaLane == primeiraLane ? -1 : segundaLane;
+        _lanesAtivas = lanesValidas.ToArray();
         _tempoPulso = 0f;
         AplicarCor(_corAviso.a);
         return true;
@@ -84,7 +92,7 @@ public class AvisoLanesBoss : MonoBehaviour
 
     public void Atualizar(float deltaTime)
     {
-        if (_primeiraLane < 0 || deltaTime <= 0f) return;
+        if (_lanesAtivas.Length == 0 || deltaTime <= 0f) return;
 
         _tempoPulso += deltaTime * Mathf.Max(0f, _pulsosPorSegundo) * Mathf.PI * 2f;
         float alpha = _corAviso.a + Mathf.Sin(_tempoPulso) * _variacaoAlpha;
@@ -93,17 +101,17 @@ public class AvisoLanesBoss : MonoBehaviour
 
     public void Ocultar()
     {
-        RestaurarCor(_primeiraLane);
-        RestaurarCor(_segundaLane);
-        _primeiraLane = -1;
-        _segundaLane = -1;
+        foreach (int indiceLane in _lanesAtivas)
+            RestaurarCor(indiceLane);
+
+        _lanesAtivas = Array.Empty<int>();
         _tempoPulso = 0f;
     }
 
     private void AplicarCor(float alpha)
     {
-        AplicarCor(_primeiraLane, alpha);
-        AplicarCor(_segundaLane, alpha);
+        foreach (int indiceLane in _lanesAtivas)
+            AplicarCor(indiceLane, alpha);
     }
 
     private void AplicarCor(int indice, float alpha)

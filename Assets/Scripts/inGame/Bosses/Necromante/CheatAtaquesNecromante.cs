@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
 public class CheatAtaquesNecromante : MonoBehaviour
@@ -11,13 +12,14 @@ public class CheatAtaquesNecromante : MonoBehaviour
     [SerializeField] private Key _teclaProjetil = Key.Digit1;
     [SerializeField] private Key _teclaTiroCarregado = Key.Digit2;
     [SerializeField] private Key _teclaSequenciaRapida = Key.Digit3;
-    [SerializeField] private Key _teclaZumbiSombrio = Key.Digit4;
+    [FormerlySerializedAs("_teclaZumbiSombrio")]
+    [SerializeField] private Key _teclaInvocacao = Key.Digit4;
     [Header("Referencias")]
     [SerializeField] private ComportamentoBossNecromante _comportamento;
     [SerializeField] private AtaqueProjetilNecromante _ataqueProjetil;
     [SerializeField] private AtaqueTiroCarregadoNecromante _tiroCarregado;
     [SerializeField] private AtaqueSequenciaRapidaNecromante _sequenciaRapida;
-    [SerializeField] private GerenciadorInvocadosNecromante _gerenciadorInvocados;
+    [SerializeField] private AtaqueInvocacaoNecromante _ataqueInvocacao;
 
     private void Update()
     {
@@ -36,8 +38,8 @@ public class CheatAtaquesNecromante : MonoBehaviour
             TentarIniciar(_tiroCarregado, "tiro carregado");
         else if (teclado[_teclaSequenciaRapida].wasPressedThisFrame)
             TentarIniciar(_sequenciaRapida, "sequencia rapida");
-        else if (teclado[_teclaZumbiSombrio].wasPressedThisFrame)
-            TentarInvocarZumbiSombrio();
+        else if (teclado[_teclaInvocacao].wasPressedThisFrame)
+            TentarIniciar(_ataqueInvocacao, "invocacao");
 #endif
     }
 
@@ -52,15 +54,4 @@ public class CheatAtaquesNecromante : MonoBehaviour
         Debug.LogWarning($"[CHEAT] Nao foi possivel iniciar {nomeAtaque}.", this);
     }
 
-    private void TentarInvocarZumbiSombrio()
-    {
-        if (_gerenciadorInvocados != null
-            && _gerenciadorInvocados.TentarInvocarZumbiSombrioAleatorio())
-        {
-            Debug.Log("[CHEAT] Necromante invocou um Zumbi Sombrio.", this);
-            return;
-        }
-
-        Debug.LogWarning("[CHEAT] Nao foi possivel invocar o Zumbi Sombrio.", this);
-    }
 }
