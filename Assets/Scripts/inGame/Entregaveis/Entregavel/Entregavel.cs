@@ -40,7 +40,7 @@ public abstract class Entregavel : MonoBehaviour
         Debug.Log($"{gameObject.name} recebeu a entrega!");
     }
 
-    protected int ProcessarEntrega()
+    protected int ProcessarEntrega(bool contabilizarNaHorda = true)
     {
         if (!ativoParaEntrega || !EntregaPendente) return 0;
 
@@ -54,7 +54,7 @@ public abstract class Entregavel : MonoBehaviour
         ScoreManager.instance.AdicionarPontos(pontosFinais);
         ComboManager.instance.AumentarCombo();
 
-        if (HordaManager.instance != null)
+        if (contabilizarNaHorda && HordaManager.instance != null)
             HordaManager.instance.AumentarEntrega();
 
         return pontosFinais;

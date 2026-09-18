@@ -6,6 +6,7 @@ public class GerenciadorInvocadosNecromante : MonoBehaviour
 {
     [Header("Referencias")]
     [SerializeField] private VidaBoss _vidaBoss;
+    [SerializeField] private Zumbi _prefabZumbi;
     [SerializeField] private ZumbiSombrio _prefabZumbiSombrio;
     [SerializeField] private Transform _alvoPadrao;
 
@@ -13,7 +14,7 @@ public class GerenciadorInvocadosNecromante : MonoBehaviour
     [SerializeField, Range(1f, 1.5f)] private float _viewportXSpawn = 1.15f;
     [SerializeField, Min(1)] private int _limiteSimultaneo = 6;
 
-    private readonly List<ZumbiSombrio> _invocados = new List<ZumbiSombrio>();
+    private readonly List<GameObject> _invocados = new List<GameObject>();
 
     public int QuantidadeAtiva
     {
@@ -22,6 +23,27 @@ public class GerenciadorInvocadosNecromante : MonoBehaviour
             RemoverReferenciasInvalidas();
             return _invocados.Count;
         }
+    }
+
+    public int EspacosDisponiveis => Mathf.Max(0, _limiteSimultaneo - QuantidadeAtiva);
+
+    public bool TentarInvocarZumbi(int indiceLane, out Zumbi invocado)
+    {
+        invocado = null;
+        if (!PodeInvocar(indiceLane) || _prefabZumbi == null)
+            return false;
+
+        Vector3 posicaoSpawn = ObterPosicaoSpawn(indiceLane);
+        invocado = Instantiate(_prefabZumbi, posicaoSpawn, Quaternion.identity);
+        if (!invocado.ConfigurarInvocacaoBoss(indiceLane))
+        {
+            Destroy(invocado.gameObject);
+            invocado = null;
+            return false;
+        }
+
+        _invocados.Add(invocado.gameObject);
+        return true;
     }
 
     private void OnEnable()
@@ -43,14 +65,7 @@ public class GerenciadorInvocadosNecromante : MonoBehaviour
         invocado = null;
         RemoverReferenciasInvalidas();
 
-        if (_prefabZumbiSombrio == null || LanesController.instance == null
-            || Camera.main == null || _invocados.Count >= _limiteSimultaneo)
-        {
-            return false;
-        }
-
-        int quantidadeLanes = LanesController.instance.linhas.Length;
-        if (indiceLane < 0 || indiceLane >= quantidadeLanes)
+        if (_prefabZumbiSombrio == null || !PodeInvocar(indiceLane))
             return false;
 
         Transform alvo = ObterAlvo();
@@ -60,11 +75,10 @@ public class GerenciadorInvocadosNecromante : MonoBehaviour
             return false;
         }
 
-        float yLane = LanesController.instance.PosicaoY((LanesController.Linhas)indiceLane);
-        float xSpawn = Camera.main.ViewportToWorldPoint(new Vector3(_viewportXSpawn, 0.5f, 0f)).x;
-        invocado = Instantiate(_prefabZumbiSombrio, new Vector3(xSpawn, yLane, 0f), Quaternion.identity);
+        Vector3 posicaoSpawn = ObterPosicaoSpawn(indiceLane);
+        invocado = Instantiate(_prefabZumbiSombrio, posicaoSpawn, Quaternion.identity);
 
-        if (!invocado.Inicializar(alvo, yLane))
+        if (!invocado.Inicializar(alvo, posicaoSpawn.y))
         {
             Destroy(invocado.gameObject);
             invocado = null;
@@ -72,7 +86,7 @@ public class GerenciadorInvocadosNecromante : MonoBehaviour
         }
 
         invocado.Finalizado += AoFinalizarInvocado;
-        _invocados.Add(invocado);
+        _invocados.Add(invocado.gameObject);
         return true;
     }
 
@@ -89,11 +103,19 @@ public class GerenciadorInvocadosNecromante : MonoBehaviour
     {
         for (int i = _invocados.Count - 1; i >= 0; i--)
         {
-            ZumbiSombrio invocado = _invocados[i];
+            GameObject invocado = _invocados[i];
             if (invocado == null) continue;
 
-            invocado.Finalizado -= AoFinalizarInvocado;
-            invocado.Remover();
+            ZumbiSombrio zumbiSombrio = invocado.GetComponent<ZumbiSombrio>();
+            if (zumbiSombrio != null)
+            {
+                zumbiSombrio.Finalizado -= AoFinalizarInvocado;
+                zumbiSombrio.Remover();
+            }
+            else
+            {
+                Destroy(invocado);
+            }
         }
 
         _invocados.Clear();
@@ -107,11 +129,29 @@ public class GerenciadorInvocadosNecromante : MonoBehaviour
         return jogador != null ? jogador.transform : null;
     }
 
+    private bool PodeInvocar(int indiceLane)
+    {
+        RemoverReferenciasInvalidas();
+        return LanesController.instance != null
+            && LanesController.instance.linhas != null
+            && Camera.main != null
+            && indiceLane >= 0
+            && indiceLane < LanesController.instance.linhas.Length
+            && _invocados.Count < _limiteSimultaneo;
+    }
+
+    private Vector3 ObterPosicaoSpawn(int indiceLane)
+    {
+        float yLane = LanesController.instance.PosicaoY((LanesController.Linhas)indiceLane);
+        float xSpawn = Camera.main.ViewportToWorldPoint(new Vector3(_viewportXSpawn, 0.5f, 0f)).x;
+        return new Vector3(xSpawn, yLane, 0f);
+    }
+
     private void AoFinalizarInvocado(ZumbiSombrio invocado)
     {
         if (invocado != null)
             invocado.Finalizado -= AoFinalizarInvocado;
-        _invocados.Remove(invocado);
+        _invocados.Remove(invocado != null ? invocado.gameObject : null);
     }
 
     private void RemoverReferenciasInvalidas()

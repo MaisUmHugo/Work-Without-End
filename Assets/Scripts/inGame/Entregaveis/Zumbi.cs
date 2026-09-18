@@ -31,6 +31,9 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
     private SpriteRenderer sr;
     private Mov jogador;
     private Animator anim;
+    private bool _laneInicialDefinida;
+    private int _indiceLaneInicial;
+    private bool _contabilizarNaHorda = true;
 
     [Header("Efeitos")]
     public EntregavelPisca entregavelPisca;
@@ -58,8 +61,20 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
         if (playerObj != null)
             jogador = playerObj.GetComponent<Mov>();
 
+        if (LanesController.instance == null || LanesController.instance.linhas == null
+            || LanesController.instance.linhas.Length == 0)
+        {
+            Debug.LogError("Zumbi: LanesController nao encontrado ou sem lanes configuradas.", this);
+            return;
+        }
+
+        int quantidadeLanes = LanesController.instance.linhas.Length;
+        int indiceLane = _laneInicialDefinida
+            ? Mathf.Clamp(_indiceLaneInicial, 0, quantidadeLanes - 1)
+            : Random.Range(0, quantidadeLanes);
+
         Vector3 pos = transform.position;
-        pos.y = LanesController.instance.PosicaoY((LanesController.Linhas)Random.Range(0, 4));
+        pos.y = LanesController.instance.PosicaoY((LanesController.Linhas)indiceLane);
         transform.position = pos;
     }
 
@@ -170,7 +185,7 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
     {
         if (!correndo || !ativoParaEntrega || !EntregaPendente) return;
 
-        int pontosRecebidos = ProcessarEntrega();
+        int pontosRecebidos = ProcessarEntrega(_contabilizarNaHorda);
 
         anim.SetBool("RecebeuEntrega", true);
         ativoParaEntrega = false;
@@ -186,6 +201,16 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
 
         Collider2D col = GetComponent<Collider2D>();
         if (col != null) col.enabled = false;
+    }
+
+    public bool ConfigurarInvocacaoBoss(int indiceLane)
+    {
+        if (indiceLane < 0) return false;
+
+        _laneInicialDefinida = true;
+        _indiceLaneInicial = indiceLane;
+        _contabilizarNaHorda = false;
+        return true;
     }
 
     private IEnumerator DelayTransparente()
