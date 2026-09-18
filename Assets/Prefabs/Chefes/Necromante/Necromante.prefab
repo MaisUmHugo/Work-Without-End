@@ -56,6 +56,7 @@ GameObject:
   - component: {fileID: 910050001}
   - component: {fileID: 910050002}
   - component: {fileID: 910060001}
+  - component: {fileID: 910060002}
   - component: {fileID: 6285394227119160127}
   m_Layer: 0
   m_Name: Necromante
@@ -948,6 +949,41 @@ MonoBehaviour:
     _limiteInvocados: 9
     _chanceZumbiSombrio: 0.4
     _garantirZumbiSombrio: 1
+--- !u!114 &910060002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649569884267953559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e35b91d7426c4a08bf130e7592ad684c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::ControladorEncontroNecromante
+  _controladorBoss: {fileID: 910010001}
+  _controladorFases: {fileID: 910060001}
+  _vida: {fileID: 910020001}
+  _gerenciadorInvocados: {fileID: 910050001}
+  _feedback: {fileID: 910020003}
+  _colisor: {fileID: 2978240186951705937}
+  _tipoEncontro: 1
+  _inicioFase2PrimeiroEncontro: 0.5
+  _inicioFase2EncontroFinal: 0.66
+  _inicioFase3EncontroFinal: 0.33
+  _deslocamentoFuga: {x: 12, y: 8}
+  _duracaoFuga: 1.5
+  _duracaoDerrota: 1.2
+  _aoIniciarFuga:
+    m_PersistentCalls:
+      m_Calls: []
+  _aoDerrotaDefinitiva:
+    m_PersistentCalls:
+      m_Calls: []
+  _aoConcluirEncontro:
+    m_PersistentCalls:
+      m_Calls: []
+  _resultadoAtual: 0
 --- !u!114 &6285394227119160127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -964,6 +1000,7 @@ MonoBehaviour:
   _comportamento: {fileID: 910010003}
   _movimento: {fileID: 910010002}
   _vida: {fileID: 910020001}
+  _encontro: {fileID: 910060002}
 --- !u!95 &5934384873557170418
 Animator:
   serializedVersion: 7

@@ -15,6 +15,7 @@ public class FeedbackBoss : MonoBehaviour
 
     private Color _corOriginal;
     private Coroutine _feedbackAtual;
+    private bool _exibirEsgotado = true;
 
     private void Awake()
     {
@@ -84,8 +85,14 @@ public class FeedbackBoss : MonoBehaviour
             StopCoroutine(_feedbackAtual);
 
         _feedbackAtual = null;
-        if (_spriteRenderer != null)
-            _spriteRenderer.color = _corEsgotado;
+        AtualizarCorBase();
+    }
+
+    public void DefinirExibirEsgotado(bool exibirEsgotado)
+    {
+        _exibirEsgotado = exibirEsgotado;
+        if (_feedbackAtual == null)
+            AtualizarCorBase();
     }
 
     private void IniciarFeedback(Color cor)
@@ -110,7 +117,7 @@ public class FeedbackBoss : MonoBehaviour
     {
         if (_spriteRenderer == null || _vida == null) return;
 
-        _spriteRenderer.color = _vida.Esgotada
+        _spriteRenderer.color = _vida.Esgotada && _exibirEsgotado
             ? _corEsgotado
             : (_vida.Vulneravel ? _corVulneravel : _corOriginal);
     }

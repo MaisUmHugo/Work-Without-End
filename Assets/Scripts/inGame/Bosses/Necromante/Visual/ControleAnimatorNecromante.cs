@@ -14,6 +14,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
     [SerializeField] private ComportamentoBossNecromante _comportamento;
     [SerializeField] private MovimentoBossBase _movimento;
     [SerializeField] private VidaBoss _vida;
+    [SerializeField] private ControladorEncontroNecromante _encontro;
 
     public TipoAtaqueNecromante TipoAtaqueAtual { get; private set; }
 
@@ -36,10 +37,12 @@ public class ControleAnimatorNecromante : MonoBehaviour
 
     private void AtualizarParametros()
     {
-        if (_animator == null || _comportamento == null || _movimento == null || _vida == null)
+        if (_animator == null || _comportamento == null || _movimento == null
+            || _vida == null || _encontro == null)
             return;
 
-        bool morto = _vida.Esgotada;
+        bool fugindo = _encontro.ResultadoAtual == ResultadoEncontroBoss.Fuga;
+        bool morto = _vida.Esgotada && !fugindo;
         bool vulneravel = !morto && _vida.Vulneravel;
         bool atacando = !morto && !vulneravel && AtaqueEmExecucao();
         bool movendo = !morto && !vulneravel && !atacando && _movimento.EmMovimento;
@@ -75,7 +78,8 @@ public class ControleAnimatorNecromante : MonoBehaviour
         return _animator != null && _animator.transform.IsChildOf(transform)
             && _comportamento != null && _comportamento.gameObject == gameObject
             && _movimento != null && _movimento.gameObject == gameObject
-            && _vida != null && _vida.gameObject == gameObject;
+            && _vida != null && _vida.gameObject == gameObject
+            && _encontro != null && _encontro.gameObject == gameObject;
     }
 
     private void OnValidate()
@@ -88,5 +92,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
             _movimento = GetComponent<MovimentoBossBase>();
         if (_vida == null)
             _vida = GetComponent<VidaBoss>();
+        if (_encontro == null)
+            _encontro = GetComponent<ControladorEncontroNecromante>();
     }
 }
