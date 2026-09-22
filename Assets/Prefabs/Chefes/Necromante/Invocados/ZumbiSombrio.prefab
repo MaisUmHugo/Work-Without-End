@@ -119,6 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83f4c8e15b9d4050ad5e2c3b7f8091a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ZumbiSombrio
+  ativoParaEntrega: 1
   _corpo: {fileID: 610000004}
   _colisor: {fileID: 610000003}
   _animator: {fileID: 620000004}
@@ -129,12 +130,11 @@ MonoBehaviour:
   _distanciaInicioPerseguicao: 35
   _danoAoJogador: 1
   _tempoAposImpacto: 1.8
+  _entregasNecessarias: 2
+  _tempoAtordoamento: 1.6
+  _escalaPorEntrega: 1.25
   _corSombria: {r: 0.22, g: 0.08, b: 0.3, a: 1}
-  _corBloqueio: {r: 0.75, g: 0.3, b: 1, a: 1}
-  _duracaoFeedbackBloqueio: 0.15
-  _forcaRebatidaCaixa: 1.35
-  _velocidadeMinimaRebatida: 12
-  _velocidadeAngularRebatida: 720
+  _corAtordoado: {r: 0.75, g: 0.3, b: 1, a: 1}
   _margemSaidaCamera: 0.15
   _distanciaMaximaAtrasJogador: 30
 --- !u!1 &620000001
