@@ -28,6 +28,7 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase, IAtaqueVisualNecrom
     [SerializeField, Min(0.1f)] private float _velocidadeProjetil = 25f;
     [SerializeField, Min(1)] private int _danoProjetil = 1;
     [SerializeField, Min(0.1f)] private float _escalaVisual = 1.5f;
+    [SerializeField, Min(0f)] private float _margemCoberturaLanes = 0.6f;
     [Header("Integracoes futuras")]
     [SerializeField] private UnityEvent _aoIniciarCarregamento = new UnityEvent();
     [SerializeField] private UnityEvent _aoDisparar = new UnityEvent();
@@ -40,6 +41,8 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase, IAtaqueVisualNecrom
     private float _xAlvoTravado;
     private float _tempoRestante;
     private EtapaAtaque _etapa;
+    private float _multiplicadorRitmo = 1f;
+    private float _multiplicadorVelocidade = 1f;
 
     public override bool EmExecucao => _etapa != EtapaAtaque.Inativo;
     public override bool EmPreparacao => _etapa == EtapaAtaque.Carregando;
@@ -86,7 +89,7 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase, IAtaqueVisualNecrom
         }
 
         CriarAviso();
-        _tempoRestante = Mathf.Max(0f, _tempoCarregamento);
+        _tempoRestante = Mathf.Max(0f, _tempoCarregamento / _multiplicadorRitmo);
         _etapa = EtapaAtaque.Carregando;
         _aoIniciarCarregamento?.Invoke();
         return true;
@@ -106,7 +109,7 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase, IAtaqueVisualNecrom
         {
             Disparar();
             RemoverAvisos();
-            _tempoRestante = Mathf.Max(0f, _tempoRecuperacao);
+            _tempoRestante = Mathf.Max(0f, _tempoRecuperacao / _multiplicadorRitmo);
             _etapa = EtapaAtaque.Recuperando;
 
             if (_tempoRestante <= 0f)
@@ -127,22 +130,39 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase, IAtaqueVisualNecrom
 
     private void Disparar()
     {
-        CriarProjetil(_parEscolhido.Primeira);
-        CriarProjetil(_parEscolhido.Segunda);
+        CriarProjetil();
         _aoDisparar?.Invoke();
     }
 
-    private void CriarProjetil(int indiceLane)
+    private void CriarProjetil()
     {
-        Vector3 posicaoLane = _avisoLanes.ObterPosicao(indiceLane);
-        Vector2 destino = new Vector2(_xAlvoTravado, posicaoLane.y);
+        float yPrimeiraLane = _avisoLanes.ObterPosicao(_parEscolhido.Primeira).y;
+        float ySegundaLane = _avisoLanes.ObterPosicao(_parEscolhido.Segunda).y;
+        float centroLanes = (yPrimeiraLane + ySegundaLane) * 0.5f;
+        Vector2 destino = new Vector2(_xAlvoTravado, centroLanes);
         Vector2 direcao = destino - (Vector2)_projectileRoot.position;
         if (direcao.sqrMagnitude <= 0f)
             direcao = Vector2.left;
 
         ProjetilNecromante projetil = Instantiate(_prefabProjetil, _projectileRoot.position, Quaternion.identity);
-        projetil.transform.localScale *= Mathf.Max(0.1f, _escalaVisual);
-        projetil.Configurar(direcao, _velocidadeProjetil, _danoProjetil);
+        CircleCollider2D colisor = projetil.GetComponent<CircleCollider2D>();
+        if (colisor != null)
+        {
+            float raioNecessario = Mathf.Abs(yPrimeiraLane - ySegundaLane) * 0.5f
+                + Mathf.Max(0f, _margemCoberturaLanes);
+            float raioOriginal = colisor.radius * Mathf.Abs(projetil.transform.localScale.y);
+            float fatorCobertura = raioOriginal > 0f ? raioNecessario / raioOriginal : 1f;
+            projetil.transform.localScale *= Mathf.Max(_escalaVisual, fatorCobertura);
+        }
+        else
+        {
+            projetil.transform.localScale *= Mathf.Max(0.1f, _escalaVisual);
+            Debug.LogWarning("Necromante: projetil carregado sem CircleCollider2D para cobrir duas lanes.", projetil);
+        }
+        projetil.Configurar(
+            direcao,
+            _velocidadeProjetil * _multiplicadorVelocidade,
+            _danoProjetil);
 
         _projeteisAtivos.RemoveAll(item => item == null);
         _projeteisAtivos.Add(projetil);
@@ -190,6 +210,12 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase, IAtaqueVisualNecrom
         _projeteisAtivos.Clear();
     }
 
+    public void ConfigurarRitmo(float multiplicadorRitmo, float multiplicadorVelocidade)
+    {
+        _multiplicadorRitmo = Mathf.Max(0.1f, multiplicadorRitmo);
+        _multiplicadorVelocidade = Mathf.Max(0.1f, multiplicadorVelocidade);
+    }
+
     private void OnDisable()
     {
         Cancelar();
@@ -203,5 +229,6 @@ public class AtaqueTiroCarregadoNecromante : AtaqueBossBase, IAtaqueVisualNecrom
         _velocidadeProjetil = Mathf.Max(0.1f, _velocidadeProjetil);
         _danoProjetil = Mathf.Max(1, _danoProjetil);
         _escalaVisual = Mathf.Max(0.1f, _escalaVisual);
+        _margemCoberturaLanes = Mathf.Max(0f, _margemCoberturaLanes);
     }
 }

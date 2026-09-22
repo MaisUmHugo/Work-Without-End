@@ -20,6 +20,10 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
     [SerializeField, Range(0f, 1f)] private float _inicioFase2EncontroFinal = 0.66f;
     [SerializeField, Range(0f, 1f)] private float _inicioFase3EncontroFinal = 0.33f;
 
+    [Header("Vida por trecho")]
+    [SerializeField, Min(2)] private int _vidaFases1E2 = 16;
+    [SerializeField, Min(1)] private int _vidaFase3 = 8;
+
     [Header("Encerramento provisório")]
     [SerializeField] private Vector2 _deslocamentoFuga = new Vector2(12f, 8f);
     [SerializeField, Min(0f)] private float _duracaoFuga = 1.5f;
@@ -58,6 +62,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
         }
 
         AplicarTipoEncontro();
+        _vida.DefinirVidaMaxima(_vidaFases1E2, true);
     }
 
     private void OnEnable()
@@ -94,11 +99,13 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
 
         if (_tipoEncontro == TipoEncontroNecromante.PrimeiroEncontro)
         {
+            _controladorFases.DefinirFase3ComVidaSeparada(false);
             _controladorFases.DefinirFaseMaxima(FaseBoss.Fase2);
             _controladorFases.DefinirLimites(_inicioFase2PrimeiroEncontro, 0f);
             return;
         }
 
+        _controladorFases.DefinirFase3ComVidaSeparada(true);
         _controladorFases.DefinirFaseMaxima(FaseBoss.Fase3);
         _controladorFases.DefinirLimites(_inicioFase2EncontroFinal, _inicioFase3EncontroFinal);
     }
@@ -112,6 +119,16 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
     private void AoEsgotarVida()
     {
         if (_encerramentoIniciado) return;
+
+        if (_tipoEncontro == TipoEncontroNecromante.EncontroFinal
+            && _controladorFases.TentarIniciarFase3ComVidaSeparada())
+        {
+            _controladorBoss.EncerrarExecucao();
+            _gerenciadorInvocados.RemoverTodos();
+            _vida.DefinirVidaMaxima(_vidaFase3, true);
+            _controladorBoss.IniciarEncontro();
+            return;
+        }
 
         _encerramentoIniciado = true;
         _resultadoAtual = _tipoEncontro == TipoEncontroNecromante.PrimeiroEncontro
@@ -204,6 +221,8 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
         _colisor.enabled = true;
         _feedback.DefinirExibirEsgotado(true);
         AplicarTipoEncontro();
+        _controladorFases.ReiniciarFases();
+        _vida.DefinirVidaMaxima(_vidaFases1E2, true);
     }
 
     private bool ReferenciasValidas()
@@ -222,6 +241,8 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
         _inicioFase2EncontroFinal = Mathf.Clamp01(_inicioFase2EncontroFinal);
         _inicioFase3EncontroFinal = Mathf.Clamp(
             _inicioFase3EncontroFinal, 0f, _inicioFase2EncontroFinal);
+        _vidaFases1E2 = Mathf.Max(2, _vidaFases1E2);
+        _vidaFase3 = Mathf.Clamp(_vidaFase3, 1, _vidaFases1E2 - 1);
         _duracaoFuga = Mathf.Max(0f, _duracaoFuga);
         _duracaoDerrota = Mathf.Max(0f, _duracaoDerrota);
 

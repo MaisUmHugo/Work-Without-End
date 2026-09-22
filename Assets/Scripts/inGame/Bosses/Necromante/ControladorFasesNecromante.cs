@@ -7,6 +7,11 @@ public class ControladorFasesNecromante : ControladorFasesBossBase
     [SerializeField] private SeletorAtaquesBoss _seletorAtaques;
     [SerializeField] private AtaqueInvocacaoNecromante _ataqueInvocacao;
     [SerializeField] private GerenciadorInvocadosNecromante _gerenciadorInvocados;
+    [SerializeField] private ComportamentoBossNecromante _comportamento;
+    [SerializeField] private AtaqueProjetilNecromante _ataqueProjetil;
+    [SerializeField] private AtaqueTiroCarregadoNecromante _tiroCarregado;
+    [SerializeField] private AtaqueSequenciaRapidaNecromante _sequenciaRapida;
+    [SerializeField] private PressaoAmbienteNecromante _pressaoAmbiente;
     [Header("Configuracoes")]
     [SerializeField] private ConfiguracaoFaseNecromante[] _configuracoes;
 
@@ -27,6 +32,23 @@ public class ControladorFasesNecromante : ControladorFasesBossBase
             configuracao.ChanceZumbiSombrio,
             configuracao.GarantirZumbiSombrio);
         _gerenciadorInvocados.DefinirLimiteSimultaneo(configuracao.LimiteInvocados);
+        _gerenciadorInvocados.DefinirMultiplicadorVelocidade(
+            configuracao.MultiplicadorVelocidadeInvocados);
+        _comportamento.ConfigurarMultiplicadorDecisao(configuracao.MultiplicadorDecisao);
+        _ataqueProjetil.ConfigurarRitmo(
+            configuracao.MultiplicadorRitmoAtaques,
+            configuracao.MultiplicadorVelocidadeProjeteis);
+        _tiroCarregado.ConfigurarRitmo(
+            configuracao.MultiplicadorRitmoAtaques,
+            configuracao.MultiplicadorVelocidadeProjeteis);
+        _sequenciaRapida.ConfigurarRitmo(
+            configuracao.MultiplicadorRitmoAtaques,
+            configuracao.MultiplicadorVelocidadeProjeteis);
+        _ataqueInvocacao.ConfigurarRitmo(configuracao.MultiplicadorRitmoAtaques);
+        _pressaoAmbiente.ConfigurarFase(
+            configuracao.LimitePressaoAmbiente,
+            configuracao.IntervaloPressaoAmbiente,
+            configuracao.MultiplicadorVelocidadeInvocados);
     }
 
     protected override bool ValidarReferencias()
@@ -34,9 +56,16 @@ public class ControladorFasesNecromante : ControladorFasesBossBase
         if (!base.ValidarReferencias()) return false;
 
         if (_seletorAtaques == null || _ataqueInvocacao == null || _gerenciadorInvocados == null
+            || _comportamento == null || _ataqueProjetil == null || _tiroCarregado == null
+            || _sequenciaRapida == null || _pressaoAmbiente == null
             || _seletorAtaques.gameObject != gameObject
             || _ataqueInvocacao.gameObject != gameObject
-            || _gerenciadorInvocados.gameObject != gameObject)
+            || _gerenciadorInvocados.gameObject != gameObject
+            || _comportamento.gameObject != gameObject
+            || _ataqueProjetil.gameObject != gameObject
+            || _tiroCarregado.gameObject != gameObject
+            || _sequenciaRapida.gameObject != gameObject
+            || _pressaoAmbiente.gameObject != gameObject)
         {
             Debug.LogError("Necromante: configure seletor, invocacao e gerenciador na raiz do boss.", this);
             return false;
@@ -79,5 +108,15 @@ public class ControladorFasesNecromante : ControladorFasesBossBase
             _ataqueInvocacao = GetComponent<AtaqueInvocacaoNecromante>();
         if (_gerenciadorInvocados == null)
             _gerenciadorInvocados = GetComponent<GerenciadorInvocadosNecromante>();
+        if (_comportamento == null)
+            _comportamento = GetComponent<ComportamentoBossNecromante>();
+        if (_ataqueProjetil == null)
+            _ataqueProjetil = GetComponent<AtaqueProjetilNecromante>();
+        if (_tiroCarregado == null)
+            _tiroCarregado = GetComponent<AtaqueTiroCarregadoNecromante>();
+        if (_sequenciaRapida == null)
+            _sequenciaRapida = GetComponent<AtaqueSequenciaRapidaNecromante>();
+        if (_pressaoAmbiente == null)
+            _pressaoAmbiente = GetComponent<PressaoAmbienteNecromante>();
     }
 }

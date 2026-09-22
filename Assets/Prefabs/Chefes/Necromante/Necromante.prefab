@@ -57,6 +57,7 @@ GameObject:
   - component: {fileID: 910050002}
   - component: {fileID: 910060001}
   - component: {fileID: 910060002}
+  - component: {fileID: 910070001}
   - component: {fileID: 6285394227119160127}
   - component: {fileID: 398982659817732409}
   m_Layer: 0
@@ -661,7 +662,8 @@ MonoBehaviour:
   _centroSuperior: {fileID: 0}
   _esperaPrincipal: {x: 3, y: 5}
   _esperaSecundaria: {x: 0.5, y: 1.2}
-  _janelaVulnerabilidade: {x: 1.5, y: 3}
+  _janelaVulnerabilidade: {x: 3.5, y: 5}
+  _intervaloNovaTentativaAtaque: 0.25
   _alturaMinima: 11.2
   _limitesX: {x: 8, y: 44.8}
 --- !u!114 &910010004
@@ -691,7 +693,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b5c8d9e2f3418aa36bd120ce917054, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::VidaBoss
-  _vidaMaxima: 10
+  _vidaMaxima: 16
 --- !u!114 &910020002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -803,7 +805,8 @@ MonoBehaviour:
   _tempoRecuperacao: 0.6
   _velocidadeProjetil: 25
   _danoProjetil: 1
-  _escalaVisual: 1.5
+  _escalaVisual: 2.8
+  _margemCoberturaLanes: 0.6
 --- !u!114 &910040004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -872,10 +875,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GerenciadorInvocadosNecromante
   _vidaBoss: {fileID: 910020001}
   _prefabZumbi: {fileID: 8498067144817464451, guid: fd2ed285d5f2eb647bb92e60686f81cb, type: 3}
+  _prefabMaoZumbi: {fileID: 9061229168869557155, guid: 05d66da6eb88e6f4fbcddd8da6a9184a, type: 3}
   _prefabZumbiSombrio: {fileID: 610000005, guid: b6c7fb048ec04383d0815f6ea2b3c4d5, type: 3}
   _alvoPadrao: {fileID: 0}
   _viewportXSpawn: 1.15
   _limiteSimultaneo: 6
+  _limiteZumbisSombrios: 2
 --- !u!114 &910050002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -896,10 +901,13 @@ MonoBehaviour:
   _alvoPadrao: {fileID: 0}
   _quantidadeOndas: 2
   _chanceZumbiSombrio: 0.34
+  _chanceMaoZumbi: 0.35
   _garantirZumbiSombrio: 1
   _evitarRepetirLaneSegura: 1
+  _espacamentoHorizontalInvocados: 1.25
+  _variacaoEspacamentoHorizontal: 0.2
   _tempoPreparacao: 0.8
-  _tempoAvisoOnda: 0.7
+  _intervaloEntreInvocados: 0.1
   _intervaloEntreOndas: 1
   _tempoRecuperacao: 0.5
 --- !u!114 &910060001
@@ -922,34 +930,57 @@ MonoBehaviour:
   _seletorAtaques: {fileID: 910040001}
   _ataqueInvocacao: {fileID: 910050002}
   _gerenciadorInvocados: {fileID: 910050001}
+  _comportamento: {fileID: 910010003}
+  _ataqueProjetil: {fileID: 910030001}
+  _tiroCarregado: {fileID: 910040003}
+  _sequenciaRapida: {fileID: 910040004}
+  _pressaoAmbiente: {fileID: 910070001}
   _configuracoes:
   - _fase: 1
     _ataquesDisponiveis:
     - {fileID: 910030001}
     - {fileID: 910050002}
     _quantidadeOndas: 1
-    _limiteInvocados: 3
+    _limiteInvocados: 4
     _chanceZumbiSombrio: 0
     _garantirZumbiSombrio: 0
+    _multiplicadorDecisao: 1
+    _multiplicadorRitmoAtaques: 1
+    _multiplicadorVelocidadeProjeteis: 1
+    _multiplicadorVelocidadeInvocados: 1
+    _limitePressaoAmbiente: 3
+    _intervaloPressaoAmbiente: {x: 2.5, y: 4}
   - _fase: 2
     _ataquesDisponiveis:
     - {fileID: 910030001}
     - {fileID: 910040004}
     - {fileID: 910050002}
-    _quantidadeOndas: 2
-    _limiteInvocados: 6
+    _quantidadeOndas: 3
+    _limiteInvocados: 8
     _chanceZumbiSombrio: 0.25
     _garantirZumbiSombrio: 1
+    _multiplicadorDecisao: 1.3
+    _multiplicadorRitmoAtaques: 1
+    _multiplicadorVelocidadeProjeteis: 1
+    _multiplicadorVelocidadeInvocados: 1.15
+    _limitePressaoAmbiente: 4
+    _intervaloPressaoAmbiente: {x: 1.8, y: 3}
   - _fase: 3
     _ataquesDisponiveis:
     - {fileID: 910030001}
     - {fileID: 910040003}
     - {fileID: 910040004}
     - {fileID: 910050002}
-    _quantidadeOndas: 3
-    _limiteInvocados: 9
-    _chanceZumbiSombrio: 0.4
+    _quantidadeOndas: 4
+    _limiteInvocados: 12
+    _chanceZumbiSombrio: 0.5
     _garantirZumbiSombrio: 1
+    _multiplicadorDecisao: 2
+    _multiplicadorRitmoAtaques: 1.6
+    _multiplicadorVelocidadeProjeteis: 1.6
+    _multiplicadorVelocidadeInvocados: 1.6
+    _limitePressaoAmbiente: 6
+    _intervaloPressaoAmbiente: {x: 0.9, y: 1.6}
 --- !u!114 &910060002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -972,6 +1003,8 @@ MonoBehaviour:
   _inicioFase2PrimeiroEncontro: 0.5
   _inicioFase2EncontroFinal: 0.66
   _inicioFase3EncontroFinal: 0.33
+  _vidaFases1E2: 16
+  _vidaFase3: 8
   _deslocamentoFuga: {x: 12, y: 8}
   _duracaoFuga: 1.5
   _duracaoDerrota: 1.2
@@ -985,6 +1018,27 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _resultadoAtual: 0
+--- !u!114 &910070001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649569884267953559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91f8dd12e92c454e9ab1fc28e0e55df2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PressaoAmbienteNecromante
+  _comportamento: {fileID: 910010003}
+  _controladorEncontro: {fileID: 910060002}
+  _spawnerManager: {fileID: 0}
+  _tagZumbi: Zumbi
+  _tagMaoZumbi: MaoZumbi
+  _chanceMaoZumbi: 0.4
+  _limiteSimultaneo: 4
+  _intervaloSpawn: {x: 1.8, y: 3}
+  _antecedenciaRetomarNaVulnerabilidade: 0.6
 --- !u!114 &6285394227119160127
 MonoBehaviour:
   m_ObjectHideFlags: 0

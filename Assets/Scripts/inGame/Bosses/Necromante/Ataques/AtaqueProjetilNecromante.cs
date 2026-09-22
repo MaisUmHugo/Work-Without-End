@@ -28,6 +28,8 @@ public class AtaqueProjetilNecromante : AtaqueBossBase, IAtaqueVisualNecromante
     private GameObject _avisoAtual;
     private float _tempoRestante;
     private EtapaAtaque _etapa;
+    private float _multiplicadorRitmo = 1f;
+    private float _multiplicadorVelocidade = 1f;
 
     public override bool EmExecucao => _etapa != EtapaAtaque.Inativo;
     public override bool EmPreparacao => _etapa == EtapaAtaque.Preparando;
@@ -60,7 +62,7 @@ public class AtaqueProjetilNecromante : AtaqueBossBase, IAtaqueVisualNecromante
         }
 
         CriarAviso();
-        _tempoRestante = Mathf.Max(0f, _tempoPreparacao);
+        _tempoRestante = Mathf.Max(0f, _tempoPreparacao / _multiplicadorRitmo);
         _etapa = EtapaAtaque.Preparando;
         return true;
     }
@@ -76,7 +78,7 @@ public class AtaqueProjetilNecromante : AtaqueBossBase, IAtaqueVisualNecromante
         {
             Disparar();
             RemoverAviso();
-            _tempoRestante = Mathf.Max(0f, _tempoRecuperacao);
+            _tempoRestante = Mathf.Max(0f, _tempoRecuperacao / _multiplicadorRitmo);
             _etapa = EtapaAtaque.Recuperando;
 
             if (_tempoRestante <= 0f)
@@ -107,7 +109,7 @@ public class AtaqueProjetilNecromante : AtaqueBossBase, IAtaqueVisualNecromante
             _prefabProjetil,
             _projectileRoot.position,
             Quaternion.identity);
-        projetil.Configurar(direcao, _velocidadeProjetil);
+        projetil.Configurar(direcao, _velocidadeProjetil * _multiplicadorVelocidade);
         _projeteisAtivos.RemoveAll(item => item == null);
         _projeteisAtivos.Add(projetil);
     }
@@ -145,6 +147,12 @@ public class AtaqueProjetilNecromante : AtaqueBossBase, IAtaqueVisualNecromante
                 Destroy(projetil.gameObject);
         }
         _projeteisAtivos.Clear();
+    }
+
+    public void ConfigurarRitmo(float multiplicadorRitmo, float multiplicadorVelocidade)
+    {
+        _multiplicadorRitmo = Mathf.Max(0.1f, multiplicadorRitmo);
+        _multiplicadorVelocidade = Mathf.Max(0.1f, multiplicadorVelocidade);
     }
 
     private void OnDisable()

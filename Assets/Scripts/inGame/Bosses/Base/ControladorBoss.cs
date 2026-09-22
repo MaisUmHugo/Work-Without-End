@@ -13,6 +13,7 @@ public class ControladorBoss : MonoBehaviour
     private bool _inicializado;
     private bool _emExecucao;
     private bool _inicioSolicitado;
+    private bool _esgotamentoPendente;
 
     public EstadoBoss EstadoAtual => _emExecucao ? _comportamento.EstadoAtual : EstadoBoss.Inativo;
     public bool PodeAtualizar => _emExecucao && isActiveAndEnabled
@@ -28,6 +29,12 @@ public class ControladorBoss : MonoBehaviour
 
     public void IniciarEncontro()
     {
+        if (_emExecucao && _comportamento != null
+            && _comportamento.EstadoAtual == EstadoBoss.Inativo)
+        {
+            _emExecucao = false;
+        }
+
         if (!_emExecucao)
             _inicioSolicitado = true;
     }
@@ -54,6 +61,16 @@ public class ControladorBoss : MonoBehaviour
         {
             if (_inicializado) _movimento.Pausar();
             return;
+        }
+
+        if (_esgotamentoPendente)
+        {
+            _esgotamentoPendente = false;
+            if (_vida != null && _vida.Esgotada)
+            {
+                EncerrarExecucao();
+                return;
+            }
         }
 
         if (_inicioSolicitado)
@@ -95,7 +112,7 @@ public class ControladorBoss : MonoBehaviour
 
     private void AoEsgotarVida()
     {
-        EncerrarExecucao();
+        _esgotamentoPendente = true;
     }
 
     private void OnDisable()
@@ -104,6 +121,7 @@ public class ControladorBoss : MonoBehaviour
             _vida.VidaEsgotada -= AoEsgotarVida;
 
         EncerrarExecucao();
+        _esgotamentoPendente = false;
         _inicializado = false;
     }
 }

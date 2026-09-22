@@ -53,6 +53,8 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
     private Vector2 _posicaoInicial;
     private float _tempoRestante;
     private EtapaAtaque _etapa;
+    private float _multiplicadorRitmo = 1f;
+    private float _multiplicadorVelocidade = 1f;
 
     public override bool EmExecucao => _etapa != EtapaAtaque.Inativo;
     public override bool EmPreparacao => _etapa == EtapaAtaque.Preparando
@@ -94,7 +96,7 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
         _ultimaLane = -1;
         _disparosRealizados = 0;
         CriarAvisoGeral();
-        _tempoRestante = Mathf.Max(0f, _tempoPreparacao);
+        _tempoRestante = Mathf.Max(0f, _tempoPreparacao / _multiplicadorRitmo);
         _etapa = EtapaAtaque.Preparando;
         _aoIniciarSequencia?.Invoke();
         return true;
@@ -131,7 +133,7 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
                 }
                 else
                 {
-                    _tempoRestante = Mathf.Max(0f, _intervaloEntreDisparos);
+                    _tempoRestante = Mathf.Max(0f, _intervaloEntreDisparos / _multiplicadorRitmo);
                     _etapa = EtapaAtaque.Intervalo;
                 }
                 break;
@@ -168,8 +170,10 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
         Vector3 posicaoLane = _avisoLanes.ObterPosicao(_laneEscolhida);
         Vector2 destinoBoss = transform.position;
         destinoBoss.y += posicaoLane.y - _projectileRoot.position.y;
-        _movimento.MoverParaEmDuracao(destinoBoss, _duracaoMovimentoEntreLanes);
-        _tempoRestante = Mathf.Max(0f, _tempoAvisoPorDisparo);
+        _movimento.MoverParaEmDuracao(
+            destinoBoss,
+            _duracaoMovimentoEntreLanes / _multiplicadorRitmo);
+        _tempoRestante = Mathf.Max(0f, _tempoAvisoPorDisparo / _multiplicadorRitmo);
         _etapa = EtapaAtaque.AvisandoDisparo;
         _aoAvisarDisparo?.Invoke();
         return true;
@@ -227,7 +231,10 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
     {
         ProjetilNecromante projetil = Instantiate(_prefabProjetil, _projectileRoot.position, Quaternion.identity);
         projetil.transform.localScale *= Mathf.Max(0.1f, _escalaVisual);
-        projetil.Configurar(Vector2.left, _velocidadeProjetil, _danoProjetil);
+        projetil.Configurar(
+            Vector2.left,
+            _velocidadeProjetil * _multiplicadorVelocidade,
+            _danoProjetil);
 
         _projeteisAtivos.RemoveAll(item => item == null);
         _projeteisAtivos.Add(projetil);
@@ -236,8 +243,8 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
 
     private void IniciarRetorno()
     {
-        _movimento.MoverParaEmDuracao(_posicaoInicial, _duracaoRetorno);
-        _tempoRestante = Mathf.Max(0f, _tempoRecuperacao);
+        _movimento.MoverParaEmDuracao(_posicaoInicial, _duracaoRetorno / _multiplicadorRitmo);
+        _tempoRestante = Mathf.Max(0f, _tempoRecuperacao / _multiplicadorRitmo);
         _etapa = EtapaAtaque.Retornando;
 
         if (_tempoRestante <= 0f && !_movimento.EmMovimento)
@@ -290,6 +297,12 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
                 Destroy(projetil.gameObject);
         }
         _projeteisAtivos.Clear();
+    }
+
+    public void ConfigurarRitmo(float multiplicadorRitmo, float multiplicadorVelocidade)
+    {
+        _multiplicadorRitmo = Mathf.Max(0.1f, multiplicadorRitmo);
+        _multiplicadorVelocidade = Mathf.Max(0.1f, multiplicadorVelocidade);
     }
 
     private void OnDisable()

@@ -13,7 +13,8 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
     [Header("Tempos em segundos")]
     [SerializeField] private Vector2 _esperaPrincipal = new Vector2(3f, 5f);
     [SerializeField] private Vector2 _esperaSecundaria = new Vector2(0.5f, 1.2f);
-    [SerializeField] private Vector2 _janelaVulnerabilidade = new Vector2(1.5f, 3f);
+    [SerializeField] private Vector2 _janelaVulnerabilidade = new Vector2(3.5f, 5f);
+    [SerializeField, Min(0.05f)] private float _intervaloNovaTentativaAtaque = 0.25f;
     [Header("Area de combate")]
     [Tooltip("Altura minima do centro da raiz. Considere tamanho do sprite e flutuacao.")]
     [SerializeField] private float _alturaMinima = 11.2f;
@@ -26,9 +27,34 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
     private bool _vulneravelNoDestinoSecundario;
     private EstadoBoss _estado = EstadoBoss.Inativo;
     private AtaqueBossBase _ataqueAtual;
+    private float _multiplicadorDecisao = 1f;
 
     public override EstadoBoss EstadoAtual => _estado;
     public AtaqueBossBase AtaqueAtual => _ataqueAtual;
+
+    public bool PodeGerarPressaoAmbiente(float antecedenciaVulnerabilidade)
+    {
+        if (_estado == EstadoBoss.Inativo)
+            return false;
+
+        if (_estado == EstadoBoss.Vulneravel)
+            return _tempoEspera <= Mathf.Max(0f, antecedenciaVulnerabilidade);
+
+        if (_estado == EstadoBoss.Reposicionando)
+            return !_vulneravelNoDestinoSecundario;
+
+        if (_estado != EstadoBoss.PreparandoAtaque && _estado != EstadoBoss.Atacando)
+            return true;
+
+        return !AtaqueSuspendePressaoAmbiente(_ataqueAtual);
+    }
+
+    private static bool AtaqueSuspendePressaoAmbiente(AtaqueBossBase ataque)
+    {
+        return ataque is AtaqueTiroCarregadoNecromante
+            || ataque is AtaqueSequenciaRapidaNecromante
+            || ataque is AtaqueInvocacaoNecromante;
+    }
 
     public override bool Inicializar(MovimentoBossBase movimento)
     {
@@ -77,6 +103,8 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
                 ? _esperaPrincipal
                 : (vulneravel ? _janelaVulnerabilidade : _esperaSecundaria);
             _tempoEspera = SortearEspera(intervaloEspera);
+            if (!vulneravel)
+                _tempoEspera /= _multiplicadorDecisao;
             _vida.DefinirVulneravel(vulneravel);
             return;
         }
@@ -105,7 +133,8 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
         {
             if (!_seletorAtaques.TentarIniciar(null, out _ataqueAtual))
             {
-                Cancelar();
+                _estado = EstadoBoss.Aguardando;
+                _tempoEspera = Mathf.Max(0.05f, _intervaloNovaTentativaAtaque);
                 return;
             }
 
@@ -191,6 +220,11 @@ public class ComportamentoBossNecromante : ComportamentoBossBase
 #else
         return false;
 #endif
+    }
+
+    public void ConfigurarMultiplicadorDecisao(float multiplicador)
+    {
+        _multiplicadorDecisao = Mathf.Max(0.1f, multiplicador);
     }
 
     public override void Cancelar()

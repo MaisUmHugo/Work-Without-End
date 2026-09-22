@@ -13,6 +13,7 @@ public abstract class ControladorFasesBossBase : MonoBehaviour
     [SerializeField, Tooltip("Fase exibida para depuracao durante o Play Mode.")]
     private FaseBoss _faseAtual = FaseBoss.Fase1;
     private bool _faseAplicada;
+    private bool _fase3ComVidaSeparada;
 
     public VidaBoss Vida => _vida;
     public FaseBoss FaseAtual => _faseAtual;
@@ -73,6 +74,21 @@ public abstract class ControladorFasesBossBase : MonoBehaviour
             AvaliarFase(_vida.VidaAtual, _vida.VidaMaxima, false);
     }
 
+    public void DefinirFase3ComVidaSeparada(bool fase3ComVidaSeparada)
+    {
+        _fase3ComVidaSeparada = fase3ComVidaSeparada;
+    }
+
+    public bool TentarIniciarFase3ComVidaSeparada()
+    {
+        if (!_fase3ComVidaSeparada || (int)_faseMaxima < (int)FaseBoss.Fase3
+            || _faseAtual == FaseBoss.Fase3)
+            return false;
+
+        AplicarFase(FaseBoss.Fase3, true);
+        return true;
+    }
+
     private void AoAlterarVida(int vidaAtual, int vidaMaxima)
     {
         AvaliarFase(vidaAtual, vidaMaxima, false);
@@ -82,10 +98,18 @@ public abstract class ControladorFasesBossBase : MonoBehaviour
     {
         if (vidaMaxima <= 0) return;
 
+        if (_fase3ComVidaSeparada && _faseAtual == FaseBoss.Fase3)
+        {
+            AplicarFase(FaseBoss.Fase3, forcarAplicacao);
+            return;
+        }
+
         float percentualVida = Mathf.Clamp01((float)vidaAtual / vidaMaxima);
         FaseBoss fase = FaseBoss.Fase1;
 
-        if ((int)_faseMaxima >= (int)FaseBoss.Fase3 && percentualVida <= _inicioFase3)
+        if (!_fase3ComVidaSeparada
+            && (int)_faseMaxima >= (int)FaseBoss.Fase3
+            && percentualVida <= _inicioFase3)
             fase = FaseBoss.Fase3;
         else if ((int)_faseMaxima >= (int)FaseBoss.Fase2 && percentualVida <= _inicioFase2)
             fase = FaseBoss.Fase2;
