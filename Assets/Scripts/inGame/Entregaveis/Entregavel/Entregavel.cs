@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public interface IAjustavelDificuldade
@@ -31,6 +32,9 @@ public abstract class Entregavel : MonoBehaviour
     private EstadoEntrega estadoEntrega = EstadoEntrega.Pendente;
 
     protected bool EntregaPendente => estadoEntrega == EstadoEntrega.Pendente;
+    public bool Resolvido => estadoEntrega != EstadoEntrega.Pendente;
+
+    public event Action<Entregavel> EntregaResolvida;
 
     public virtual void ReceberEntrega()
     {
@@ -57,18 +61,15 @@ public abstract class Entregavel : MonoBehaviour
         if (contabilizarNaHorda && HordaManager.instance != null)
             HordaManager.instance.AumentarEntrega();
 
+        EntregaResolvida?.Invoke(this);
         return pontosFinais;
     }
 
     public virtual void FalharEntrega()
     {
-        if (estadoEntrega == EstadoEntrega.Sucesso) return;
+        if (!RegistrarFalhaEntrega()) return;
 
-        bool primeiraFalha = MarcarEntregaComoFalha();
-        VidaManager.instance.PerderVida();
-
-        if (primeiraFalha)
-            Debug.Log($"{gameObject.name} NÃO recebeu a entrega!");
+        Debug.Log($"{gameObject.name} NÃO recebeu a entrega!");
     }
 
     public virtual void PerderCombo()
@@ -76,11 +77,14 @@ public abstract class Entregavel : MonoBehaviour
         ComboManager.instance.ResetarCombo();
     }
 
-    protected bool RegistrarFalhaEntrega()
+    protected bool RegistrarFalhaEntrega(bool perderVida = true)
     {
         if (!MarcarEntregaComoFalha()) return false;
 
         PerderCombo();
+        if (perderVida)
+            VidaManager.instance?.PerderVida(false);
+        EntregaResolvida?.Invoke(this);
         return true;
     }
 

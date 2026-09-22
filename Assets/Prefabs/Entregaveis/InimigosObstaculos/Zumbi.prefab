@@ -270,9 +270,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ativoParaEntrega: 1
   Exclamacao: {fileID: 8603230579163943760}
-  velocidadeCaminhada: 6
-  velocidadeCorrida: 8.5
-  velocidadeTrocaLane: 12
+  velocidadeCaminhada: 9
+  velocidadeCorrida: 13
+  velocidadeTrocaLane: 18
   dCorrida: 70
   dColisao: 12
   tempoexclamacao: 2

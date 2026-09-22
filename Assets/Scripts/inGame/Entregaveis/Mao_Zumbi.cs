@@ -25,6 +25,9 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
     private bool recebeu, podereceber;
     private bool jaCausouDano;
     private float xAnterior;
+    private bool _laneInicialDefinida;
+    private int _indiceLaneInicial;
+    private bool _contabilizarNaHorda = true;
     [Header("Telegraph")]
     [SerializeField, Min(0.05f)] private float duracaoTelegraphBase = 1.5f;
     [SerializeField, Min(0.05f)] private float duracaoTelegraphMinima = 0.45f;
@@ -63,8 +66,18 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
         else
             Debug.LogWarning("Player não encontrado! Verifique a tag 'Player'.");
 
-        LanesController.Linhas laneEscolhida =
-            (LanesController.Linhas)Random.Range(0, 4);
+        if (LanesController.instance == null || LanesController.instance.linhas == null
+            || LanesController.instance.linhas.Length == 0)
+        {
+            Debug.LogError("Mao Zumbi: LanesController nao encontrado ou sem lanes configuradas.", this);
+            return;
+        }
+
+        int quantidadeLanes = LanesController.instance.linhas.Length;
+        int indiceLane = _laneInicialDefinida
+            ? Mathf.Clamp(_indiceLaneInicial, 0, quantidadeLanes - 1)
+            : Random.Range(0, quantidadeLanes);
+        LanesController.Linhas laneEscolhida = (LanesController.Linhas)indiceLane;
 
         Debug.Log($"Mão Zumbi spawnou na LANE: {laneEscolhida}");
 
@@ -162,7 +175,7 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
     {
         if (!podereceber || !EntregaPendente) return;
 
-        int pontosRecebidos = ProcessarEntrega();
+        int pontosRecebidos = ProcessarEntrega(_contabilizarNaHorda);
         Collider2D col = GetComponent<Collider2D>();
         if (col != null)
         {
@@ -177,6 +190,17 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
         StartCoroutine(DelayTransparente());
         StartCoroutine(PararPiscar());
     }
+
+    public bool ConfigurarInvocacaoBoss(int indiceLane)
+    {
+        if (indiceLane < 0) return false;
+
+        _laneInicialDefinida = true;
+        _indiceLaneInicial = indiceLane;
+        _contabilizarNaHorda = false;
+        return true;
+    }
+
     private IEnumerator ProntoparaEntrega()
     {
         float duracao = duracaoTelegraphAtual;
@@ -266,6 +290,13 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
 
             GarantirDistanciaTelegraph(tempoRestante);
         }
+    }
+
+    public void ConfigurarVelocidadeEncontroBoss(float multiplicador)
+    {
+        multiplicador = Mathf.Max(0.1f, multiplicador);
+        velocidade = velocidadeBase * multiplicador;
+        duracaoTelegraphAtual = CalcularDuracaoTelegraph(multiplicador);
     }
 
     private float CalcularDuracaoTelegraph(float fatorMovimento)

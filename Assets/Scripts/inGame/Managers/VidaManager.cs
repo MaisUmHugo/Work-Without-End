@@ -20,12 +20,19 @@ public class VidaManager : MonoBehaviour
     private Coroutine rotinaInvulnerabilidade;
     private bool piscandoDuranteInvulnerabilidade;
     private float inicioPiscar;
+    private Transform visualDano;
+    private Vector3 escalaOriginalVisual;
+    private bool pulsandoDano;
+    private float inicioPulsoDano;
 
     private bool invulneravel = false;
-    [SerializeField] private float tempoInvulneravel = 0.75f;
-    [SerializeField] private float tempoVermelhoDano = 0.15f;
-    [SerializeField] private float intervaloPiscar = 0.1f;
+    [SerializeField] private float tempoInvulneravel = 0.6f;
+    [SerializeField] private float tempoVermelhoDano = 0.12f;
+    [SerializeField] private float intervaloPiscar = 0.08f;
     [SerializeField, Range(0f, 1f)] private float alphaInvulneravel = 0.3f;
+    [SerializeField, Min(1f)] private float fatorEscalaDano = 1.12f;
+    [SerializeField, Min(1)] private int quantidadePulsosDano = 2;
+    [SerializeField, Min(0.01f)] private float duracaoPulsoDano = 0.16f;
 
     private void Awake()
     {
@@ -40,6 +47,8 @@ public class VidaManager : MonoBehaviour
         if (spriteRenderer != null)
         {
             corOriginal = spriteRenderer.color;
+            visualDano = spriteRenderer.transform;
+            escalaOriginalVisual = visualDano.localScale;
         }
         if (instance == null) instance = this;
         else Destroy(gameObject);
@@ -67,14 +76,18 @@ public class VidaManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!piscandoDuranteInvulnerabilidade || spriteRenderer == null)
-            return;
+        if (piscandoDuranteInvulnerabilidade && spriteRenderer != null)
+        {
+            float intervaloSeguro = Mathf.Max(0.01f, intervaloPiscar);
+            bool transparente = Mathf.FloorToInt(
+                (Time.time - inicioPiscar) / intervaloSeguro) % 2 == 0;
+            Color corAtual = corOriginal;
+            corAtual.a = transparente ? alphaInvulneravel : corOriginal.a;
+            spriteRenderer.color = corAtual;
+        }
 
-        float intervaloSeguro = Mathf.Max(0.01f, intervaloPiscar);
-        bool transparente = Mathf.FloorToInt((Time.time - inicioPiscar) / intervaloSeguro) % 2 == 0;
-        Color corAtual = corOriginal;
-        corAtual.a = transparente ? alphaInvulneravel : corOriginal.a;
-        spriteRenderer.color = corAtual;
+        if (pulsandoDano)
+            AtualizarEscalaDano(Time.time - inicioPulsoDano);
     }
 
     public void ResetarVidas()
@@ -130,25 +143,26 @@ public class VidaManager : MonoBehaviour
     {
         invulneravel = true;
         float inicioInvulnerabilidade = Time.time;
-
-        if (anim != null)
-        {
-            anim.SetBool("Damage", true);
-        }
-
         float duracaoVermelho = Mathf.Min(tempoVermelhoDano, tempoInvulneravel);
-        yield return new WaitForSeconds(duracaoVermelho);
+        bool encerrouAnimacaoDano = false;
+        pulsandoDano = visualDano != null;
+        inicioPulsoDano = Time.time;
 
         if (anim != null)
-        {
-            anim.SetBool("Damage", false);
-        }
-
-        piscandoDuranteInvulnerabilidade = true;
-        inicioPiscar = Time.time;
+            anim.SetBool("Damage", true);
 
         while (Time.time - inicioInvulnerabilidade < tempoInvulneravel)
         {
+            float tempoDecorrido = Time.time - inicioInvulnerabilidade;
+            if (!encerrouAnimacaoDano && tempoDecorrido >= duracaoVermelho)
+            {
+                encerrouAnimacaoDano = true;
+                if (anim != null)
+                    anim.SetBool("Damage", false);
+
+                piscandoDuranteInvulnerabilidade = true;
+                inicioPiscar = Time.time;
+            }
             yield return null;
         }
 
@@ -157,9 +171,31 @@ public class VidaManager : MonoBehaviour
         rotinaInvulnerabilidade = null;
     }
 
+    private void AtualizarEscalaDano(float tempoDecorrido)
+    {
+        if (visualDano == null) return;
+
+        int quantidadePulsos = Mathf.Max(1, quantidadePulsosDano);
+        float duracaoTotal = Mathf.Min(
+            tempoInvulneravel,
+            Mathf.Max(0.01f, duracaoPulsoDano) * quantidadePulsos);
+        if (tempoDecorrido >= duracaoTotal)
+        {
+            visualDano.localScale = escalaOriginalVisual;
+            pulsandoDano = false;
+            return;
+        }
+
+        float progresso = Mathf.Clamp01(tempoDecorrido / duracaoTotal);
+        float pulso = Mathf.Abs(Mathf.Sin(progresso * Mathf.PI * quantidadePulsos));
+        float escala = Mathf.Lerp(1f, Mathf.Max(1f, fatorEscalaDano), pulso);
+        visualDano.localScale = escalaOriginalVisual * escala;
+    }
+
     private void FinalizarFeedbackDano()
     {
         piscandoDuranteInvulnerabilidade = false;
+        pulsandoDano = false;
 
         if (anim != null)
         {
@@ -167,9 +203,10 @@ public class VidaManager : MonoBehaviour
         }
 
         if (spriteRenderer != null)
-        {
             spriteRenderer.color = corOriginal;
-        }
+
+        if (visualDano != null)
+            visualDano.localScale = escalaOriginalVisual;
     }
 
     private void OnDisable()
@@ -182,6 +219,17 @@ public class VidaManager : MonoBehaviour
 
         invulneravel = false;
         FinalizarFeedbackDano();
+    }
+
+    private void OnValidate()
+    {
+        tempoInvulneravel = Mathf.Max(0.05f, tempoInvulneravel);
+        tempoVermelhoDano = Mathf.Clamp(tempoVermelhoDano, 0f, tempoInvulneravel);
+        intervaloPiscar = Mathf.Max(0.01f, intervaloPiscar);
+        alphaInvulneravel = Mathf.Clamp01(alphaInvulneravel);
+        fatorEscalaDano = Mathf.Max(1f, fatorEscalaDano);
+        quantidadePulsosDano = Mathf.Max(1, quantidadePulsosDano);
+        duracaoPulsoDano = Mathf.Max(0.01f, duracaoPulsoDano);
     }
 
 }

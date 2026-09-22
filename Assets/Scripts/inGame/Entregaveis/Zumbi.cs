@@ -11,6 +11,7 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
     public float dCorrida; // distancia de corrida
     public float dColisao; // Distancia De colisão
     public float tempoexclamacao;
+    [SerializeField, Min(0)] private int _alcanceTrocaLane = 1;
 
     [Header("Dificuldade")]
     [SerializeField, Range(0f, 1f)] private float intensidadeEscalaCaminhada = 0.58f;
@@ -33,13 +34,13 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
     private Animator anim;
     private bool _laneInicialDefinida;
     private int _indiceLaneInicial;
+    private int _indiceLaneAtual;
+    private float _laneDestinoY;
     private bool _contabilizarNaHorda = true;
 
     [Header("Efeitos")]
     public EntregavelPisca entregavelPisca;
     public PontuacaoPopup popupPontuacao;
-
-    private bool jaDeuDano = false;
 
     private void Awake()
     {
@@ -76,6 +77,9 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
         Vector3 pos = transform.position;
         pos.y = LanesController.instance.PosicaoY((LanesController.Linhas)indiceLane);
         transform.position = pos;
+        _indiceLaneAtual = indiceLane;
+        _laneDestinoY = pos.y;
+        yTravado = pos.y;
     }
 
     private void Update()
@@ -97,8 +101,10 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
         else
         {
             float xAnterior = transform.position.x;
-            float yAlvo = LanesController.instance.PosicaoY(jogador.linhaAtual);
-            float novoY = Mathf.MoveTowards(transform.position.y, yAlvo, velocidadeTrocaLane * Time.deltaTime);
+            float novoY = Mathf.MoveTowards(
+                transform.position.y,
+                _laneDestinoY,
+                velocidadeTrocaLane * Time.deltaTime);
 
             transform.position = new Vector3(
                 transform.position.x - velocidadeCorrida * Time.deltaTime,
@@ -136,12 +142,34 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
     private void IniciarCorrida()
     {
         Debug.Log("Zumbi Correndo");
+        DefinirLaneDestino();
         correndo = true;
         anim.SetBool("Correr", true);
         anim.SetBool("Andar", false);
         ativoParaEntrega = true;
         StartCoroutine(exclamacao());
         entregavelPisca?.PiscarAtivo();
+    }
+
+    private void DefinirLaneDestino()
+    {
+        if (jogador == null || LanesController.instance == null
+            || LanesController.instance.linhas == null
+            || LanesController.instance.linhas.Length == 0)
+        {
+            _laneDestinoY = transform.position.y;
+            return;
+        }
+
+        int quantidadeLanes = LanesController.instance.linhas.Length;
+        int laneJogador = Mathf.Clamp((int)jogador.linhaAtual, 0, quantidadeLanes - 1);
+        int distanciaLanes = Mathf.Abs(laneJogador - _indiceLaneAtual);
+
+        if (distanciaLanes <= Mathf.Max(0, _alcanceTrocaLane))
+            _indiceLaneAtual = laneJogador;
+
+        _laneDestinoY = LanesController.instance.PosicaoY(
+            (LanesController.Linhas)_indiceLaneAtual);
     }
 
     private void CairECausarDano()
@@ -172,13 +200,6 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
             return;
         }
 
-        // Se ele está caindo, e encosta no player → dá dano imediato
-        if (caiu && !jaDeuDano && collision.CompareTag("Player"))
-        {
-            jaDeuDano = true;
-            Debug.Log("DANO DURANTE A ANIMAÇÃO DE CAIR!");
-            VidaManager.instance.PerderVida();
-        }
     }
 
     public override void ReceberEntrega()
@@ -255,5 +276,13 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
         velocidadeCaminhada = velocidadeCaminhadaBase * fatorCaminhada;
         velocidadeCorrida = velocidadeCorridaBase * fatorCorrida;
         velocidadeTrocaLane = velocidadeTrocaLaneBase * fatorTrocaLane;
+    }
+
+    public void ConfigurarVelocidadeEncontroBoss(float multiplicador)
+    {
+        multiplicador = Mathf.Max(0.1f, multiplicador);
+        velocidadeCaminhada = velocidadeCaminhadaBase * multiplicador;
+        velocidadeCorrida = velocidadeCorridaBase * multiplicador;
+        velocidadeTrocaLane = velocidadeTrocaLaneBase * multiplicador;
     }
 }

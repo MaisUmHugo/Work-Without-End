@@ -586,7 +586,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ativoParaEntrega: 1
   Exclamacao: {fileID: 4279375068704336945}
-  velocidade: 6
+  velocidade: 9
   intervaloPiscar: 0.15
   distanciaEntrega: 60
   tempoexclamacao: 1.5
