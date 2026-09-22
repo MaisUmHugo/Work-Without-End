@@ -70,6 +70,7 @@ public class SpawnerManager : MonoBehaviour
     private float intervaloSpawnAtual = 5f;
     private float multiplicadorDificuldadeAtual = 1f;
     private bool stressTestMaximoAtivo;
+    private bool _suspensoPorEncontroBoss;
     [Header("Batch normal")]
     [SerializeField] private List<FaixaQuantidadePorHorda> faixasQuantidadePorHorda = CriarFaixasQuantidadePadrao();
     [SerializeField, Min(0f)] private float intervaloInternoBatchNormal = 0.1f;
@@ -113,6 +114,7 @@ public class SpawnerManager : MonoBehaviour
 
     public float IntervaloMinimoSpawn => Mathf.Max(0.05f, intervaloMinimoSpawn);
     public float IntervaloStressMaximo => Mathf.Max(0.05f, intervaloSpawnStressMaximo);
+    public bool SpawnAtivo => spawnAtivo && !_suspensoPorEncontroBoss;
 
 
     private Dictionary<string, ConfiguracaoSpawn> dicionarioConfig = new Dictionary<string, ConfiguracaoSpawn>();
@@ -186,7 +188,7 @@ public class SpawnerManager : MonoBehaviour
 
     void Update()
     {
-        if (!spawnAtivo || BloqueioGameplay.Bloqueado) return;
+        if (!spawnAtivo || _suspensoPorEncontroBoss || BloqueioGameplay.Bloqueado) return;
 
         if (Time.time >= proximoSpawn && !batchEmAndamento && rotinaLoteStressMaximo == null)
         {
@@ -233,7 +235,7 @@ public class SpawnerManager : MonoBehaviour
     {
         spawnAtivo = true;
 
-        if (stressTestMaximoAtivo)
+        if (stressTestMaximoAtivo && !_suspensoPorEncontroBoss)
         {
             IniciarLoteStressSePendente();
             AgendarProximoSpawn();
@@ -245,6 +247,30 @@ public class SpawnerManager : MonoBehaviour
         spawnAtivo = false;
         CancelarBatchAtivo();
         CancelarLoteStressMaximo();
+    }
+
+    public void DefinirSuspensoPorEncontroBoss(bool suspenso)
+    {
+        if (_suspensoPorEncontroBoss == suspenso)
+            return;
+
+        _suspensoPorEncontroBoss = suspenso;
+        if (suspenso)
+        {
+            CancelarBatchAtivo();
+            CancelarLoteStressMaximo();
+            return;
+        }
+
+        if (!spawnAtivo)
+            return;
+
+        AgendarProximoSpawn();
+        if (stressTestMaximoAtivo)
+        {
+            loteStressPendente = true;
+            IniciarLoteStressSePendente();
+        }
     }
 
     public void DefinirDificuldade(float multiplicador, float intervaloSpawn)
@@ -352,6 +378,7 @@ public class SpawnerManager : MonoBehaviour
     private bool BatchContinuaValido(bool stressDoBatch, int hordaDoBatch, int versaoDoBatch)
     {
         return spawnAtivo
+            && !_suspensoPorEncontroBoss
             && stressTestMaximoAtivo == stressDoBatch
             && numeroHordaAtual == hordaDoBatch
             && versaoBatch == versaoDoBatch;
@@ -468,6 +495,30 @@ public class SpawnerManager : MonoBehaviour
         return SpawnPorTag(tag, false, -1, out laneIgnorada);
     }
 
+    public GameObject SpawnParaEncontroBoss(string tag)
+    {
+        int laneUtilizada;
+        GameObject instancia = SpawnPorTag(tag, true, -1, out laneUtilizada);
+        if (instancia == null)
+            return null;
+
+        Zumbi zumbi = instancia.GetComponent<Zumbi>();
+        if (zumbi != null && !zumbi.ConfigurarInvocacaoBoss(laneUtilizada))
+        {
+            Destroy(instancia);
+            return null;
+        }
+
+        Mao_Zumbi maoZumbi = instancia.GetComponent<Mao_Zumbi>();
+        if (maoZumbi != null && !maoZumbi.ConfigurarInvocacaoBoss(laneUtilizada))
+        {
+            Destroy(instancia);
+            return null;
+        }
+
+        return instancia;
+    }
+
     private GameObject SpawnForcado(string tag)
     {
         int laneIgnorada;
@@ -552,6 +603,7 @@ public class SpawnerManager : MonoBehaviour
         if (!loteStressPendente
             || !stressTestMaximoAtivo
             || !spawnAtivo
+            || _suspensoPorEncontroBoss
             || rotinaLoteStressMaximo != null)
         {
             return;

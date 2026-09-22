@@ -9,6 +9,7 @@ public class ZumbiSombrio : MonoBehaviour
     private enum EstadoZumbiSombrio
     {
         Caminhando,
+        PreparandoPerseguicao,
         Perseguindo,
         AposImpacto,
         Finalizado
@@ -29,6 +30,9 @@ public class ZumbiSombrio : MonoBehaviour
     [SerializeField, Min(0.1f)] private float _velocidadeCorrida = 8.5f;
     [SerializeField, Min(0.1f)] private float _velocidadeTrocaLane = 12f;
     [SerializeField, Min(0f)] private float _distanciaInicioPerseguicao = 35f;
+    [SerializeField, Min(0)] private int _alcanceTrocaLane = 2;
+    [SerializeField, Min(0f)] private float _tempoAvisoTrocaLane = 0.3f;
+    [SerializeField] private Color _corAvisoTrocaLane = new Color(0.95f, 0.25f, 1f, 1f);
 
     [Header("Dano")]
     [SerializeField, Min(1)] private int _danoAoJogador = 1;
@@ -38,7 +42,9 @@ public class ZumbiSombrio : MonoBehaviour
     [SerializeField] private Color _corSombria = new Color(0.22f, 0.08f, 0.3f, 1f);
     [SerializeField] private Color _corBloqueio = new Color(0.75f, 0.3f, 1f, 1f);
     [SerializeField, Min(0.01f)] private float _duracaoFeedbackBloqueio = 0.15f;
-    [SerializeField, Range(0f, 1f)] private float _forcaRebatidaCaixa = 0.65f;
+    [SerializeField, Min(1f)] private float _forcaRebatidaCaixa = 1.35f;
+    [SerializeField, Min(0f)] private float _velocidadeMinimaRebatida = 12f;
+    [SerializeField, Min(0f)] private float _velocidadeAngularRebatida = 720f;
 
     [Header("Limpeza")]
     [SerializeField, Min(0f)] private float _margemSaidaCamera = 0.15f;
@@ -49,14 +55,22 @@ public class ZumbiSombrio : MonoBehaviour
     private Camera _camera;
     private Coroutine _feedbackBloqueio;
     private EstadoZumbiSombrio _estado;
+    private int _indiceLaneAtual;
     private float _laneInicialY;
+    private float _laneDestinoY;
+    private float _tempoAvisoRestante;
     private float _tempoImpactoRestante;
     private bool _inicializado;
     private bool _finalizacaoNotificada;
+    private float _velocidadeCaminhadaBase;
+    private float _velocidadeCorridaBase;
+    private float _velocidadeTrocaLaneBase;
 
     public event Action<ZumbiSombrio> Finalizado;
 
-    public bool EmExecucao => _estado != EstadoZumbiSombrio.Finalizado;
+    public bool EmExecucao => _estado == EstadoZumbiSombrio.Caminhando
+        || _estado == EstadoZumbiSombrio.PreparandoPerseguicao
+        || _estado == EstadoZumbiSombrio.Perseguindo;
 
     private void Awake()
     {
@@ -68,6 +82,10 @@ public class ZumbiSombrio : MonoBehaviour
             _animator = GetComponentInChildren<Animator>();
         if (_spriteRenderer == null)
             _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        _velocidadeCaminhadaBase = _velocidadeCaminhada;
+        _velocidadeCorridaBase = _velocidadeCorrida;
+        _velocidadeTrocaLaneBase = _velocidadeTrocaLane;
 
         _camera = Camera.main;
         AplicarCor(_corSombria);
@@ -99,6 +117,9 @@ public class ZumbiSombrio : MonoBehaviour
         _alvo = alvo;
         _movimentoJogador = alvo.GetComponent<Mov>();
         _laneInicialY = posicaoLaneY;
+        _indiceLaneAtual = ObterIndiceLaneMaisProxima(posicaoLaneY);
+        _laneDestinoY = posicaoLaneY;
+        _tempoAvisoRestante = 0f;
         _tempoImpactoRestante = 0f;
         _estado = EstadoZumbiSombrio.Caminhando;
         _inicializado = true;
@@ -111,6 +132,14 @@ public class ZumbiSombrio : MonoBehaviour
         AtualizarAnimator();
         AplicarCor(_corSombria);
         return true;
+    }
+
+    public void ConfigurarMultiplicadorVelocidade(float multiplicador)
+    {
+        multiplicador = Mathf.Max(0.1f, multiplicador);
+        _velocidadeCaminhada = _velocidadeCaminhadaBase * multiplicador;
+        _velocidadeCorrida = _velocidadeCorridaBase * multiplicador;
+        _velocidadeTrocaLane = _velocidadeTrocaLaneBase * multiplicador;
     }
 
     private void FixedUpdate()
@@ -136,10 +165,14 @@ public class ZumbiSombrio : MonoBehaviour
             case EstadoZumbiSombrio.Caminhando:
                 MoverCaminhando(deltaTime);
                 if (Mathf.Abs(_corpo.position.x - _alvo.position.x) <= _distanciaInicioPerseguicao)
-                {
-                    _estado = EstadoZumbiSombrio.Perseguindo;
-                    AtualizarAnimator();
-                }
+                    PrepararPerseguicao();
+                break;
+
+            case EstadoZumbiSombrio.PreparandoPerseguicao:
+                MoverCaminhando(deltaTime);
+                _tempoAvisoRestante -= deltaTime;
+                if (_tempoAvisoRestante <= 0f)
+                    IniciarPerseguicao();
                 break;
 
             case EstadoZumbiSombrio.Perseguindo:
@@ -170,14 +203,81 @@ public class ZumbiSombrio : MonoBehaviour
 
     private void MoverPerseguindo(float deltaTime)
     {
-        float yAlvo = _movimentoJogador != null && LanesController.instance != null
-            ? LanesController.instance.PosicaoY(_movimentoJogador.linhaAtual)
-            : _alvo.position.y;
-
         Vector2 posicao = _corpo.position;
         posicao.x -= _velocidadeCorrida * deltaTime;
-        posicao.y = Mathf.MoveTowards(posicao.y, yAlvo, _velocidadeTrocaLane * deltaTime);
+        posicao.y = Mathf.MoveTowards(posicao.y, _laneDestinoY, _velocidadeTrocaLane * deltaTime);
         _corpo.MovePosition(posicao);
+    }
+
+    private void PrepararPerseguicao()
+    {
+        bool mudaraLane = DefinirLaneDestino();
+        if (!mudaraLane || _tempoAvisoTrocaLane <= 0f)
+        {
+            IniciarPerseguicao();
+            return;
+        }
+
+        _estado = EstadoZumbiSombrio.PreparandoPerseguicao;
+        _tempoAvisoRestante = _tempoAvisoTrocaLane;
+        AplicarCor(_corAvisoTrocaLane);
+        AtualizarAnimator();
+    }
+
+    private bool DefinirLaneDestino()
+    {
+        if (_movimentoJogador == null || LanesController.instance == null
+            || LanesController.instance.linhas == null
+            || LanesController.instance.linhas.Length == 0)
+        {
+            _laneDestinoY = _laneInicialY;
+            return false;
+        }
+
+        int quantidadeLanes = LanesController.instance.linhas.Length;
+        int laneJogador = Mathf.Clamp((int)_movimentoJogador.linhaAtual, 0, quantidadeLanes - 1);
+        int distanciaLanes = Mathf.Abs(laneJogador - _indiceLaneAtual);
+
+        if (distanciaLanes > Mathf.Max(0, _alcanceTrocaLane))
+        {
+            _laneDestinoY = _laneInicialY;
+            return false;
+        }
+
+        bool mudaraLane = laneJogador != _indiceLaneAtual;
+        _indiceLaneAtual = laneJogador;
+        _laneDestinoY = LanesController.instance.PosicaoY(
+            (LanesController.Linhas)_indiceLaneAtual);
+        return mudaraLane;
+    }
+
+    private int ObterIndiceLaneMaisProxima(float posicaoY)
+    {
+        if (LanesController.instance == null || LanesController.instance.linhas == null
+            || LanesController.instance.linhas.Length == 0)
+            return 0;
+
+        int indiceMaisProximo = 0;
+        float menorDistancia = float.MaxValue;
+        for (int i = 0; i < LanesController.instance.linhas.Length; i++)
+        {
+            float distancia = Mathf.Abs(
+                LanesController.instance.PosicaoY((LanesController.Linhas)i) - posicaoY);
+            if (distancia >= menorDistancia) continue;
+
+            menorDistancia = distancia;
+            indiceMaisProximo = i;
+        }
+
+        return indiceMaisProximo;
+    }
+
+    private void IniciarPerseguicao()
+    {
+        _estado = EstadoZumbiSombrio.Perseguindo;
+        _tempoAvisoRestante = 0f;
+        AplicarCor(_corSombria);
+        AtualizarAnimator();
     }
 
     private void OnTriggerEnter2D(Collider2D colisao)
@@ -213,6 +313,7 @@ public class ZumbiSombrio : MonoBehaviour
         _estado = EstadoZumbiSombrio.AposImpacto;
         _tempoImpactoRestante = Mathf.Max(0f, _tempoAposImpacto);
         _colisor.enabled = false;
+        NotificarFinalizacao();
         AtualizarAnimator();
 
         if (_tempoImpactoRestante <= 0f)
@@ -231,8 +332,14 @@ public class ZumbiSombrio : MonoBehaviour
             Vector2 direcaoRebatida = velocidade.sqrMagnitude > 0f
                 ? -velocidade.normalized
                 : ((Vector2)corpoCaixa.position - _corpo.position).normalized;
-            corpoCaixa.linearVelocity = direcaoRebatida
-                * Mathf.Max(1f, velocidade.magnitude * _forcaRebatidaCaixa);
+            direcaoRebatida = (direcaoRebatida
+                + Vector2.up * UnityEngine.Random.Range(-0.45f, 0.45f)).normalized;
+            float velocidadeRebatida = Mathf.Max(
+                _velocidadeMinimaRebatida,
+                velocidade.magnitude * _forcaRebatidaCaixa);
+            corpoCaixa.linearVelocity = direcaoRebatida * velocidadeRebatida;
+            float sentidoGiro = UnityEngine.Random.value < 0.5f ? -1f : 1f;
+            corpoCaixa.angularVelocity = sentidoGiro * _velocidadeAngularRebatida;
         }
 
         if (_feedbackBloqueio != null)
@@ -269,7 +376,10 @@ public class ZumbiSombrio : MonoBehaviour
     {
         if (_animator == null) return;
 
-        _animator.SetBool(Andar, _estado == EstadoZumbiSombrio.Caminhando);
+        _animator.SetBool(
+            Andar,
+            _estado == EstadoZumbiSombrio.Caminhando
+                || _estado == EstadoZumbiSombrio.PreparandoPerseguicao);
         _animator.SetBool(Correr, _estado == EstadoZumbiSombrio.Perseguindo);
         _animator.SetBool(Caiu, _estado == EstadoZumbiSombrio.AposImpacto);
     }
@@ -318,10 +428,14 @@ public class ZumbiSombrio : MonoBehaviour
         _velocidadeCorrida = Mathf.Max(0.1f, _velocidadeCorrida);
         _velocidadeTrocaLane = Mathf.Max(0.1f, _velocidadeTrocaLane);
         _distanciaInicioPerseguicao = Mathf.Max(0f, _distanciaInicioPerseguicao);
+        _alcanceTrocaLane = Mathf.Max(0, _alcanceTrocaLane);
+        _tempoAvisoTrocaLane = Mathf.Max(0f, _tempoAvisoTrocaLane);
         _danoAoJogador = Mathf.Max(1, _danoAoJogador);
         _tempoAposImpacto = Mathf.Max(0f, _tempoAposImpacto);
         _duracaoFeedbackBloqueio = Mathf.Max(0.01f, _duracaoFeedbackBloqueio);
-        _forcaRebatidaCaixa = Mathf.Clamp01(_forcaRebatidaCaixa);
+        _forcaRebatidaCaixa = Mathf.Max(1f, _forcaRebatidaCaixa);
+        _velocidadeMinimaRebatida = Mathf.Max(0f, _velocidadeMinimaRebatida);
+        _velocidadeAngularRebatida = Mathf.Max(0f, _velocidadeAngularRebatida);
         _margemSaidaCamera = Mathf.Max(0f, _margemSaidaCamera);
         _distanciaMaximaAtrasJogador = Mathf.Max(1f, _distanciaMaximaAtrasJogador);
     }

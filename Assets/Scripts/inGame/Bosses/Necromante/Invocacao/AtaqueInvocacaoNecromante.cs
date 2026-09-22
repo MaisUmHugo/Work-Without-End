@@ -9,8 +9,9 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
     {
         Inativo,
         Preparando,
-        AvisandoOnda,
+        InvocandoOnda,
         Intervalo,
+        AguardandoInvocados,
         Recuperando
     }
 
@@ -24,18 +25,20 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
     [Header("Ondas")]
     [SerializeField, Min(1)] private int _quantidadeOndas = 2;
     [SerializeField, Range(0f, 1f)] private float _chanceZumbiSombrio = 0.34f;
+    [SerializeField, Range(0f, 1f)] private float _chanceMaoZumbi = 0.35f;
     [SerializeField] private bool _garantirZumbiSombrio = true;
     [SerializeField] private bool _evitarRepetirLaneSegura = true;
+    [SerializeField, Min(0f)] private float _espacamentoHorizontalInvocados = 1.25f;
+    [SerializeField, Min(0f)] private float _variacaoEspacamentoHorizontal = 0.2f;
 
     [Header("Tempos em segundos")]
     [SerializeField, Min(0f)] private float _tempoPreparacao = 0.8f;
-    [SerializeField, Min(0f)] private float _tempoAvisoOnda = 0.7f;
+    [SerializeField, Min(0f)] private float _intervaloEntreInvocados = 0.15f;
     [SerializeField, Min(0f)] private float _intervaloEntreOndas = 1f;
     [SerializeField, Min(0f)] private float _tempoRecuperacao = 0.5f;
 
     [Header("Integracoes futuras")]
     [SerializeField] private UnityEvent _aoIniciarRitual = new UnityEvent();
-    [SerializeField] private UnityEvent _aoAvisarOnda = new UnityEvent();
     [SerializeField] private UnityEvent _aoInvocarOnda = new UnityEvent();
     [SerializeField] private UnityEvent _aoFinalizar = new UnityEvent();
 
@@ -43,14 +46,16 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
     private Transform _alvoAtual;
     private GameObject _avisoAtual;
     private int _ondasExecutadas;
+    private int _indiceInvocadoOnda;
     private int _ultimaLaneSegura = -1;
+    private float _deslocamentoHorizontalAtual;
     private float _tempoRestante;
     private bool _invocouZumbiSombrio;
     private EtapaAtaque _etapa;
+    private float _multiplicadorRitmo = 1f;
 
     public override bool EmExecucao => _etapa != EtapaAtaque.Inativo;
-    public override bool EmPreparacao => _etapa == EtapaAtaque.Preparando
-        || _etapa == EtapaAtaque.AvisandoOnda;
+    public override bool EmPreparacao => _etapa == EtapaAtaque.Preparando;
     public override bool AbreVulnerabilidadeAoFinalizar => true;
     public TipoAtaqueNecromante TipoAnimacao => TipoAtaqueNecromante.Invocacao;
     public int QuantidadeOndas => _quantidadeOndas;
@@ -93,11 +98,13 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
         }
 
         _ondasExecutadas = 0;
+        _indiceInvocadoOnda = 0;
         _ultimaLaneSegura = -1;
+        _deslocamentoHorizontalAtual = 0f;
         _invocouZumbiSombrio = false;
         _lanesOcupadas.Clear();
         CriarAvisoGeral();
-        _tempoRestante = Mathf.Max(0f, _tempoPreparacao);
+        _tempoRestante = Mathf.Max(0f, _tempoPreparacao / _multiplicadorRitmo);
         _etapa = EtapaAtaque.Preparando;
         _aoIniciarRitual?.Invoke();
         return true;
@@ -106,9 +113,6 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
     public override void Atualizar(float deltaTime)
     {
         if (!EmExecucao || deltaTime <= 0f) return;
-
-        if (_etapa == EtapaAtaque.AvisandoOnda)
-            _avisoLanes.Atualizar(deltaTime);
 
         _tempoRestante -= deltaTime;
         if (_tempoRestante > 0f) return;
@@ -120,28 +124,17 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
                 PrepararProximaOnda();
                 break;
 
-            case EtapaAtaque.AvisandoOnda:
-                InvocarOnda();
-                _avisoLanes.Ocultar();
-                _ondasExecutadas++;
-
-                if (_ondasExecutadas >= Mathf.Max(1, _quantidadeOndas)
-                    || _gerenciadorInvocados.EspacosDisponiveis <= 0)
-                {
-                    _tempoRestante = Mathf.Max(0f, _tempoRecuperacao);
-                    _etapa = EtapaAtaque.Recuperando;
-                    if (_tempoRestante <= 0f)
-                        FinalizarExecucao(true);
-                }
-                else
-                {
-                    _tempoRestante = Mathf.Max(0f, _intervaloEntreOndas);
-                    _etapa = EtapaAtaque.Intervalo;
-                }
+            case EtapaAtaque.InvocandoOnda:
+                InvocarProximoDaOnda();
                 break;
 
             case EtapaAtaque.Intervalo:
                 PrepararProximaOnda();
+                break;
+
+            case EtapaAtaque.AguardandoInvocados:
+                if (_gerenciadorInvocados.QuantidadeAtiva <= 0)
+                    IniciarRecuperacao();
                 break;
 
             case EtapaAtaque.Recuperando:
@@ -174,16 +167,7 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
         if (_lanesOcupadas.Count > espacosDisponiveis)
             _lanesOcupadas.RemoveRange(espacosDisponiveis, _lanesOcupadas.Count - espacosDisponiveis);
 
-        if (!_avisoLanes.Exibir(_lanesOcupadas.ToArray()))
-        {
-            Debug.LogWarning("Necromante: nao foi possivel avisar as lanes da invocacao.", this);
-            FinalizarExecucao(false);
-            return;
-        }
-
-        _tempoRestante = Mathf.Max(0f, _tempoAvisoOnda);
-        _etapa = EtapaAtaque.AvisandoOnda;
-        _aoAvisarOnda?.Invoke();
+        IniciarInvocacaoOnda();
     }
 
     private int SortearLaneSegura(int quantidadeLanes)
@@ -196,28 +180,109 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
         return (laneSegura + deslocamento) % quantidadeLanes;
     }
 
-    private void InvocarOnda()
+    private void IniciarInvocacaoOnda()
     {
-        bool ultimaOnda = _ondasExecutadas >= Mathf.Max(1, _quantidadeOndas) - 1;
+        _avisoLanes.Ocultar();
+        _indiceInvocadoOnda = 0;
+        _deslocamentoHorizontalAtual = 0f;
+        _etapa = EtapaAtaque.InvocandoOnda;
+        InvocarProximoDaOnda();
+    }
 
-        for (int i = 0; i < _lanesOcupadas.Count; i++)
+    private void InvocarProximoDaOnda()
+    {
+        if (_indiceInvocadoOnda >= _lanesOcupadas.Count
+            || _gerenciadorInvocados.EspacosDisponiveis <= 0)
         {
-            bool forcarSombrio = _garantirZumbiSombrio && !_invocouZumbiSombrio
-                && ultimaOnda && i == _lanesOcupadas.Count - 1;
-            bool invocarSombrio = forcarSombrio || Random.value < _chanceZumbiSombrio;
+            FinalizarOnda();
+            return;
+        }
 
-            if (invocarSombrio)
+        bool ultimaOnda = _ondasExecutadas >= Mathf.Max(1, _quantidadeOndas) - 1;
+        int indiceLane = _lanesOcupadas[_indiceInvocadoOnda];
+        bool ultimoInvocadoPlanejado = _indiceInvocadoOnda == _lanesOcupadas.Count - 1;
+        bool forcarSombrio = _garantirZumbiSombrio && !_invocouZumbiSombrio
+            && ultimaOnda && ultimoInvocadoPlanejado;
+        bool invocarSombrio = forcarSombrio || Random.value < _chanceZumbiSombrio;
+
+        if (invocarSombrio)
+        {
+            if (_gerenciadorInvocados.TentarInvocarZumbiSombrio(
+                indiceLane,
+                _deslocamentoHorizontalAtual,
+                out _))
             {
-                if (_gerenciadorInvocados.TentarInvocarZumbiSombrio(_lanesOcupadas[i], out _))
-                    _invocouZumbiSombrio = true;
+                _invocouZumbiSombrio = true;
             }
             else
             {
-                _gerenciadorInvocados.TentarInvocarZumbi(_lanesOcupadas[i], out _);
+                InvocarComumOuMao(indiceLane);
             }
         }
+        else
+        {
+            InvocarComumOuMao(indiceLane);
+        }
 
+        _indiceInvocadoOnda++;
+        if (_indiceInvocadoOnda >= _lanesOcupadas.Count
+            || _gerenciadorInvocados.EspacosDisponiveis <= 0)
+        {
+            FinalizarOnda();
+            return;
+        }
+
+        float variacao = Mathf.Min(
+            _variacaoEspacamentoHorizontal,
+            _espacamentoHorizontalInvocados * 0.45f);
+        _deslocamentoHorizontalAtual += Mathf.Max(
+            0f,
+            _espacamentoHorizontalInvocados + Random.Range(-variacao, variacao));
+        _tempoRestante = Mathf.Max(0f, _intervaloEntreInvocados / _multiplicadorRitmo);
+        _etapa = EtapaAtaque.InvocandoOnda;
+    }
+
+    private void InvocarComumOuMao(int indiceLane)
+    {
+        if (Random.value < _chanceMaoZumbi)
+        {
+            _gerenciadorInvocados.TentarInvocarMaoZumbi(
+                indiceLane,
+                _deslocamentoHorizontalAtual,
+                out _);
+            return;
+        }
+
+        _gerenciadorInvocados.TentarInvocarZumbi(
+            indiceLane,
+            _deslocamentoHorizontalAtual,
+            out _);
+    }
+
+    private void FinalizarOnda()
+    {
+        _ondasExecutadas++;
         _aoInvocarOnda?.Invoke();
+
+        if (_ondasExecutadas >= Mathf.Max(1, _quantidadeOndas)
+            || _gerenciadorInvocados.EspacosDisponiveis <= 0)
+        {
+            _tempoRestante = 0f;
+            _etapa = EtapaAtaque.AguardandoInvocados;
+            return;
+        }
+
+        _tempoRestante = Mathf.Max(0f, _intervaloEntreOndas / _multiplicadorRitmo);
+        _etapa = EtapaAtaque.Intervalo;
+    }
+
+    private void IniciarRecuperacao()
+    {
+        _tempoRestante = Mathf.Max(0f, _tempoRecuperacao / _multiplicadorRitmo);
+        _etapa = EtapaAtaque.Recuperando;
+
+        if (_tempoRestante <= 0f)
+            FinalizarExecucao(true);
     }
 
     private static void Embaralhar(List<int> valores)
@@ -262,6 +327,8 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
         RemoverAvisoGeral();
         _lanesOcupadas.Clear();
         _alvoAtual = null;
+        _indiceInvocadoOnda = 0;
+        _deslocamentoHorizontalAtual = 0f;
         _tempoRestante = 0f;
         _etapa = EtapaAtaque.Inativo;
 
@@ -276,6 +343,11 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
         FinalizarExecucao(false);
     }
 
+    public void ConfigurarRitmo(float multiplicadorRitmo)
+    {
+        _multiplicadorRitmo = Mathf.Max(0.1f, multiplicadorRitmo);
+    }
+
     private void OnDisable()
     {
         Cancelar();
@@ -285,9 +357,12 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
     {
         _quantidadeOndas = Mathf.Max(1, _quantidadeOndas);
         _chanceZumbiSombrio = Mathf.Clamp01(_chanceZumbiSombrio);
+        _chanceMaoZumbi = Mathf.Clamp01(_chanceMaoZumbi);
         _tempoPreparacao = Mathf.Max(0f, _tempoPreparacao);
-        _tempoAvisoOnda = Mathf.Max(0f, _tempoAvisoOnda);
+        _intervaloEntreInvocados = Mathf.Max(0f, _intervaloEntreInvocados);
         _intervaloEntreOndas = Mathf.Max(0f, _intervaloEntreOndas);
         _tempoRecuperacao = Mathf.Max(0f, _tempoRecuperacao);
+        _espacamentoHorizontalInvocados = Mathf.Max(0f, _espacamentoHorizontalInvocados);
+        _variacaoEspacamentoHorizontal = Mathf.Max(0f, _variacaoEspacamentoHorizontal);
     }
 }
