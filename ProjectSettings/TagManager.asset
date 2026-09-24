@@ -13,6 +13,7 @@ TagManager:
   - Caixa
   - Louco
   - Malabarista
+  - FadeIn
   layers:
   - Default
   - TransparentFX

@@ -211,6 +211,30 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -610.6979
       objectReference: {fileID: 0}
+    - target: {fileID: 3639113979652749891, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3639113979652749891, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
+      propertyPath: m_SortingLayer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3639113979652749891, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3639113979652749891, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1622571857
+      objectReference: {fileID: 0}
+    - target: {fileID: 4541817195392750892, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4541817195392750892, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5579670848088646579, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
       propertyPath: m_fontSize
       value: 36
