@@ -213,7 +213,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3639113979652749891, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
       propertyPath: m_Color.a
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3639113979652749891, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
       propertyPath: m_SortingLayer
@@ -234,6 +234,10 @@ PrefabInstance:
     - target: {fileID: 4541817195392750892, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4541817195392750892, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
+      propertyPath: m_TagString
+      value: FadeIn
       objectReference: {fileID: 0}
     - target: {fileID: 5579670848088646579, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
       propertyPath: m_fontSize
@@ -632,6 +636,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Parallax
   speed: 0.1
+  material1: {fileID: 2100000, guid: bc5db357b9e4ea54b9e1284a2693b0ef, type: 2}
+  material2: {fileID: 2100000, guid: 12d836217cb686742b35254495278692, type: 2}
+  repeticoesMaterial1: 1
+  repeticoesMaterial2: 1
+  tempoFadeIn: 0.5
+  tempoVisivel: 1
+  tempoFadeOut: 0.5
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -787,6 +798,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Parallax
   speed: 0.13333334
+  material1: {fileID: 2100000, guid: 0ca778ac9811a4341bafd07ac32c1679, type: 2}
+  material2: {fileID: 2100000, guid: b5a89b191acd0a24586c132465a53b53, type: 2}
+  repeticoesMaterial1: 1
+  repeticoesMaterial2: 1
+  tempoFadeIn: 0.5
+  tempoVisivel: 1
+  tempoFadeOut: 0.5
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -889,6 +907,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Parallax
   speed: 0.07
+  material1: {fileID: 2100000, guid: 33d270797968f6d44a87443b35a5c015, type: 2}
+  material2: {fileID: 2100000, guid: af6fb41e12f32cb41b2eb98b865b9f2e, type: 2}
+  repeticoesMaterial1: 1
+  repeticoesMaterial2: 1
+  tempoFadeIn: 0.5
+  tempoVisivel: 1
+  tempoFadeOut: 0.5
 --- !u!1001 &998861243
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -897,6 +922,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 22668106403970936, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 33d270797968f6d44a87443b35a5c015, type: 2}
     - target: {fileID: 330389531305898605, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.8293205
@@ -913,6 +942,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 1.49971
       objectReference: {fileID: 0}
+    - target: {fileID: 1208012836282366132, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0ca778ac9811a4341bafd07ac32c1679, type: 2}
+    - target: {fileID: 2043534133966052689, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3454033119658295028, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
       propertyPath: m_LocalPosition.y
       value: 2.293
@@ -921,6 +958,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4956611908054741810, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: bc5db357b9e4ea54b9e1284a2693b0ef, type: 2}
     - target: {fileID: 6114940221119720850, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
       propertyPath: m_LocalPosition.z
       value: 1
@@ -1558,6 +1599,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 382514239}
+  - {fileID: 305894504}
   - {fileID: 148052388}
   - {fileID: 1928465504}
   - {fileID: 40139897325349408}
@@ -1565,7 +1607,6 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1406261006}
-  - {fileID: 305894504}
   - {fileID: 1561481501}
   - {fileID: 4477705859423657822}
   - {fileID: 998861243}
