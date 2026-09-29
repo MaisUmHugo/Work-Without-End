@@ -46,6 +46,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
     public ResultadoEncontroBoss ResultadoAtual => _resultadoAtual;
     public bool Encerrado => _encerramentoIniciado;
     public bool Concluido => _encontroConcluido;
+    public float DuracaoFuga => _duracaoFuga;
 
     public event Action<ResultadoEncontroBoss> EncerramentoIniciado;
     public event Action<ResultadoEncontroBoss> EncontroEncerrado;

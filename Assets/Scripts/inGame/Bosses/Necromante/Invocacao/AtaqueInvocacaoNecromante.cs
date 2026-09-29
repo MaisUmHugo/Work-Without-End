@@ -61,6 +61,7 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
     public int QuantidadeOndas => _quantidadeOndas;
     public float ChanceZumbiSombrio => _chanceZumbiSombrio;
     public bool GaranteZumbiSombrio => _garantirZumbiSombrio;
+    public float TempoPreparacaoEfetivo { get; private set; }
 
     public void ConfigurarFase(int quantidadeOndas, float chanceZumbiSombrio, bool garantirZumbiSombrio)
     {
@@ -104,7 +105,8 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
         _invocouZumbiSombrio = false;
         _lanesOcupadas.Clear();
         CriarAvisoGeral();
-        _tempoRestante = Mathf.Max(0f, _tempoPreparacao / _multiplicadorRitmo);
+        TempoPreparacaoEfetivo = Mathf.Max(0f, _tempoPreparacao / _multiplicadorRitmo);
+        _tempoRestante = TempoPreparacaoEfetivo;
         _etapa = EtapaAtaque.Preparando;
         _aoIniciarRitual?.Invoke();
         return true;
