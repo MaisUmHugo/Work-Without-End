@@ -74,12 +74,6 @@ TextureImporter:
   - first:
       213: -8923057397176242116
     second: AnimNecromanteTP-Sheet_23
-  - first:
-      213: -7196121235678432377
-    second: AnimNecromanteTP-Sheet_24
-  - first:
-      213: -5058004692805166052
-    second: AnimNecromanteTP-Sheet_25
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -178,14 +172,14 @@ TextureImporter:
       name: AnimNecromanteTP-Sheet_0
       rect:
         serializedVersion: 2
-        x: 22
-        y: 10
-        width: 22
-        height: 38
+        x: 0
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -193,21 +187,21 @@ TextureImporter:
       spriteID: b8f339e6e52556830800000000000000
       internalID: 4063744804307287947
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_1
       rect:
         serializedVersion: 2
-        x: 62
-        y: 15
-        width: 11
-        height: 27
+        x: 53
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -215,21 +209,21 @@ TextureImporter:
       spriteID: 0634ff668f6aaaf50800000000000000
       internalID: 6893505765454070624
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_2
       rect:
         serializedVersion: 2
-        x: 75
-        y: 10
-        width: 22
-        height: 38
+        x: 106
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -237,21 +231,21 @@ TextureImporter:
       spriteID: 6faaa24134ade2f70800000000000000
       internalID: 9164502273381542646
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_3
       rect:
         serializedVersion: 2
-        x: 115
-        y: 17
-        width: 11
-        height: 27
+        x: 159
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -259,21 +253,21 @@ TextureImporter:
       spriteID: 98ec6371e85628d40800000000000000
       internalID: 5585138148842065545
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_4
       rect:
         serializedVersion: 2
-        x: 128
-        y: 10
-        width: 22
-        height: 38
+        x: 212
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -281,21 +275,21 @@ TextureImporter:
       spriteID: de365afbeb7743f80800000000000000
       internalID: -8127739766354123795
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_5
       rect:
         serializedVersion: 2
-        x: 168
-        y: 19
-        width: 11
-        height: 27
+        x: 265
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -303,21 +297,21 @@ TextureImporter:
       spriteID: ce51ab67f69e1f330800000000000000
       internalID: 3743029430264141292
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_6
       rect:
         serializedVersion: 2
-        x: 181
-        y: 10
-        width: 22
-        height: 38
+        x: 318
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -325,21 +319,21 @@ TextureImporter:
       spriteID: 98e91bae6d378e610800000000000000
       internalID: 1650696630328991369
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_7
       rect:
         serializedVersion: 2
-        x: 220
-        y: 23
-        width: 11
-        height: 27
+        x: 371
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -347,21 +341,21 @@ TextureImporter:
       spriteID: 34b11410d0a65afc0800000000000000
       internalID: -3484262132613047485
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_8
       rect:
         serializedVersion: 2
-        x: 234
-        y: 10
-        width: 22
-        height: 38
+        x: 424
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -369,21 +363,21 @@ TextureImporter:
       spriteID: c544fa0ef325b7270800000000000000
       internalID: 8249277576765195356
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_9
       rect:
         serializedVersion: 2
-        x: 273
-        y: 23
-        width: 11
-        height: 27
+        x: 477
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -391,21 +385,21 @@ TextureImporter:
       spriteID: 7ceb9e7f98e0ec540800000000000000
       internalID: 5029973819552022215
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_10
       rect:
         serializedVersion: 2
-        x: 287
-        y: 10
-        width: 22
-        height: 38
+        x: 530
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -413,21 +407,21 @@ TextureImporter:
       spriteID: 77f9a84754b79d740800000000000000
       internalID: 5177304784877297527
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_11
       rect:
         serializedVersion: 2
-        x: 326
-        y: 23
-        width: 11
-        height: 27
+        x: 583
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -435,21 +429,21 @@ TextureImporter:
       spriteID: 8e67861c7da2dd5d0800000000000000
       internalID: -3036223467626662168
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_12
       rect:
         serializedVersion: 2
-        x: 326
-        y: 8
-        width: 39
-        height: 40
+        x: 636
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -457,21 +451,21 @@ TextureImporter:
       spriteID: 395268160aec3e530800000000000000
       internalID: 3883174491949770131
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_13
       rect:
         serializedVersion: 2
-        x: 379
-        y: 23
-        width: 11
-        height: 27
+        x: 689
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -479,21 +473,21 @@ TextureImporter:
       spriteID: 5431bb86764e9ddc0800000000000000
       internalID: -3613606093198257339
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_14
       rect:
         serializedVersion: 2
-        x: 379
-        y: 10
-        width: 39
-        height: 38
+        x: 742
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -501,21 +495,21 @@ TextureImporter:
       spriteID: 43c10a40fcb780d60800000000000000
       internalID: 7856665679013878836
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_15
       rect:
         serializedVersion: 2
-        x: 432
-        y: 23
-        width: 11
-        height: 27
+        x: 795
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -523,21 +517,21 @@ TextureImporter:
       spriteID: c1e1fcc8fe0b81150800000000000000
       internalID: 5843615059419274780
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_16
       rect:
         serializedVersion: 2
-        x: 432
-        y: 14
-        width: 39
-        height: 34
+        x: 848
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -545,21 +539,21 @@ TextureImporter:
       spriteID: 587cccee9e65caff0800000000000000
       internalID: -23548335309928571
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_17
       rect:
         serializedVersion: 2
-        x: 485
-        y: 23
-        width: 11
-        height: 27
+        x: 901
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -567,21 +561,21 @@ TextureImporter:
       spriteID: a142494f3760afa20800000000000000
       internalID: 3096794788864992282
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_18
       rect:
         serializedVersion: 2
-        x: 485
-        y: 18
-        width: 39
-        height: 30
+        x: 954
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -589,21 +583,21 @@ TextureImporter:
       spriteID: 499a9e2cb94a6a990800000000000000
       internalID: -7375026350875629164
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_19
       rect:
         serializedVersion: 2
-        x: 538
-        y: 22
-        width: 39
-        height: 28
+        x: 1007
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -611,21 +605,21 @@ TextureImporter:
       spriteID: fbab1996c53328550800000000000000
       internalID: 6161543712197425855
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_20
       rect:
         serializedVersion: 2
-        x: 591
-        y: 26
-        width: 39
-        height: 24
+        x: 1060
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -633,21 +627,21 @@ TextureImporter:
       spriteID: 1b5a31979f27322b0800000000000000
       internalID: -5610514294969752143
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_21
       rect:
         serializedVersion: 2
-        x: 644
-        y: 30
-        width: 39
-        height: 20
+        x: 1113
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -655,21 +649,21 @@ TextureImporter:
       spriteID: 33b5824a2f559b780800000000000000
       internalID: -8666801507273254093
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_22
       rect:
         serializedVersion: 2
-        x: 697
-        y: 34
-        width: 39
-        height: 16
+        x: 1166
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -677,21 +671,21 @@ TextureImporter:
       spriteID: a0107a5a1d68c22c0800000000000000
       internalID: -4455037696390790902
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: AnimNecromanteTP-Sheet_23
       rect:
         serializedVersion: 2
-        x: 750
-        y: 38
-        width: 39
-        height: 12
+        x: 1219
+        y: 0
+        width: 53
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
@@ -699,61 +693,17 @@ TextureImporter:
       spriteID: c3073ead29eea2480800000000000000
       internalID: -8923057397176242116
       vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AnimNecromanteTP-Sheet_24
-      rect:
-        serializedVersion: 2
-        x: 803
-        y: 42
-        width: 398
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 783fdb2ecdd322c90800000000000000
-      internalID: -7196121235678432377
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AnimNecromanteTP-Sheet_25
-      rect:
-        serializedVersion: 2
-        x: 9
-        y: 14
-        width: 11
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c1cd615c78b5ec9b0800000000000000
-      internalID: -5058004692805166052
-      vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     outline: []
-    customData: 
+    customData:
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID:
     internalID: 0
     vertices: []
-    indices: 
+    indices:
     edges: []
     weights: []
     secondaryTextures: []
@@ -762,6 +712,14 @@ TextureImporter:
     nameFileIdTable:
       AnimNecromanteTP-Sheet_0: 4063744804307287947
       AnimNecromanteTP-Sheet_1: 6893505765454070624
+      AnimNecromanteTP-Sheet_2: 9164502273381542646
+      AnimNecromanteTP-Sheet_3: 5585138148842065545
+      AnimNecromanteTP-Sheet_4: -8127739766354123795
+      AnimNecromanteTP-Sheet_5: 3743029430264141292
+      AnimNecromanteTP-Sheet_6: 1650696630328991369
+      AnimNecromanteTP-Sheet_7: -3484262132613047485
+      AnimNecromanteTP-Sheet_8: 8249277576765195356
+      AnimNecromanteTP-Sheet_9: 5029973819552022215
       AnimNecromanteTP-Sheet_10: 5177304784877297527
       AnimNecromanteTP-Sheet_11: -3036223467626662168
       AnimNecromanteTP-Sheet_12: 3883174491949770131
@@ -772,20 +730,10 @@ TextureImporter:
       AnimNecromanteTP-Sheet_17: 3096794788864992282
       AnimNecromanteTP-Sheet_18: -7375026350875629164
       AnimNecromanteTP-Sheet_19: 6161543712197425855
-      AnimNecromanteTP-Sheet_2: 9164502273381542646
       AnimNecromanteTP-Sheet_20: -5610514294969752143
       AnimNecromanteTP-Sheet_21: -8666801507273254093
       AnimNecromanteTP-Sheet_22: -4455037696390790902
       AnimNecromanteTP-Sheet_23: -8923057397176242116
-      AnimNecromanteTP-Sheet_24: -7196121235678432377
-      AnimNecromanteTP-Sheet_25: -5058004692805166052
-      AnimNecromanteTP-Sheet_3: 5585138148842065545
-      AnimNecromanteTP-Sheet_4: -8127739766354123795
-      AnimNecromanteTP-Sheet_5: 3743029430264141292
-      AnimNecromanteTP-Sheet_6: 1650696630328991369
-      AnimNecromanteTP-Sheet_7: -3484262132613047485
-      AnimNecromanteTP-Sheet_8: 8249277576765195356
-      AnimNecromanteTP-Sheet_9: 5029973819552022215
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

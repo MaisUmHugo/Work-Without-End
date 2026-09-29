@@ -2,7 +2,7 @@
 
 O comportamento da luta já escolhe as animações. Para integrar arte, não altere os scripts nem as transições do `Necromante.controller`.
 
-1. Crie os clips a partir das spritesheets. Mantenha cada quadro inteiro e o pivô no centro.
+1. Crie os clips a partir das spritesheets. Mantenha cada quadro inteiro e o pivô no centro. As três spritesheets já estão recortadas em quadros de 53 x 58 pixels, com 16 pixels por unidade.
 2. Abra `Animacoes/Necromante_Arte.overrideController` e arraste cada clip para o campo `Override` do placeholder correspondente. Os campos ainda sem arte podem continuar com placeholder.
 3. Abra o prefab `Prefabs/Chefes/Necromante/Necromante.prefab`. Selecione o filho `Arte` e ajuste **Transform > Local Scale**. A Scene View mostra o novo tamanho imediatamente. Use a janela Animation em Preview para ver os quadros sem Play Mode.
 4. Para trocar o projétil, abra `Prefabs/Chefes/Necromante/Projetil/NecromanteProjectile.prefab` e arraste o sprite para o `SpriteRenderer` do filho `Visual`.
