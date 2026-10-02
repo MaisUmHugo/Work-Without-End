@@ -29,7 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1041377764812238141}
+  m_Father: {fileID: 9063641973165233150}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2649569884267953559
 GameObject:
@@ -84,6 +84,7 @@ Transform:
   - {fileID: 622116544248352081}
   - {fileID: 6792749868548559501}
   - {fileID: 4630271392212261555}
+  - {fileID: 860588345486713658}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &2978240186951705937
@@ -173,7 +174,7 @@ GameObject:
   - component: {fileID: 910020003}
   - component: {fileID: 5934384873557170418}
   m_Layer: 0
-  m_Name: Visual
+  m_Name: Arte
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -191,8 +192,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 860588345486713658}
+  m_Children: []
   m_Father: {fileID: 9063641973165233150}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8511946102748384679
@@ -1056,6 +1056,7 @@ MonoBehaviour:
   _movimento: {fileID: 910010002}
   _vida: {fileID: 910020001}
   _encontro: {fileID: 910060002}
+  _ataqueInvocacao: {fileID: 910050002}
 --- !u!114 &398982659817732409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1083,7 +1084,7 @@ Animator:
   m_GameObject: {fileID: 2756935137198723993}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 3fa5d466d5842cf428ace01e7ee1a5c1, type: 2}
+  m_Controller: {fileID: 22100000, guid: 2dfe14342c9c4fc6b97119e80100f310, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

@@ -1,0 +1,715 @@
+fileFormatVersion: 2
+guid: 0ad8e66226abeac40b4d9741b93f44a7
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6845710842961468034
+    second: AnimNecromanteInvoke-Sheet_0
+  - first:
+      213: -6678208659346076045
+    second: AnimNecromanteInvoke-Sheet_1
+  - first:
+      213: -3673905413405393471
+    second: AnimNecromanteInvoke-Sheet_2
+  - first:
+      213: -1796039490978391745
+    second: AnimNecromanteInvoke-Sheet_3
+  - first:
+      213: -2882876962273505962
+    second: AnimNecromanteInvoke-Sheet_4
+  - first:
+      213: 8160038788413685683
+    second: AnimNecromanteInvoke-Sheet_5
+  - first:
+      213: -8134125428584608082
+    second: AnimNecromanteInvoke-Sheet_6
+  - first:
+      213: 4832781122576799856
+    second: AnimNecromanteInvoke-Sheet_7
+  - first:
+      213: -7854156194719777581
+    second: AnimNecromanteInvoke-Sheet_8
+  - first:
+      213: -3034757391097075742
+    second: AnimNecromanteInvoke-Sheet_9
+  - first:
+      213: 3995626500711152355
+    second: AnimNecromanteInvoke-Sheet_10
+  - first:
+      213: -7281978132689312107
+    second: AnimNecromanteInvoke-Sheet_11
+  - first:
+      213: 7932719998100327709
+    second: AnimNecromanteInvoke-Sheet_12
+  - first:
+      213: 6417356941588575267
+    second: AnimNecromanteInvoke-Sheet_13
+  - first:
+      213: -3141309683038883928
+    second: AnimNecromanteInvoke-Sheet_14
+  - first:
+      213: -7446825494154647193
+    second: AnimNecromanteInvoke-Sheet_15
+  - first:
+      213: 6629774173630884873
+    second: AnimNecromanteInvoke-Sheet_16
+  - first:
+      213: 1322995823117578763
+    second: AnimNecromanteInvoke-Sheet_17
+  - first:
+      213: -7471500829201951224
+    second: AnimNecromanteInvoke-Sheet_18
+  - first:
+      213: -8275691228040569628
+    second: AnimNecromanteInvoke-Sheet_19
+  - first:
+      213: 5033169289757594667
+    second: AnimNecromanteInvoke-Sheet_20
+  - first:
+      213: -8923727113449022043
+    second: AnimNecromanteInvoke-Sheet_21
+  - first:
+      213: -4425225628692929786
+    second: AnimNecromanteInvoke-Sheet_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e75ed3a22462ff0a0800000000000000
+      internalID: -6845710842961468034
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37e4db36b9c3253a0800000000000000
+      internalID: -6678208659346076045
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cd369fdd7aa30dc0800000000000000
+      internalID: -3673905413405393471
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f39d8a9499f2317e0800000000000000
+      internalID: -1796039490978391745
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65dc78c4da6fdf7d0800000000000000
+      internalID: -2882876962273505962
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bf7ec85b084e3170800000000000000
+      internalID: 8160038788413685683
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eae0eb6e408cd1f80800000000000000
+      internalID: -8134125428584608082
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 371
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 078576863dc711340800000000000000
+      internalID: 4832781122576799856
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3dc3b43dd8e600390800000000000000
+      internalID: -7854156194719777581
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 477
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e7ea2c4b3062e5d0800000000000000
+      internalID: -3034757391097075742
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 530
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ea7606f121537730800000000000000
+      internalID: 3995626500711152355
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 583
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59624ea487731fa90800000000000000
+      internalID: -7281978132689312107
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 636
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1d48651fcea61e60800000000000000
+      internalID: 7932719998100327709
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 689
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 324364443280f0950800000000000000
+      internalID: 6417356941588575267
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 742
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8afe8f49c73d764d0800000000000000
+      internalID: -3141309683038883928
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 795
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 769e6940baf87a890800000000000000
+      internalID: -7446825494154647193
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 848
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90ce3502c70b10c50800000000000000
+      internalID: 6629774173630884873
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 901
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b02bf3c01b93c5210800000000000000
+      internalID: 1322995823117578763
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 954
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8069160e495ef4890800000000000000
+      internalID: -7471500829201951224
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 1007
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ec53d1bca6d62d80800000000000000
+      internalID: -8275691228040569628
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 1060
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b24186a5dc869d540800000000000000
+      internalID: 5033169289757594667
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 1113
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ad5952687d882480800000000000000
+      internalID: -8923727113449022043
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AnimNecromanteInvoke-Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 1166
+        y: 0
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 603adce8cb07692c0800000000000000
+      internalID: -4425225628692929786
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    outline: []
+    customData:
+    physicsShape: []
+    bones: []
+    spriteID:
+    internalID: 0
+    vertices: []
+    indices:
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      AnimNecromanteInvoke-Sheet_0: -6845710842961468034
+      AnimNecromanteInvoke-Sheet_1: -6678208659346076045
+      AnimNecromanteInvoke-Sheet_2: -3673905413405393471
+      AnimNecromanteInvoke-Sheet_3: -1796039490978391745
+      AnimNecromanteInvoke-Sheet_4: -2882876962273505962
+      AnimNecromanteInvoke-Sheet_5: 8160038788413685683
+      AnimNecromanteInvoke-Sheet_6: -8134125428584608082
+      AnimNecromanteInvoke-Sheet_7: 4832781122576799856
+      AnimNecromanteInvoke-Sheet_8: -7854156194719777581
+      AnimNecromanteInvoke-Sheet_9: -3034757391097075742
+      AnimNecromanteInvoke-Sheet_10: 3995626500711152355
+      AnimNecromanteInvoke-Sheet_11: -7281978132689312107
+      AnimNecromanteInvoke-Sheet_12: 7932719998100327709
+      AnimNecromanteInvoke-Sheet_13: 6417356941588575267
+      AnimNecromanteInvoke-Sheet_14: -3141309683038883928
+      AnimNecromanteInvoke-Sheet_15: -7446825494154647193
+      AnimNecromanteInvoke-Sheet_16: 6629774173630884873
+      AnimNecromanteInvoke-Sheet_17: 1322995823117578763
+      AnimNecromanteInvoke-Sheet_18: -7471500829201951224
+      AnimNecromanteInvoke-Sheet_19: -8275691228040569628
+      AnimNecromanteInvoke-Sheet_20: 5033169289757594667
+      AnimNecromanteInvoke-Sheet_21: -8923727113449022043
+      AnimNecromanteInvoke-Sheet_22: -4425225628692929786
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
