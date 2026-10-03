@@ -18,6 +18,7 @@ public class ZumbiSombrio : Entregavel
     private static readonly int Andar = Animator.StringToHash("Andar");
     private static readonly int Correr = Animator.StringToHash("Correr");
     private static readonly int Caiu = Animator.StringToHash("Caiu");
+    private static readonly int RecebeuEntrega = Animator.StringToHash("RecebeuEntrega");
 
     [Header("Referencias")]
     [SerializeField] private Rigidbody2D _corpo;
@@ -54,7 +55,7 @@ public class ZumbiSombrio : Entregavel
     private Camera _camera;
     private EstadoZumbiSombrio _estado;
     private EstadoZumbiSombrio _estadoAntesAtordoamento;
-    private Vector3 _escalaOriginal;
+    private Vector3 _escalaOriginalVisual;
     private int _entregasRecebidas;
     private float _tempoAtordoamentoRestante;
     private int _indiceLaneAtual;
@@ -85,7 +86,8 @@ public class ZumbiSombrio : Entregavel
             _animator = GetComponentInChildren<Animator>();
         if (_spriteRenderer == null)
             _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        _escalaOriginal = transform.localScale;
+        if (_spriteRenderer != null)
+            _escalaOriginalVisual = _spriteRenderer.transform.localScale;
 
         _velocidadeCaminhadaBase = _velocidadeCaminhada;
         _velocidadeCorridaBase = _velocidadeCorrida;
@@ -342,8 +344,9 @@ public class ZumbiSombrio : Entregavel
         _tempoAtordoamentoRestante = _tempoAtordoamento;
         if (_corpo != null)
             _corpo.linearVelocity = Vector2.zero;
-        transform.localScale = _escalaOriginal
-            * Mathf.Pow(_escalaPorEntrega, _entregasRecebidas);
+        if (_spriteRenderer != null)
+            _spriteRenderer.transform.localScale = _escalaOriginalVisual
+                * Mathf.Pow(_escalaPorEntrega, _entregasRecebidas);
         AplicarCor(_corAtordoado);
         AtualizarAnimator();
     }
@@ -372,7 +375,8 @@ public class ZumbiSombrio : Entregavel
 
     private void RestaurarEscala()
     {
-        transform.localScale = _escalaOriginal;
+        if (_spriteRenderer != null)
+            _spriteRenderer.transform.localScale = _escalaOriginalVisual;
     }
 
     private void AtingirJogador()
@@ -414,8 +418,11 @@ public class ZumbiSombrio : Entregavel
             _estado == EstadoZumbiSombrio.Caminhando
                 || _estado == EstadoZumbiSombrio.PreparandoPerseguicao);
         _animator.SetBool(Correr, _estado == EstadoZumbiSombrio.Perseguindo);
+        bool recebeuEntrega = _estado == EstadoZumbiSombrio.AposImpacto
+            && _entregasRecebidas >= _entregasNecessarias;
+        _animator.SetBool(RecebeuEntrega, recebeuEntrega);
         _animator.SetBool(Caiu, _estado == EstadoZumbiSombrio.Atordoado
-            || _estado == EstadoZumbiSombrio.AposImpacto);
+            || (_estado == EstadoZumbiSombrio.AposImpacto && !recebeuEntrega));
     }
 
     private void AplicarCor(Color cor)

@@ -132,7 +132,7 @@ MonoBehaviour:
   _tempoAposImpacto: 1.8
   _entregasNecessarias: 2
   _tempoAtordoamento: 1.6
-  _escalaPorEntrega: 1.25
+  _escalaPorEntrega: 1.35
   _corSombria: {r: 0.22, g: 0.08, b: 0.3, a: 1}
   _corAtordoado: {r: 0.75, g: 0.3, b: 1, a: 1}
   _margemSaidaCamera: 0.15
