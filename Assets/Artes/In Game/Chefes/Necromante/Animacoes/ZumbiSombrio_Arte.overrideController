@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ZumbiSombrio_Arte
+  m_Controller: {fileID: 9100000, guid: 0a040476ae093f74db58e951a223d7fa, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 9004558a96f78574cbe37fc98d037309, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 9004558a96f78574cbe37fc98d037309, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a79b51fe941e115428fb6fe89f42d8ba, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: a79b51fe941e115428fb6fe89f42d8ba, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 50db53d791f681646bafbb0d4c54ec04, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 50db53d791f681646bafbb0d4c54ec04, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 8df2923a8b68c00418bc2fac7ce18abc, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 8df2923a8b68c00418bc2fac7ce18abc, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: afa8be96a1b621445ad96ee9d17d68de, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: afa8be96a1b621445ad96ee9d17d68de, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 0fe9f0b59a3aea145af1ecce8a55aeb3, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 0fe9f0b59a3aea145af1ecce8a55aeb3, type: 2}
