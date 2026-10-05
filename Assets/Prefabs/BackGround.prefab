@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3454033119658295028}
   - component: {fileID: 1130958043773434091}
   - component: {fileID: 1208012836282366132}
+  - component: {fileID: 5534638357779690575}
   m_Layer: 0
   m_Name: Building_Parallax
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 2043534133966052689}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7071068, z: 0.7071068, w: 0}
-  m_LocalPosition: {x: 1.7769, y: 2.1798897, z: 1}
+  m_LocalPosition: {x: 1.7769, y: 2.293, z: 1}
   m_LocalScale: {x: 2.6580596, y: 1, z: 0.49336883}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -88,7 +89,28 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5534638357779690575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2043534133966052689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0feb0041ea2f69b40a0e11dd056016fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Parallax
+  speed: 0.13333334
+  material1: {fileID: 2100000, guid: 0ca778ac9811a4341bafd07ac32c1679, type: 2}
+  material2: {fileID: 2100000, guid: b5a89b191acd0a24586c132465a53b53, type: 2}
+  repeticoesMaterial1: 1
+  repeticoesMaterial2: 1
+  tempoFadeIn: 0.5
+  tempoVisivel: 1
+  tempoFadeOut: 0.5
 --- !u!1 &2184583083458364571
 GameObject:
   m_ObjectHideFlags: 0
@@ -100,6 +122,7 @@ GameObject:
   - component: {fileID: 330389531305898605}
   - component: {fileID: 3255516858821102519}
   - component: {fileID: 22668106403970936}
+  - component: {fileID: 7625538158221776266}
   m_Layer: 0
   m_Name: Building_Parallax_Back
   m_TagString: Untagged
@@ -177,7 +200,28 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7625538158221776266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2184583083458364571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0feb0041ea2f69b40a0e11dd056016fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Parallax
+  speed: 0.07
+  material1: {fileID: 2100000, guid: 33d270797968f6d44a87443b35a5c015, type: 2}
+  material2: {fileID: 2100000, guid: af6fb41e12f32cb41b2eb98b865b9f2e, type: 2}
+  repeticoesMaterial1: 1
+  repeticoesMaterial2: 1
+  tempoFadeIn: 0.5
+  tempoVisivel: 1
+  tempoFadeOut: 0.5
 --- !u!1 &4571045553712541340
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,6 +233,7 @@ GameObject:
   - component: {fileID: 6114940221119720850}
   - component: {fileID: 6149472721838922275}
   - component: {fileID: 4956611908054741810}
+  - component: {fileID: 3344221321141211612}
   m_Layer: 0
   m_Name: Street_Parallax
   m_TagString: Untagged
@@ -266,7 +311,28 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3344221321141211612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4571045553712541340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0feb0041ea2f69b40a0e11dd056016fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Parallax
+  speed: 0.1
+  material1: {fileID: 2100000, guid: bc5db357b9e4ea54b9e1284a2693b0ef, type: 2}
+  material2: {fileID: 2100000, guid: 12d836217cb686742b35254495278692, type: 2}
+  repeticoesMaterial1: 1
+  repeticoesMaterial2: 1
+  tempoFadeIn: 0.5
+  tempoVisivel: 1
+  tempoFadeOut: 0.5
 --- !u!1 &6658673356952740535
 GameObject:
   m_ObjectHideFlags: 0

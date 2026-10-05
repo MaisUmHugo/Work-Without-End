@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Parallax : MonoBehaviour
@@ -25,34 +26,31 @@ public class Parallax : MonoBehaviour
 
     private float distance;
     private float multiplicadorAtual = 1f;
-    private bool materialInicializado;
 
+    private bool materialInicializado;
     private int materialAtual = -1;
 
-    private static SpriteRenderer fadeRenderer;
-    private static bool fadeInicializado;
+    private SpriteRenderer fadeRenderer;
+
+    private List<(GameObject objeto, bool estavaAtivo)> objetosUI =
+        new List<(GameObject, bool)>();
 
     private void Awake()
     {
         render = GetComponent<Renderer>();
 
-        if (!fadeInicializado)
+        GameObject fadeObject = GameObject.FindGameObjectWithTag("FadeIn");
+
+        if (fadeObject != null)
         {
-            GameObject fadeObject = GameObject.FindGameObjectWithTag("FadeIn");
+            fadeRenderer = fadeObject.GetComponent<SpriteRenderer>();
 
-            if (fadeObject != null)
+            if (fadeRenderer != null)
             {
-                fadeRenderer = fadeObject.GetComponent<SpriteRenderer>();
-
-                if (fadeRenderer != null)
-                {
-                    Color cor = fadeRenderer.color;
-                    cor.a = 0f;
-                    fadeRenderer.color = cor;
-                }
+                Color cor = fadeRenderer.color;
+                cor.a = 0f;
+                fadeRenderer.color = cor;
             }
-
-            fadeInicializado = true;
         }
     }
 
@@ -118,6 +116,14 @@ public class Parallax : MonoBehaviour
 
     private IEnumerator FadeTransicao(int indiceMaterial, Material materialBase)
     {
+        if (fadeRenderer == null)
+        {
+            AplicarMaterial(indiceMaterial, materialBase);
+            yield break;
+        }
+
+        DesativarUI();
+
         Color cor = fadeRenderer.color;
 
         float tempo = 0f;
@@ -126,7 +132,12 @@ public class Parallax : MonoBehaviour
         {
             tempo += Time.deltaTime;
 
-            cor.a = Mathf.Lerp(0f, 0.5f, tempo / tempoFadeIn);
+            cor.a = Mathf.Lerp(
+                0f,
+                1f,
+                tempo / tempoFadeIn
+            );
+
             fadeRenderer.color = cor;
 
             yield return null;
@@ -140,12 +151,17 @@ public class Parallax : MonoBehaviour
         yield return new WaitForSeconds(tempoVisivel);
 
         tempo = 0f;
-
+        ReativarUI();
         while (tempo < tempoFadeOut)
         {
             tempo += Time.deltaTime;
 
-            cor.a = Mathf.Lerp(0.5f, 0f, tempo / tempoFadeOut);
+            cor.a = Mathf.Lerp(
+                1f,
+                0f,
+                tempo / tempoFadeOut
+            );
+
             fadeRenderer.color = cor;
 
             yield return null;
@@ -155,7 +171,55 @@ public class Parallax : MonoBehaviour
         fadeRenderer.color = cor;
     }
 
-    private void AplicarMaterial(int indiceMaterial, Material materialBase)
+    private void DesativarUI()
+    {
+        objetosUI.Clear();
+
+        int layerUI = LayerMask.NameToLayer("UI");
+
+        if (layerUI == -1)
+            return;
+
+        GameObject[] todosObjetos = FindObjectsByType<GameObject>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None
+        );
+
+        foreach (GameObject objeto in todosObjetos)
+        {
+            if (objeto.layer != layerUI)
+                continue;
+
+            if (fadeRenderer != null &&
+                objeto == fadeRenderer.gameObject)
+            {
+                continue;
+            }
+
+            bool estavaAtivo = objeto.activeSelf;
+
+            objetosUI.Add((objeto, estavaAtivo));
+
+            objeto.SetActive(false);
+        }
+    }
+
+    private void ReativarUI()
+    {
+        foreach (var item in objetosUI)
+        {
+            if (item.objeto != null && item.estavaAtivo)
+            {
+                item.objeto.SetActive(true);
+            }
+        }
+
+        objetosUI.Clear();
+    }
+
+    private void AplicarMaterial(
+        int indiceMaterial,
+        Material materialBase)
     {
         mat = new Material(materialBase);
 
