@@ -84,7 +84,7 @@ public class Parallax : MonoBehaviour
 
     public void AtualizarMaterial(int horda)
     {
-        int grupo = (horda - 1) / 2;
+        int grupo = (horda - 1) / 6;
         int indiceMaterial = grupo % 2;
 
         if (indiceMaterial == materialAtual)
@@ -124,7 +124,19 @@ public class Parallax : MonoBehaviour
 
         DesativarUI();
 
-        Color cor = fadeRenderer.color;
+        Color corFade;
+
+        if (indiceMaterial == 0)
+        {
+            ColorUtility.TryParseHtmlString("#503f58", out corFade);
+        }
+        else
+        {
+            ColorUtility.TryParseHtmlString("#18231e", out corFade);
+        }
+
+        corFade.a = 0f;
+        fadeRenderer.color = corFade;
 
         float tempo = 0f;
 
@@ -132,19 +144,19 @@ public class Parallax : MonoBehaviour
         {
             tempo += Time.deltaTime;
 
-            cor.a = Mathf.Lerp(
+            corFade.a = Mathf.Lerp(
                 0f,
                 1f,
                 tempo / tempoFadeIn
             );
 
-            fadeRenderer.color = cor;
+            fadeRenderer.color = corFade;
 
             yield return null;
         }
 
-        cor.a = 1f;
-        fadeRenderer.color = cor;
+        corFade.a = 1f;
+        fadeRenderer.color = corFade;
 
         AplicarMaterial(indiceMaterial, materialBase);
 
@@ -156,19 +168,19 @@ public class Parallax : MonoBehaviour
         {
             tempo += Time.deltaTime;
 
-            cor.a = Mathf.Lerp(
+            corFade.a = Mathf.Lerp(
                 1f,
                 0f,
                 tempo / tempoFadeOut
             );
 
-            fadeRenderer.color = cor;
+            fadeRenderer.color = corFade;
 
             yield return null;
         }
 
-        cor.a = 0f;
-        fadeRenderer.color = cor;
+        corFade.a = 0f;
+        fadeRenderer.color = corFade;
     }
 
     private void DesativarUI()
