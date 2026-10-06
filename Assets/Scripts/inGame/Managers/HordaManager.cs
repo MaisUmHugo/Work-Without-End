@@ -284,7 +284,10 @@ public class HordaManager : MonoBehaviour
             : 1f;
 
         foreach (Parallax parallax in FindObjectsByType<Parallax>(FindObjectsSortMode.None))
+        {
             parallax.AtualizarVelocidadeParallax(multiplicadorParallax);
+            parallax.AtualizarMaterial(NumeroHorda);
+        }
     }
 
     private static float ObterMaiorValorCurva(AnimationCurve curva, float valorPadrao)

@@ -13,6 +13,7 @@ TagManager:
   - Caixa
   - Louco
   - Malabarista
+  - FadeIn
   layers:
   - Default
   - TransparentFX
@@ -25,7 +26,7 @@ TagManager:
   - Inimigos
   - Player
   - Caixa
-  - 
+  - FadeIn
   - 
   - 
   - 
@@ -67,6 +68,9 @@ TagManager:
     locked: 0
   - name: Canvas
     uniqueID: 2672395439
+    locked: 0
+  - name: Fade
+    uniqueID: 2273082265
     locked: 0
   m_RenderingLayers:
   - Default
