@@ -39,9 +39,18 @@ public class ProgressaoNecromante : MonoBehaviour
 
     private void Start()
     {
+        // Recupera ligacoes ausentes em cenas de integracao antigas, preservando as atribuidas.
+        if (_hordas == null) _hordas = HordaManager.instance;
+        if (_vidaJogador == null) _vidaJogador = VidaManager.instance;
+        if (_transicao == null)
+            _transicao = FindFirstObjectByType<ControladorTransicaoCenario>();
+        if (_encontro == null)
+            _encontro = FindFirstObjectByType<ControladorEncontroNecromante>(FindObjectsInactive.Include);
+
         if (_hordas == null || _transicao == null || _encontro == null || _vidaJogador == null)
         {
-            Debug.LogError("Necromante: configure hordas, transicao, encontro e vida do jogador na progressao.", this);
+            Debug.LogError($"Necromante: referencias ausentes na progressao. Hordas: {_hordas != null}; "
+                + $"transicao: {_transicao != null}; encontro: {_encontro != null}; vida do jogador: {_vidaJogador != null}.", this);
             enabled = false;
             return;
         }

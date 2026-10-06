@@ -390,17 +390,29 @@ public class HordaManager : MonoBehaviour
     {
         if (_suspenderHordasParaTeste || _suspensoPorBoss || trocandoHorda || quantidade <= 0) return;
 
-        trocandoHorda = true;
-
         for (int passo = 0; passo < quantidade; passo++)
         {
+            // Os atalhos N/M concluem cada horda pulada e respeitam os encontros.
+            if (!_conclusaoNotificada)
+            {
+                N_Entregas = E_Necessarias;
+                Objetivo = true;
+                _conclusaoNotificada = true;
+                HordaConcluida?.Invoke(NumeroHorda);
+            }
+            if (_suspensoPorBoss) return;
+
             NumeroHorda++;
             AtualizarEntregasNecessarias();
+            N_Entregas = 0;
+            Objetivo = false;
+            _conclusaoNotificada = false;
 
             if (passo < quantidade - 1)
                 CalcularMultiplicadorVelocidade(NumeroHorda);
         }
 
+        trocandoHorda = true;
         HordaMudou = true;
         Objetivo = false;
         N_Entregas = 0;
