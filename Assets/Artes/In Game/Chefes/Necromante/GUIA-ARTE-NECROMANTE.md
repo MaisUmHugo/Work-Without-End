@@ -16,7 +16,7 @@ O comportamento da luta já escolhe as animações. Para integrar arte, não alt
 | `Placeholder_Invocacao_Carregando` | Cajado verde erguido | Repetir ou sustentar um quadro durante o preparo |
 | `Placeholder_Invocacao_Abaixar` | Abaixar o cajado | Uma vez |
 | `Placeholder_Invocacao_Sustentar` | Cajado abaixado | Sustentar um quadro até terminar a grande invocação |
-| `Placeholder_Teleporte_Fuga` | Desaparecer na fuga | Uma vez; só no fim do primeiro encontro, após a fase 2 |
+| `Placeholder_Teleporte_Fuga` | Desaparecer na fuga; aparecer na entrada | Uma vez na fuga; percorrido ao contrário na chegada dos dois encontros |
 | `Placeholder_AtaqueProjetil` | Disparo comum | Conforme os quadros disponíveis |
 | `Placeholder_TiroCarregado` | Tiro carregado | Conforme os quadros disponíveis |
 | `Placeholder_SequenciaRapida` | Sequência rápida | Conforme os quadros disponíveis |
@@ -24,6 +24,8 @@ O comportamento da luta já escolhe as animações. Para integrar arte, não alt
 | `Placeholder_Morte` | Derrota definitiva | Uma vez |
 
 A invocação troca de `Inicio` para `Carregando` enquanto prepara o ataque. Ao começar as ondas, toca `Abaixar` uma vez e fica em `Sustentar` até o ataque acabar. O teleporte nunca é usado na movimentação comum. `ProjectileRoot` é filho da raiz, separado de `Arte`, para que a escala da arte não altere o disparo.
+
+Na cena integrada, `ProgressaoNecromante` apresenta a chegada nos dois encontros: faz fade da HUD comum, reproduz os quadros de `Teleporte_Fuga` ao contrário e então exibe a HUD do boss com fade. O combate começa após a apresentação. Os três tempos ficam em **Apresentacao da entrada**, no Inspector da progressão: HUD comum 0,3 s, teleporte 1,6 s e entrada da HUD do boss 0,5 s. O parallax e as animações continuam rodando durante a apresentação; pause, tutorial, transição de cenário e game over ainda bloqueiam os visuais. A entrada acompanha o pause sem alterar `Time.timeScale` e é cancelada no game over. Pontuação, vidas e combo reaparecem; a barra e os textos de hordas continuam ocultos durante a luta. Não é necessário criar outro clip para testar a entrada.
 
 Mantenha `SpriteRenderer > Color` branco no Necromante e no projétil, para preservar as cores originais das imagens. O feedback de dano e bloqueio usa apenas a opacidade: pisca ao receber dano e reduz brevemente a opacidade ao bloquear uma entrega, restaurando o sprite em seguida. Vulnerabilidade e morte usam suas próprias poses, sem uma cor fixa aplicada sobre a arte.
 

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -29,9 +30,22 @@ public class ProgressaoNecromante : MonoBehaviour
     [SerializeField, Min(0)] private int _pontosFuga = 5000;
     [SerializeField, Min(0)] private int _pontosDerrotaDefinitiva = 10000;
 
+    [Header("Apresentacao da entrada")]
+    [SerializeField, Min(0f)] private float _duracaoFadeHud = 0.3f;
+    [SerializeField, Min(0.01f)] private float _duracaoTeleporteEntrada = 1.6f;
+    [SerializeField, Min(0f)] private float _duracaoFadeHudBoss = 0.5f;
+
     [SerializeField] private EstadoProgressao _estado;
     private ControladorBoss _boss;
     private bool _preparado;
+    private Coroutine _apresentacaoEntrada;
+    private CanvasGroup _hudClassica;
+    private float _alphaHudClassica;
+    private CanvasGroup _hudBoss;
+    private float _alphaHudBoss;
+    private IntegradorHUDBoss _integradorHud;
+    private ControleAnimatorNecromante _controleVisual;
+    private bool _apresentacaoEmAndamento;
 
     public EstadoProgressao EstadoAtual => _estado;
     public bool EncontroEmAndamento => _estado == EstadoProgressao.PrimeiroEncontro
@@ -124,15 +138,117 @@ public class ProgressaoNecromante : MonoBehaviour
     {
         _estado = tipo == TipoEncontroNecromante.PrimeiroEncontro
             ? EstadoProgressao.PrimeiroEncontro : EstadoProgressao.EncontroFinal;
-        _hordas.DefinirSuspensoPorBoss(true);
-        _encontro.gameObject.SetActive(true);
-        _encontro.PrepararEncontro(tipo, tipo == TipoEncontroNecromante.EncontroFinal,
-            tipo == TipoEncontroNecromante.EncontroFinal ? _dificuldadeEncontroFinal : 1f);
-        IntegradorHUDBoss integrador = _encontro.GetComponent<IntegradorHUDBoss>();
-        if (integrador != null && integrador.HudAtual != null)
-            integrador.HudAtual.DefinirTextoVidaVisivel(false);
-        ScoreManager.instance?.RegistrarInicioNecromante(tipo);
-        _boss.IniciarEncontro();
+        _hordas.DefinirSuspensoPorBoss(true, false);
+        _apresentacaoEntrada = StartCoroutine(ApresentarEncontro(tipo));
+    }
+
+    private IEnumerator ApresentarEncontro(TipoEncontroNecromante tipo)
+    {
+        _apresentacaoEmAndamento = true;
+        _integradorHud = _encontro.GetComponent<IntegradorHUDBoss>();
+        _controleVisual = _encontro.GetComponent<ControleAnimatorNecromante>();
+        HUDManager hud = FindFirstObjectByType<HUDManager>();
+        _hudClassica = hud != null && hud.GrupoHudTransicao != null
+            ? hud.GrupoHudTransicao.GetComponent<CanvasGroup>() : null;
+        _alphaHudClassica = _hudClassica != null ? _hudClassica.alpha : 1f;
+        _hudBoss = null;
+        BloqueioGameplay.Definir(MotivoBloqueioGameplay.EntradaBoss, true);
+
+        try
+        {
+            yield return FadeEntrada(_duracaoFadeHud, false);
+            _hordas.OcultarHudHorda();
+            _integradorHud?.DefinirHudVisivel(false);
+            _encontro.gameObject.SetActive(true);
+            // Cancela o inicio automatico do prefab antes de apresentar a chegada.
+            _encontro.PrepararEncontro(tipo, tipo == TipoEncontroNecromante.EncontroFinal,
+                tipo == TipoEncontroNecromante.EncontroFinal ? _dificuldadeEncontroFinal : 1f);
+            ScoreManager.instance?.RegistrarInicioNecromante(tipo);
+            _controleVisual?.ApresentarEntrada(0f);
+
+            float tempo = 0f;
+            while (tempo < _duracaoTeleporteEntrada)
+            {
+                if (PodeAvancarApresentacao())
+                {
+                    tempo += Time.unscaledDeltaTime;
+                    _controleVisual?.ApresentarEntrada(tempo / _duracaoTeleporteEntrada);
+                }
+                yield return null;
+            }
+
+            _integradorHud?.DefinirHudVisivel(true);
+            if (_integradorHud != null && _integradorHud.HudAtual != null)
+            {
+                _integradorHud.HudAtual.DefinirTextoVidaVisivel(false);
+                GameObject painel = _integradorHud.HudAtual.GrupoHudTransicao;
+                _hudBoss = painel.GetComponent<CanvasGroup>();
+                if (_hudBoss == null) _hudBoss = painel.AddComponent<CanvasGroup>();
+                _alphaHudBoss = _hudBoss.alpha;
+                _hudBoss.alpha = 0f;
+            }
+            yield return FadeEntrada(_duracaoFadeHudBoss, true);
+        }
+        finally
+        {
+            RestaurarApresentacaoEntrada();
+            _apresentacaoEntrada = null;
+        }
+
+        if (_estado != EstadoProgressao.GameOver && _preparado)
+            _boss.IniciarEncontro();
+    }
+
+    private IEnumerator FadeEntrada(float duracao, bool exibirBoss)
+    {
+        float tempo = 0f;
+        while (tempo < duracao)
+        {
+            if (PodeAvancarApresentacao())
+            {
+                tempo += Time.unscaledDeltaTime;
+                AplicarFadeEntrada(Mathf.Clamp01(tempo / duracao), exibirBoss);
+            }
+            yield return null;
+        }
+        AplicarFadeEntrada(1f, exibirBoss);
+    }
+
+    private void AplicarFadeEntrada(float progresso, bool exibirBoss)
+    {
+        if (_hudClassica != null)
+            _hudClassica.alpha = _alphaHudClassica * (exibirBoss ? progresso : 1f - progresso);
+        if (exibirBoss && _hudBoss != null)
+            _hudBoss.alpha = _alphaHudBoss * progresso;
+    }
+
+    private bool PodeAvancarApresentacao()
+    {
+        return Time.timeScale > 0f
+            && !BloqueioGameplay.EstaAtivo(MotivoBloqueioGameplay.Pause)
+            && !BloqueioGameplay.EstaAtivo(MotivoBloqueioGameplay.Tutorial)
+            && !BloqueioGameplay.EstaAtivo(MotivoBloqueioGameplay.GameOver)
+            && !BloqueioGameplay.EstaAtivo(MotivoBloqueioGameplay.TransicaoCenario);
+    }
+
+    private void RestaurarApresentacaoEntrada()
+    {
+        if (!_apresentacaoEmAndamento) return;
+        _apresentacaoEmAndamento = false;
+        if (_hudClassica != null) _hudClassica.alpha = _alphaHudClassica;
+        if (_hudBoss != null) _hudBoss.alpha = _alphaHudBoss;
+        BloqueioGameplay.Definir(MotivoBloqueioGameplay.EntradaBoss, false);
+        _controleVisual?.ConcluirEntrada();
+        _integradorHud?.DefinirHudVisivel(true);
+        _hudClassica = null;
+        _hudBoss = null;
+    }
+
+    private void CancelarApresentacaoEntrada()
+    {
+        if (_apresentacaoEntrada != null) StopCoroutine(_apresentacaoEntrada);
+        _apresentacaoEntrada = null;
+        RestaurarApresentacaoEntrada();
     }
 
     private void AoIniciarEncerramento(ResultadoEncontroBoss resultado)
@@ -163,6 +279,7 @@ public class ProgressaoNecromante : MonoBehaviour
     {
         if (_estado == EstadoProgressao.GameOver) return;
         _estado = EstadoProgressao.GameOver;
+        CancelarApresentacaoEntrada();
         _hordas.DefinirSuspensoPorBoss(true);
         _boss.EncerrarExecucao();
         _transicao.CancelarTransicao();
@@ -171,6 +288,7 @@ public class ProgressaoNecromante : MonoBehaviour
 
     private void OnDisable()
     {
+        CancelarApresentacaoEntrada();
         if (!_preparado) return;
         _hordas.HordaConcluida -= AoConcluirHorda;
         _encontro.EncerramentoIniciado -= AoIniciarEncerramento;
@@ -186,5 +304,8 @@ public class ProgressaoNecromante : MonoBehaviour
         _dificuldadeEncontroFinal = Mathf.Max(1f, _dificuldadeEncontroFinal);
         _pontosFuga = Mathf.Max(0, _pontosFuga);
         _pontosDerrotaDefinitiva = Mathf.Max(0, _pontosDerrotaDefinitiva);
+        _duracaoFadeHud = Mathf.Max(0f, _duracaoFadeHud);
+        _duracaoTeleporteEntrada = Mathf.Max(0.01f, _duracaoTeleporteEntrada);
+        _duracaoFadeHudBoss = Mathf.Max(0f, _duracaoFadeHudBoss);
     }
 }

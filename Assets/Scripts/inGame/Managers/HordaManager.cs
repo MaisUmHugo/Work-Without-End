@@ -153,7 +153,7 @@ public class HordaManager : MonoBehaviour
         _rotinaInicioHorda = StartCoroutine(IniciarHordaComDelay(delay));
     }
 
-    public void DefinirSuspensoPorBoss(bool suspenso)
+    public void DefinirSuspensoPorBoss(bool suspenso, bool ocultarHud = true)
     {
         if (_suspensoPorBoss == suspenso) return;
         _suspensoPorBoss = suspenso;
@@ -164,9 +164,7 @@ public class HordaManager : MonoBehaviour
             _barraEstavaAtiva = barraProgresso != null && barraProgresso.gameObject.activeSelf;
             _textoEntregaEstavaAtivo = TextoEntrega != null && TextoEntrega.gameObject.activeSelf;
             _textoHordaEstavaAtivo = TextoHorda != null && TextoHorda.gameObject.activeSelf;
-            if (barraProgresso != null) barraProgresso.gameObject.SetActive(false);
-            if (TextoEntrega != null) TextoEntrega.gameObject.SetActive(false);
-            if (TextoHorda != null) TextoHorda.gameObject.SetActive(false);
+            if (ocultarHud) OcultarHudHorda();
             return;
         }
         if (barraProgresso != null) barraProgresso.gameObject.SetActive(_barraEstavaAtiva);
@@ -175,6 +173,13 @@ public class HordaManager : MonoBehaviour
         if (!_suspenderHordasParaTeste && _rotinaInicioHorda == null
             && _spawnEstavaAtivo && N_Entregas < E_Necessarias)
             spawnerManager.AtivarSpawn();
+    }
+
+    public void OcultarHudHorda()
+    {
+        if (barraProgresso != null) barraProgresso.gameObject.SetActive(false);
+        if (TextoEntrega != null) TextoEntrega.gameObject.SetActive(false);
+        if (TextoHorda != null) TextoHorda.gameObject.SetActive(false);
     }
 
     private void AtualizarBarraProgresso()

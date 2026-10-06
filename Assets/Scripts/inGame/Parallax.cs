@@ -43,8 +43,8 @@ public class Parallax : MonoBehaviour
 
     private void Update()
     {
-        if (BloqueioGameplay.Bloqueado) return;
-        distance = Mathf.Repeat(distance + TempoGameplay.DeltaTime * speed * multiplicadorAtual, 1f);
+        if (BloqueioGameplay.VisuaisBloqueados) return;
+        distance = Mathf.Repeat(distance + Time.deltaTime * speed * multiplicadorAtual, 1f);
         AtualizarOffset();
     }
 

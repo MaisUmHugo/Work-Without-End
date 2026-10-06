@@ -22,7 +22,8 @@ public class PauseController : MonoBehaviour
         {
             if (JogoPausado)
                 FecharPause();
-            else if (!BloqueioGameplay.BloqueadoSemTransicao)
+            else if (!BloqueioGameplay.EstaAtivo(MotivoBloqueioGameplay.Tutorial)
+                && !BloqueioGameplay.EstaAtivo(MotivoBloqueioGameplay.GameOver))
                 AbrirPause();
         };
 

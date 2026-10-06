@@ -14,6 +14,7 @@ public class IntegradorHUDBoss : MonoBehaviour
     private MonoBehaviour _controladorEncontro;
 
     private HUDBoss _instanciaHud;
+    private bool _hudVisivel = true;
 
     public HUDBoss HudAtual => _instanciaHud;
 
@@ -25,7 +26,7 @@ public class IntegradorHUDBoss : MonoBehaviour
     private void OnEnable()
     {
         if (_instanciaHud != null)
-            _instanciaHud.gameObject.SetActive(true);
+            _instanciaHud.gameObject.SetActive(_hudVisivel);
     }
 
     private void OnDisable()
@@ -40,6 +41,13 @@ public class IntegradorHUDBoss : MonoBehaviour
             Destroy(_instanciaHud.gameObject);
     }
 
+    public void DefinirHudVisivel(bool visivel)
+    {
+        _hudVisivel = visivel;
+        if (_instanciaHud != null)
+            _instanciaHud.gameObject.SetActive(visivel && isActiveAndEnabled);
+    }
+
     private void CriarHud()
     {
         if (_instanciaHud != null || !ReferenciasValidas()) return;
@@ -51,6 +59,7 @@ public class IntegradorHUDBoss : MonoBehaviour
             _vida,
             _controladorFases,
             _controladorEncontro);
+        _instanciaHud.gameObject.SetActive(_hudVisivel && isActiveAndEnabled);
     }
 
     private bool ReferenciasValidas()

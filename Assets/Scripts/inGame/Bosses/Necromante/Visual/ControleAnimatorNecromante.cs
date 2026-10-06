@@ -44,6 +44,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
     [SerializeField] private AtaqueInvocacaoNecromante _ataqueInvocacao;
 
     private EstadoVisual _estadoAtual;
+    private bool _apresentandoEntrada;
 
     public TipoAtaqueNecromante TipoAtaqueAtual { get; private set; }
 
@@ -62,6 +63,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
 
     private void OnDisable()
     {
+        _apresentandoEntrada = false;
         if (_animator != null)
             _animator.speed = 1f;
         _estadoAtual = EstadoVisual.Nenhum;
@@ -69,7 +71,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
 
     private void Update()
     {
-        if (BloqueioGameplay.Bloqueado) return;
+        if (_apresentandoEntrada || BloqueioGameplay.Bloqueado) return;
         TipoAtaqueAtual = TipoAtaqueNecromante.Nenhum;
 
         if (_animator == null || _comportamento == null || _movimento == null
@@ -108,6 +110,30 @@ public class ControleAnimatorNecromante : MonoBehaviour
         }
 
         Tocar(_movimento.EmMovimento ? EstadoVisual.Movimentacao : EstadoVisual.Idle);
+    }
+
+    public void ApresentarEntrada(float progresso)
+    {
+        if (_animator == null || !_animator.isActiveAndEnabled
+            || _animator.runtimeAnimatorController == null
+            || !_animator.HasState(0, TeleporteFuga)) return;
+
+        _apresentandoEntrada = true;
+        TipoAtaqueAtual = TipoAtaqueNecromante.Nenhum;
+        // Percorre o teleporte de fuga ao contrario, sem velocidade negativa no Animator.
+        _animator.speed = 0f;
+        _animator.Play(TeleporteFuga, 0, Mathf.Lerp(0.999f, 0f, Mathf.Clamp01(progresso)));
+        _animator.Update(0f);
+    }
+
+    public void ConcluirEntrada()
+    {
+        _apresentandoEntrada = false;
+        _estadoAtual = EstadoVisual.Nenhum;
+        if (_animator == null || !_animator.isActiveAndEnabled) return;
+        Tocar(EstadoVisual.Idle);
+        _animator.Update(0f);
+        if (BloqueioGameplay.Bloqueado) _animator.speed = 0f;
     }
 
     private void AtualizarInvocacao()

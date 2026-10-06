@@ -1720,6 +1720,9 @@ MonoBehaviour:
   _dificuldadeEncontroFinal: 1.15
   _pontosFuga: 5000
   _pontosDerrotaDefinitiva: 10000
+  _duracaoFadeHud: 0.3
+  _duracaoTeleporteEntrada: 1.6
+  _duracaoFadeHudBoss: 0.5
   _estado: 0
 --- !u!114 &903340003 stripped
 MonoBehaviour:

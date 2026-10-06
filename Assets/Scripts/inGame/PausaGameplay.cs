@@ -63,6 +63,8 @@ public class PausaGameplay : MonoBehaviour
             RestaurarObjetos();
             return;
         }
+        if (!BloqueioGameplay.VisuaisBloqueados)
+            RestaurarVisuais();
         _objetos.RemoveWhere(objeto => objeto == null);
         foreach (GameObject objeto in _objetos)
             CongelarObjeto(objeto);
@@ -76,6 +78,7 @@ public class PausaGameplay : MonoBehaviour
             _corpos.Add(corpo, corpo.simulated);
             corpo.simulated = false;
         }
+        if (!BloqueioGameplay.VisuaisBloqueados) return;
         foreach (Animator animador in objeto.GetComponentsInChildren<Animator>(true))
         {
             if (_animadores.ContainsKey(animador)) continue;
@@ -98,6 +101,12 @@ public class PausaGameplay : MonoBehaviour
             if (estado.Key != null)
                 estado.Key.simulated = estado.Value;
         }
+        _corpos.Clear();
+        RestaurarVisuais();
+    }
+
+    private void RestaurarVisuais()
+    {
         foreach (var estado in _animadores)
         {
             if (estado.Key != null)
@@ -108,7 +117,6 @@ public class PausaGameplay : MonoBehaviour
             if (estado.Key != null && estado.Value)
                 estado.Key.Play(false);
         }
-        _corpos.Clear();
         _animadores.Clear();
         _particulas.Clear();
     }
