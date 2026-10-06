@@ -1,251 +1,136 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Parallax : MonoBehaviour
 {
     [Header("Parallax")]
-    [Range(0f, 0.5f)]
-    public float speed = 0.2f;
-
+    [Range(0f, 0.5f)] public float speed = 0.2f;
     [Header("Materiais")]
     [SerializeField] private Material material1;
     [SerializeField] private Material material2;
-
-    [Header("Repetição dos Materiais")]
+    [Header("Repeticao dos materiais")]
     [SerializeField] private float repeticoesMaterial1 = 1f;
     [SerializeField] private float repeticoesMaterial2 = 1f;
 
-    [Header("Fade da Transição")]
-    [SerializeField] private float tempoFadeIn = 0.5f;
-    [SerializeField] private float tempoVisivel = 1f;
-    [SerializeField] private float tempoFadeOut = 0.5f;
-
     private Renderer render;
     private Material mat;
-
     private float distance;
     private float multiplicadorAtual = 1f;
-
-    private bool materialInicializado;
     private int materialAtual = -1;
+    private Material _materialOriginal;
+    private readonly Material[] _materiaisCriados = new Material[2];
+    private readonly Material[] _fontesMateriais = new Material[2];
+    private ControladorTransicaoCenario _controladorTransicao;
 
-    private SpriteRenderer fadeRenderer;
-
-    private List<(GameObject objeto, bool estavaAtivo)> objetosUI =
-        new List<(GameObject, bool)>();
+    public int IndiceMaterialAtual => materialAtual;
 
     private void Awake()
     {
-        render = GetComponent<Renderer>();
+        ResolverRenderer();
+    }
 
-        GameObject fadeObject = GameObject.FindGameObjectWithTag("FadeIn");
-
-        if (fadeObject != null)
-        {
-            fadeRenderer = fadeObject.GetComponent<SpriteRenderer>();
-
-            if (fadeRenderer != null)
-            {
-                Color cor = fadeRenderer.color;
-                cor.a = 0f;
-                fadeRenderer.color = cor;
-            }
-        }
+    private void OnEnable()
+    {
+        _controladorTransicao = GetComponentInParent<ControladorTransicaoCenario>();
+        if (_controladorTransicao != null)
+            _controladorTransicao.RegistrarCamada(this);
     }
 
     private void Start()
     {
-        AtualizarMaterial(1);
+        if (materialAtual < 0)
+            AplicarIndiceMaterial(_controladorTransicao != null ? _controladorTransicao.CenarioAtual : 0);
     }
 
     private void Update()
     {
-        distance += Time.deltaTime * speed * multiplicadorAtual;
-        distance %= 1f;
-
-        if (mat != null)
-        {
-            float repeticoes = materialAtual == 0
-                ? repeticoesMaterial1
-                : repeticoesMaterial2;
-
-            mat.SetTextureOffset(
-                "_MainTex",
-                Vector2.right * distance * repeticoes
-            );
-        }
+        if (BloqueioGameplay.Bloqueado) return;
+        distance = Mathf.Repeat(distance + TempoGameplay.DeltaTime * speed * multiplicadorAtual, 1f);
+        AtualizarOffset();
     }
 
     public void AtualizarVelocidadeParallax(float novoMultiplicador)
     {
-        multiplicadorAtual = novoMultiplicador;
+        multiplicadorAtual = Mathf.Max(0f, novoMultiplicador);
     }
 
     public void AtualizarMaterial(int horda)
     {
-        int grupo = (horda - 1) / 6;
-        int indiceMaterial = grupo % 2;
-
-        if (indiceMaterial == materialAtual)
-            return;
-
-        Material materialBase = indiceMaterial == 0
-            ? material1
-            : material2;
-
-        if (materialBase == null)
-            return;
-
-        if (!materialInicializado)
-        {
-            AplicarMaterial(indiceMaterial, materialBase);
-            materialInicializado = true;
-            return;
-        }
-
-        if (fadeRenderer != null)
-        {
-            StartCoroutine(FadeTransicao(indiceMaterial, materialBase));
-        }
+        int indiceMaterial = ((Mathf.Max(1, horda) - 1) / 6) % 2;
+        if (_controladorTransicao != null)
+            _controladorTransicao.SolicitarCenario(indiceMaterial);
         else
-        {
-            AplicarMaterial(indiceMaterial, materialBase);
-        }
+            AplicarIndiceMaterial(indiceMaterial);
     }
 
-    private IEnumerator FadeTransicao(int indiceMaterial, Material materialBase)
+    public void AplicarIndiceMaterial(int indiceMaterial)
     {
-        if (fadeRenderer == null)
+        if (!ResolverRenderer()) return;
+        indiceMaterial = Mathf.Clamp(indiceMaterial, 0, 1);
+        Material fonte = indiceMaterial == 0 ? material1 : material2;
+        if (fonte == null) fonte = _materialOriginal;
+        if (fonte == null) return;
+
+        if (_materiaisCriados[indiceMaterial] == null || _fontesMateriais[indiceMaterial] != fonte)
         {
-            AplicarMaterial(indiceMaterial, materialBase);
-            yield break;
+            DestruirMaterial(_materiaisCriados[indiceMaterial]);
+            _materiaisCriados[indiceMaterial] = new Material(fonte);
+            _fontesMateriais[indiceMaterial] = fonte;
         }
-
-        DesativarUI();
-
-        Color corFade;
-
-        if (indiceMaterial == 0)
-        {
-            ColorUtility.TryParseHtmlString("#503f58", out corFade);
-        }
-        else
-        {
-            ColorUtility.TryParseHtmlString("#18231e", out corFade);
-        }
-
-        corFade.a = 0f;
-        fadeRenderer.color = corFade;
-
-        float tempo = 0f;
-
-        while (tempo < tempoFadeIn)
-        {
-            tempo += Time.deltaTime;
-
-            corFade.a = Mathf.Lerp(
-                0f,
-                1f,
-                tempo / tempoFadeIn
-            );
-
-            fadeRenderer.color = corFade;
-
-            yield return null;
-        }
-
-        corFade.a = 1f;
-        fadeRenderer.color = corFade;
-
-        AplicarMaterial(indiceMaterial, materialBase);
-
-        yield return new WaitForSeconds(tempoVisivel);
-
-        tempo = 0f;
-        ReativarUI();
-        while (tempo < tempoFadeOut)
-        {
-            tempo += Time.deltaTime;
-
-            corFade.a = Mathf.Lerp(
-                1f,
-                0f,
-                tempo / tempoFadeOut
-            );
-
-            fadeRenderer.color = corFade;
-
-            yield return null;
-        }
-
-        corFade.a = 0f;
-        fadeRenderer.color = corFade;
-    }
-
-    private void DesativarUI()
-    {
-        objetosUI.Clear();
-
-        int layerUI = LayerMask.NameToLayer("UI");
-
-        if (layerUI == -1)
-            return;
-
-        GameObject[] todosObjetos = FindObjectsByType<GameObject>(
-            FindObjectsInactive.Include,
-            FindObjectsSortMode.None
-        );
-
-        foreach (GameObject objeto in todosObjetos)
-        {
-            if (objeto.layer != layerUI)
-                continue;
-
-            if (fadeRenderer != null &&
-                objeto == fadeRenderer.gameObject)
-            {
-                continue;
-            }
-
-            bool estavaAtivo = objeto.activeSelf;
-
-            objetosUI.Add((objeto, estavaAtivo));
-
-            objeto.SetActive(false);
-        }
-    }
-
-    private void ReativarUI()
-    {
-        foreach (var item in objetosUI)
-        {
-            if (item.objeto != null && item.estavaAtivo)
-            {
-                item.objeto.SetActive(true);
-            }
-        }
-
-        objetosUI.Clear();
-    }
-
-    private void AplicarMaterial(
-        int indiceMaterial,
-        Material materialBase)
-    {
-        mat = new Material(materialBase);
-
-        float repeticoes = indiceMaterial == 0
-            ? repeticoesMaterial1
-            : repeticoesMaterial2;
-
-        mat.SetTextureOffset(
-            "_MainTex",
-            Vector2.right * distance * repeticoes
-        );
-
-        render.material = mat;
-
+        mat = _materiaisCriados[indiceMaterial];
         materialAtual = indiceMaterial;
+        render.sharedMaterial = mat;
+        AtualizarOffset();
+    }
+
+    private bool ResolverRenderer()
+    {
+        if (render != null) return true;
+        render = GetComponent<Renderer>();
+        if (render == null)
+        {
+            Debug.LogError("Parallax: configure um Renderer na camada.", this);
+            return false;
+        }
+        _materialOriginal = render.sharedMaterial;
+        return true;
+    }
+
+    private void AtualizarOffset()
+    {
+        if (mat == null || !mat.HasProperty("_MainTex")) return;
+        float repeticoes = materialAtual == 0 ? repeticoesMaterial1 : repeticoesMaterial2;
+        mat.SetTextureOffset("_MainTex", Vector2.right * distance * repeticoes);
+    }
+
+    private void OnDisable()
+    {
+        if (_controladorTransicao != null)
+            _controladorTransicao.DesregistrarCamada(this);
+        LiberarMateriais();
+    }
+
+    private void OnDestroy()
+    {
+        LiberarMateriais();
+    }
+
+    private void LiberarMateriais()
+    {
+        if (render != null) render.sharedMaterial = _materialOriginal;
+        for (int i = 0; i < _materiaisCriados.Length; i++)
+        {
+            DestruirMaterial(_materiaisCriados[i]);
+            _materiaisCriados[i] = null;
+            _fontesMateriais[i] = null;
+        }
+        mat = null;
+        materialAtual = -1;
+    }
+
+    private void DestruirMaterial(Material materialCriado)
+    {
+        if (materialCriado == null) return;
+        if (Application.isPlaying) Destroy(materialCriado);
+        else DestroyImmediate(materialCriado);
     }
 }
