@@ -10,7 +10,6 @@ public class Louco : Entregavel, IAjustavelDificuldade
     public float velocidadeSaida = 6f;      // velocidade depois que atravessou
     public float tempoAtivoEntrega = 1.2f;
     public float tempoexclamacao;
-    [SerializeField, Min(0f)] private float _tempoRemoverAposEntrega = 3f;
 
     [Header("Dificuldade")]
     [SerializeField, Range(0f, 1f)] private float intensidadeEscalaFrente = 0.635f;
@@ -70,7 +69,6 @@ public class Louco : Entregavel, IAjustavelDificuldade
     private void Update()
     {
         if (BloqueioGameplay.Bloqueado) return;
-        if (entregaRecebida) return;
         if (atravessando)
         {
             // Movimento diagonal (X negativo + Y até destino)
@@ -163,7 +161,8 @@ public class Louco : Entregavel, IAjustavelDificuldade
         ativoParaEntrega = false;  // Desativa entrega após processar
         entregaRecebida = true;
         atravessando = false;
-        terminouTravessia = false;
+        terminouTravessia = true;
+        yTravado = transform.position.y;
         Rigidbody2D corpo = GetComponent<Rigidbody2D>();
         if (corpo != null)
         {
@@ -183,13 +182,6 @@ public class Louco : Entregavel, IAjustavelDificuldade
         // base.ReceberEntrega();  // Executa a lógica da base (pontuação, combo, etc.)
         StartCoroutine(PararPiscar());
         Debug.Log("Louco recebeu a entrega com sucesso!");
-        StartCoroutine(RemoverAposEntrega());
-    }
-
-    private IEnumerator RemoverAposEntrega()
-    {
-        yield return new EsperaGameplay(_tempoRemoverAposEntrega);
-        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
