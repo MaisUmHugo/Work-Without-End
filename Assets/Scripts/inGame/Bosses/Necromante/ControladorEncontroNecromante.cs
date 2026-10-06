@@ -41,6 +41,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
     private Coroutine _sequenciaEncerramento;
     private bool _encerramentoIniciado;
     private bool _encontroConcluido;
+    private FaseBoss _faseInicialEncontroFinal = FaseBoss.Fase1;
 
     public TipoEncontroNecromante TipoEncontro => _tipoEncontro;
     public ResultadoEncontroBoss ResultadoAtual => _resultadoAtual;
@@ -94,18 +95,29 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
             AplicarTipoEncontro();
     }
 
+    public void PrepararEncontro(TipoEncontroNecromante tipoEncontro, bool iniciarNaFase2, float multiplicadorDificuldade)
+    {
+        _controladorBoss.EncerrarExecucao();
+        _tipoEncontro = tipoEncontro;
+        _faseInicialEncontroFinal = iniciarNaFase2 ? FaseBoss.Fase2 : FaseBoss.Fase1;
+        _controladorFases.DefinirMultiplicadorEncontro(multiplicadorDificuldade);
+        ReiniciarEstadoEncontro();
+    }
+
     private void AplicarTipoEncontro()
     {
         if (_controladorFases == null) return;
 
         if (_tipoEncontro == TipoEncontroNecromante.PrimeiroEncontro)
         {
+            _controladorFases.DefinirFaseInicial(FaseBoss.Fase1);
             _controladorFases.DefinirFase3ComVidaSeparada(false);
             _controladorFases.DefinirFaseMaxima(FaseBoss.Fase2);
             _controladorFases.DefinirLimites(_inicioFase2PrimeiroEncontro, 0f);
             return;
         }
 
+        _controladorFases.DefinirFaseInicial(_faseInicialEncontroFinal);
         _controladorFases.DefinirFase3ComVidaSeparada(true);
         _controladorFases.DefinirFaseMaxima(FaseBoss.Fase3);
         _controladorFases.DefinirLimites(_inicioFase2EncontroFinal, _inicioFase3EncontroFinal);

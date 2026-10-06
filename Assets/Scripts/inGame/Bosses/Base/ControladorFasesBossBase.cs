@@ -14,6 +14,7 @@ public abstract class ControladorFasesBossBase : MonoBehaviour
     private FaseBoss _faseAtual = FaseBoss.Fase1;
     private bool _faseAplicada;
     private bool _fase3ComVidaSeparada;
+    private FaseBoss _faseInicial = FaseBoss.Fase1;
 
     public VidaBoss Vida => _vida;
     public FaseBoss FaseAtual => _faseAtual;
@@ -55,7 +56,12 @@ public abstract class ControladorFasesBossBase : MonoBehaviour
 
     public void ReiniciarFases()
     {
-        AplicarFase(FaseBoss.Fase1, true);
+        AplicarFase(_faseInicial, true);
+    }
+
+    public void DefinirFaseInicial(FaseBoss fase)
+    {
+        _faseInicial = LimitarFase(fase);
     }
 
     public void DefinirFaseMaxima(FaseBoss faseMaxima)
@@ -105,13 +111,14 @@ public abstract class ControladorFasesBossBase : MonoBehaviour
         }
 
         float percentualVida = Mathf.Clamp01((float)vidaAtual / vidaMaxima);
-        FaseBoss fase = FaseBoss.Fase1;
+        FaseBoss fase = _faseInicial;
 
         if (!_fase3ComVidaSeparada
             && (int)_faseMaxima >= (int)FaseBoss.Fase3
             && percentualVida <= _inicioFase3)
             fase = FaseBoss.Fase3;
-        else if ((int)_faseMaxima >= (int)FaseBoss.Fase2 && percentualVida <= _inicioFase2)
+        else if ((int)_faseMaxima >= (int)FaseBoss.Fase2
+            && (percentualVida <= _inicioFase2 || _faseInicial == FaseBoss.Fase2))
             fase = FaseBoss.Fase2;
 
         AplicarFase(fase, forcarAplicacao);

@@ -14,6 +14,12 @@ public class ControladorFasesNecromante : ControladorFasesBossBase
     [SerializeField] private PressaoAmbienteNecromante _pressaoAmbiente;
     [Header("Configuracoes")]
     [SerializeField] private ConfiguracaoFaseNecromante[] _configuracoes;
+    private float _multiplicadorEncontro = 1f;
+
+    public void DefinirMultiplicadorEncontro(float multiplicador)
+    {
+        _multiplicadorEncontro = Mathf.Max(1f, multiplicador);
+    }
 
     protected override void AoAplicarFase(FaseBoss fase)
     {
@@ -33,22 +39,22 @@ public class ControladorFasesNecromante : ControladorFasesBossBase
             configuracao.GarantirZumbiSombrio);
         _gerenciadorInvocados.DefinirLimiteSimultaneo(configuracao.LimiteInvocados);
         _gerenciadorInvocados.DefinirMultiplicadorVelocidade(
-            configuracao.MultiplicadorVelocidadeInvocados);
-        _comportamento.ConfigurarMultiplicadorDecisao(configuracao.MultiplicadorDecisao);
+            configuracao.MultiplicadorVelocidadeInvocados * _multiplicadorEncontro);
+        _comportamento.ConfigurarMultiplicadorDecisao(configuracao.MultiplicadorDecisao * _multiplicadorEncontro);
         _ataqueProjetil.ConfigurarRitmo(
-            configuracao.MultiplicadorRitmoAtaques,
-            configuracao.MultiplicadorVelocidadeProjeteis);
+            configuracao.MultiplicadorRitmoAtaques * _multiplicadorEncontro,
+            configuracao.MultiplicadorVelocidadeProjeteis * _multiplicadorEncontro);
         _tiroCarregado.ConfigurarRitmo(
-            configuracao.MultiplicadorRitmoAtaques,
-            configuracao.MultiplicadorVelocidadeProjeteis);
+            configuracao.MultiplicadorRitmoAtaques * _multiplicadorEncontro,
+            configuracao.MultiplicadorVelocidadeProjeteis * _multiplicadorEncontro);
         _sequenciaRapida.ConfigurarRitmo(
-            configuracao.MultiplicadorRitmoAtaques,
-            configuracao.MultiplicadorVelocidadeProjeteis);
-        _ataqueInvocacao.ConfigurarRitmo(configuracao.MultiplicadorRitmoAtaques);
+            configuracao.MultiplicadorRitmoAtaques * _multiplicadorEncontro,
+            configuracao.MultiplicadorVelocidadeProjeteis * _multiplicadorEncontro);
+        _ataqueInvocacao.ConfigurarRitmo(configuracao.MultiplicadorRitmoAtaques * _multiplicadorEncontro);
         _pressaoAmbiente.ConfigurarFase(
             configuracao.LimitePressaoAmbiente,
-            configuracao.IntervaloPressaoAmbiente,
-            configuracao.MultiplicadorVelocidadeInvocados);
+            configuracao.IntervaloPressaoAmbiente / _multiplicadorEncontro,
+            configuracao.MultiplicadorVelocidadeInvocados * _multiplicadorEncontro);
     }
 
     protected override bool ValidarReferencias()
