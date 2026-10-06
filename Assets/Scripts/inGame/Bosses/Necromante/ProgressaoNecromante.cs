@@ -25,6 +25,10 @@ public class ProgressaoNecromante : MonoBehaviour
     [SerializeField, Min(2)] private int _hordaEncontroFinal = 20;
     [SerializeField, Min(1f)] private float _dificuldadeEncontroFinal = 1.15f;
 
+    [Header("Pontuacao dos encontros")]
+    [SerializeField, Min(0)] private int _pontosFuga = 5000;
+    [SerializeField, Min(0)] private int _pontosDerrotaDefinitiva = 10000;
+
     [SerializeField] private EstadoProgressao _estado;
     private ControladorBoss _boss;
     private bool _preparado;
@@ -54,6 +58,7 @@ public class ProgressaoNecromante : MonoBehaviour
         _transicao.SolicitarCenario(0);
         _estado = EstadoProgressao.HordasCidade;
         _hordas.HordaConcluida += AoConcluirHorda;
+        _encontro.EncerramentoIniciado += AoIniciarEncerramento;
         _encontro.EncontroEncerrado += AoConcluirEncontro;
         _vidaJogador.OnGameOver += AoGameOver;
         _preparado = true;
@@ -117,7 +122,16 @@ public class ProgressaoNecromante : MonoBehaviour
         IntegradorHUDBoss integrador = _encontro.GetComponent<IntegradorHUDBoss>();
         if (integrador != null && integrador.HudAtual != null)
             integrador.HudAtual.DefinirTextoVidaVisivel(false);
+        ScoreManager.instance?.RegistrarInicioNecromante(tipo);
         _boss.IniciarEncontro();
+    }
+
+    private void AoIniciarEncerramento(ResultadoEncontroBoss resultado)
+    {
+        if (!EncontroEmAndamento) return;
+        int pontos = resultado == ResultadoEncontroBoss.Fuga ? _pontosFuga : _pontosDerrotaDefinitiva;
+        // Registra a vitoria quando a vida do boss acaba, antes da animacao de encerramento.
+        ScoreManager.instance?.RegistrarResultadoNecromante(resultado, pontos);
     }
 
     private void AoConcluirEncontro(ResultadoEncontroBoss resultado)
@@ -150,6 +164,7 @@ public class ProgressaoNecromante : MonoBehaviour
     {
         if (!_preparado) return;
         _hordas.HordaConcluida -= AoConcluirHorda;
+        _encontro.EncerramentoIniciado -= AoIniciarEncerramento;
         _encontro.EncontroEncerrado -= AoConcluirEncontro;
         _vidaJogador.OnGameOver -= AoGameOver;
         _preparado = false;
@@ -160,5 +175,7 @@ public class ProgressaoNecromante : MonoBehaviour
         _hordaPrimeiroEncontro = Mathf.Max(1, _hordaPrimeiroEncontro);
         _hordaEncontroFinal = Mathf.Max(_hordaPrimeiroEncontro + 1, _hordaEncontroFinal);
         _dificuldadeEncontroFinal = Mathf.Max(1f, _dificuldadeEncontroFinal);
+        _pontosFuga = Mathf.Max(0, _pontosFuga);
+        _pontosDerrotaDefinitiva = Mathf.Max(0, _pontosDerrotaDefinitiva);
     }
 }

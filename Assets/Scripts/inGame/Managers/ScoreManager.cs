@@ -10,6 +10,10 @@ public class ScoreManager : MonoBehaviour
     public int EntregasPerdidas { get; private set; }
     public int VezesAtingido { get; private set; }
     public int MaiorCombo { get; private set; }
+    public bool PrimeiroEncontroNecromanteIniciado { get; private set; }
+    public bool SegundoEncontroNecromanteIniciado { get; private set; }
+    public bool NecromanteFugiu { get; private set; }
+    public bool NecromanteDerrotadoDefinitivamente { get; private set; }
     public bool PartidaEncerrada { get; private set; }
 
     public event Action<int> OnScoreMudou;
@@ -34,6 +38,10 @@ public class ScoreManager : MonoBehaviour
         EntregasPerdidas = 0;
         VezesAtingido = 0;
         MaiorCombo = 0;
+        PrimeiroEncontroNecromanteIniciado = false;
+        SegundoEncontroNecromanteIniciado = false;
+        NecromanteFugiu = false;
+        NecromanteDerrotadoDefinitivamente = false;
         PartidaEncerrada = false;
         OnScoreMudou?.Invoke(pontuacaoAtual);
     }
@@ -55,6 +63,27 @@ public class ScoreManager : MonoBehaviour
         if (!PartidaEncerrada) VezesAtingido++;
     }
 
+    public void RegistrarInicioNecromante(TipoEncontroNecromante tipo)
+    {
+        if (PartidaEncerrada) return;
+        if (tipo == TipoEncontroNecromante.PrimeiroEncontro)
+            PrimeiroEncontroNecromanteIniciado = true;
+        else
+            SegundoEncontroNecromanteIniciado = true;
+    }
+
+    public void RegistrarResultadoNecromante(ResultadoEncontroBoss resultado, int pontos)
+    {
+        if (PartidaEncerrada) return;
+        if (resultado == ResultadoEncontroBoss.Fuga && !NecromanteFugiu)
+            NecromanteFugiu = true;
+        else if (resultado == ResultadoEncontroBoss.DerrotaDefinitiva && !NecromanteDerrotadoDefinitivamente)
+            NecromanteDerrotadoDefinitivamente = true;
+        else
+            return;
+        AdicionarPontos(Mathf.Max(0, pontos));
+    }
+
     public void EncerrarRegistroPartida()
     {
         PartidaEncerrada = true;
@@ -62,7 +91,13 @@ public class ScoreManager : MonoBehaviour
 
     public string ObterResumoPartida()
     {
+        string cidade = NecromanteFugiu ? "Necromante fugiu na Cidade"
+            : PrimeiroEncontroNecromanteIniciado ? "Necromante nao foi vencido na Cidade"
+            : "Necromante nao foi encontrado na Cidade";
+        string floresta = NecromanteDerrotadoDefinitivamente ? "Necromante derrotado definitivamente"
+            : SegundoEncontroNecromanteIniciado ? "Necromante nao foi vencido na Floresta Morta"
+            : "Necromante nao foi reencontrado na Floresta Morta";
         return $"Entregas realizadas: {EntregasRealizadas}\nEntregas perdidas: {EntregasPerdidas}"
-            + $"\nVezes atingido: {VezesAtingido}\nMaior combo: {MaiorCombo}";
+            + $"\nVezes atingido: {VezesAtingido}\nMaior combo: {MaiorCombo}\n{cidade}\n{floresta}";
     }
 }

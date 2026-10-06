@@ -1718,6 +1718,8 @@ MonoBehaviour:
   _hordaPrimeiroEncontro: 10
   _hordaEncontroFinal: 20
   _dificuldadeEncontroFinal: 1.15
+  _pontosFuga: 5000
+  _pontosDerrotaDefinitiva: 10000
   _estado: 0
 --- !u!114 &903340003 stripped
 MonoBehaviour:
