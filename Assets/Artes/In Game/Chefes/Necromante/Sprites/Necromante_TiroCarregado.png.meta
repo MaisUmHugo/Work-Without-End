@@ -1,34 +1,13 @@
 fileFormatVersion: 2
-guid: c33a8bf8aa5a71d4db5d4af6f5273f8d
+guid: 16781820512964843a29bd40e87e6f36
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8101631256718131648
-    second: CharNecromanteAtaqueLoop2-Sheet_0
+      213: -3275631856509709915
+    second: Necromante_TiroCarregado_0
   - first:
-      213: -1951693634599806850
-    second: CharNecromanteAtaqueLoop2-Sheet_1
-  - first:
-      213: 4329512325301852912
-    second: CharNecromanteAtaqueLoop2-Sheet_2
-  - first:
-      213: 2536521604546704431
-    second: CharNecromanteAtaqueLoop2-Sheet_3
-  - first:
-      213: -133393392191521834
-    second: CharNecromanteAtaqueLoop2-Sheet_4
-  - first:
-      213: -4582545125472964693
-    second: CharNecromanteAtaqueLoop2-Sheet_5
-  - first:
-      213: 3785633585732017138
-    second: CharNecromanteAtaqueLoop2-Sheet_6
-  - first:
-      213: -6116006068635757150
-    second: CharNecromanteAtaqueLoop2-Sheet_7
-  - first:
-      213: 2585057110288606299
-    second: CharNecromanteAtaqueLoop2-Sheet_8
+      213: -6492440126359574321
+    second: Necromante_TiroCarregado_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -70,7 +49,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -124,67 +103,45 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: CharNecromanteAtaqueLoop2-Sheet_0
+      name: Necromante_TiroCarregado_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 36
-        height: 48
+        x: 3
+        y: 18
+        width: 11
+        height: 27
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 04e3d1adb49319f80800000000000000
-      internalID: -8101631256718131648
+      spriteID: 5a119c97e2e9a82d0800000000000000
+      internalID: -3275631856509709915
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: CharNecromanteAtaqueLoop2-Sheet_1
+      name: Necromante_TiroCarregado_1
       rect:
         serializedVersion: 2
-        x: 36
-        y: 0
-        width: 36
-        height: 48
+        x: 17
+        y: 5
+        width: 22
+        height: 38
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e789947daf03ae4e0800000000000000
-      internalID: -1951693634599806850
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: CharNecromanteAtaqueLoop2-Sheet_2
-      rect:
-        serializedVersion: 2
-        x: 72
-        y: 0
-        width: 36
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0fada486584851c30800000000000000
-      internalID: 4329512325301852912
+      spriteID: fc868de7a1836e5a0800000000000000
+      internalID: -6492440126359574321
       vertices: []
       indices: 
       edges: []
@@ -193,7 +150,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 1dbd9ed44cce42842b68bee2611c95d1
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -201,13 +158,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":36.0,"y":48.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      CharNecromanteAtaqueLoop2-Sheet_0: -8101631256718131648
-      CharNecromanteAtaqueLoop2-Sheet_1: -1951693634599806850
-      CharNecromanteAtaqueLoop2-Sheet_2: 4329512325301852912
+      Necromante_TiroCarregado_0: -3275631856509709915
+      Necromante_TiroCarregado_1: -6492440126359574321
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

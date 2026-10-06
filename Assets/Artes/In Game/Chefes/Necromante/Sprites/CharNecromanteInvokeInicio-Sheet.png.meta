@@ -47,6 +47,24 @@ TextureImporter:
   - first:
       213: 3208614184887638423
     second: CharNecromanteInvokeInicio-Sheet_14
+  - first:
+      213: -1941719368936453077
+    second: CharNecromanteInvokeInicio-Sheet_15
+  - first:
+      213: -7128566899098342139
+    second: CharNecromanteInvokeInicio-Sheet_16
+  - first:
+      213: -2903417375910523886
+    second: CharNecromanteInvokeInicio-Sheet_17
+  - first:
+      213: 4149044299427668897
+    second: CharNecromanteInvokeInicio-Sheet_18
+  - first:
+      213: -6288330006593140003
+    second: CharNecromanteInvokeInicio-Sheet_19
+  - first:
+      213: -2813542002747185961
+    second: CharNecromanteInvokeInicio-Sheet_20
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -147,17 +165,17 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 41
-        height: 38
+        width: 45
+        height: 42
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 02e76e10f581d864ab0578bf8440736b
+      spriteID: 491bc2b29c140bd90800000000000000
       internalID: -7084089881585208940
       vertices: []
       indices: 
@@ -167,19 +185,19 @@ TextureImporter:
       name: CharNecromanteInvokeInicio-Sheet_1
       rect:
         serializedVersion: 2
-        x: 41
+        x: 45
         y: 0
-        width: 41
-        height: 38
+        width: 45
+        height: 42
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: eccc1d6f4a39d5c4d9ecc6badef712e8
+      spriteID: 710e197752b9bf100800000000000000
       internalID: 142878398414446615
       vertices: []
       indices: 
@@ -189,19 +207,19 @@ TextureImporter:
       name: CharNecromanteInvokeInicio-Sheet_2
       rect:
         serializedVersion: 2
-        x: 82
+        x: 90
         y: 0
-        width: 41
-        height: 38
+        width: 45
+        height: 42
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 6f56a1367f5e4844b9cb7f5821554386
+      spriteID: 46341f1c2fc73d640800000000000000
       internalID: 5103560184818647908
       vertices: []
       indices: 
@@ -211,19 +229,19 @@ TextureImporter:
       name: CharNecromanteInvokeInicio-Sheet_3
       rect:
         serializedVersion: 2
-        x: 123
+        x: 135
         y: 0
-        width: 41
-        height: 38
+        width: 45
+        height: 42
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: fa3f9a57410a27e41a4da53bd9ab936b
+      spriteID: f2e91e483582aa400800000000000000
       internalID: 336125461369298479
       vertices: []
       indices: 
@@ -233,10 +251,54 @@ TextureImporter:
       name: CharNecromanteInvokeInicio-Sheet_4
       rect:
         serializedVersion: 2
-        x: 164
+        x: 180
         y: 0
-        width: 41
-        height: 38
+        width: 45
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 611a035f66bf215f0800000000000000
+      internalID: -787290565217574634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CharNecromanteInvokeInicio-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 0
+        width: 45
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 168bbc2a053776a20800000000000000
+      internalID: 3055537662360008801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CharNecromanteInvokeInicio-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 0
+        width: 45
+        height: 42
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -245,8 +307,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ff9372b95f683064082c930d716961b1
-      internalID: -1881133599
+      spriteID: c9b62a464e82b5d4683e44909ccbda34
+      internalID: 5420889745109999714
       vertices: []
       indices: 
       edges: []
@@ -255,7 +317,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d7c093bb1179932439177f38140151fd
+    spriteID: 83bd695ba408969419a83674fb43be1a
     internalID: 0
     vertices: []
     indices: 
@@ -265,13 +327,15 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":41.0,"y":38.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":true,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":45.0,"y":42.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       CharNecromanteInvokeInicio-Sheet_0: -7084089881585208940
       CharNecromanteInvokeInicio-Sheet_1: 142878398414446615
       CharNecromanteInvokeInicio-Sheet_2: 5103560184818647908
       CharNecromanteInvokeInicio-Sheet_3: 336125461369298479
-      CharNecromanteInvokeInicio-Sheet_4: -1881133599
+      CharNecromanteInvokeInicio-Sheet_4: -787290565217574634
+      CharNecromanteInvokeInicio-Sheet_5: 3055537662360008801
+      CharNecromanteInvokeInicio-Sheet_6: 5420889745109999714
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

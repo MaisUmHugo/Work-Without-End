@@ -1,34 +1,31 @@
 fileFormatVersion: 2
-guid: c33a8bf8aa5a71d4db5d4af6f5273f8d
+guid: 292010b61a9c21743be96319f0d0a2b9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8101631256718131648
-    second: CharNecromanteAtaqueLoop2-Sheet_0
+      213: 4065265783596439438
+    second: CharNecromanteStun-Sheet_0
   - first:
-      213: -1951693634599806850
-    second: CharNecromanteAtaqueLoop2-Sheet_1
+      213: 1824824190820517569
+    second: CharNecromanteStun-Sheet_1
   - first:
-      213: 4329512325301852912
-    second: CharNecromanteAtaqueLoop2-Sheet_2
+      213: -1834323253339784130
+    second: CharNecromanteStun-Sheet_2
   - first:
-      213: 2536521604546704431
-    second: CharNecromanteAtaqueLoop2-Sheet_3
+      213: 1730481453375164151
+    second: CharNecromanteStun-Sheet_3
   - first:
-      213: -133393392191521834
-    second: CharNecromanteAtaqueLoop2-Sheet_4
+      213: 360376492176288013
+    second: CharNecromanteStun-Sheet_4
   - first:
-      213: -4582545125472964693
-    second: CharNecromanteAtaqueLoop2-Sheet_5
+      213: 242881603664475616
+    second: CharNecromanteStun-Sheet_5
   - first:
-      213: 3785633585732017138
-    second: CharNecromanteAtaqueLoop2-Sheet_6
+      213: -2360439504991255515
+    second: CharNecromanteStun-Sheet_6
   - first:
-      213: -6116006068635757150
-    second: CharNecromanteAtaqueLoop2-Sheet_7
-  - first:
-      213: 2585057110288606299
-    second: CharNecromanteAtaqueLoop2-Sheet_8
+      213: -844301294644105233
+    second: CharNecromanteStun-Sheet_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -124,13 +121,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: CharNecromanteAtaqueLoop2-Sheet_0
+      name: CharNecromanteStun-Sheet_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 36
-        height: 48
+        height: 40
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -139,20 +136,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 04e3d1adb49319f80800000000000000
-      internalID: -8101631256718131648
+      spriteID: e87d0d401b9ba6830800000000000000
+      internalID: 4065265783596439438
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: CharNecromanteAtaqueLoop2-Sheet_1
+      name: CharNecromanteStun-Sheet_1
       rect:
         serializedVersion: 2
         x: 36
         y: 0
         width: 36
-        height: 48
+        height: 40
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -161,20 +158,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e789947daf03ae4e0800000000000000
-      internalID: -1951693634599806850
+      spriteID: 1c68567eee3135910800000000000000
+      internalID: 1824824190820517569
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: CharNecromanteAtaqueLoop2-Sheet_2
+      name: CharNecromanteStun-Sheet_2
       rect:
         serializedVersion: 2
         x: 72
         y: 0
         width: 36
-        height: 48
+        height: 40
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -183,8 +180,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0fada486584851c30800000000000000
-      internalID: 4329512325301852912
+      spriteID: e3c717148bc2b86e0800000000000000
+      internalID: -1834323253339784130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CharNecromanteStun-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 0
+        width: 36
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fe04de96b7e30810800000000000000
+      internalID: 1730481453375164151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CharNecromanteStun-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 0
+        width: 36
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d09a191a280500500800000000000000
+      internalID: 360376492176288013
       vertices: []
       indices: 
       edges: []
@@ -193,7 +234,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 1dbd9ed44cce42842b68bee2611c95d1
+    spriteID: 67661b6baac0a9e4782b7c33a03196ee
     internalID: 0
     vertices: []
     indices: 
@@ -203,11 +244,13 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":36.0,"y":48.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":36.0,"y":40.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      CharNecromanteAtaqueLoop2-Sheet_0: -8101631256718131648
-      CharNecromanteAtaqueLoop2-Sheet_1: -1951693634599806850
-      CharNecromanteAtaqueLoop2-Sheet_2: 4329512325301852912
+      CharNecromanteStun-Sheet_0: 4065265783596439438
+      CharNecromanteStun-Sheet_1: 1824824190820517569
+      CharNecromanteStun-Sheet_2: -1834323253339784130
+      CharNecromanteStun-Sheet_3: 1730481453375164151
+      CharNecromanteStun-Sheet_4: 360376492176288013
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
