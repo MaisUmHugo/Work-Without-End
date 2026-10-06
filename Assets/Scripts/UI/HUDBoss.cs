@@ -75,6 +75,12 @@ public class HUDBoss : MonoBehaviour, IHudTransicaoCenario
             _painel.SetActive(false);
     }
 
+    public void DefinirTextoVidaVisivel(bool visivel)
+    {
+        if (_textoVida != null)
+            _textoVida.gameObject.SetActive(visivel);
+    }
+
     private void ConectarEventos()
     {
         if (_eventosConectados || _vida == null || _controladorFases == null)
