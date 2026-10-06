@@ -1717,6 +1717,7 @@ MonoBehaviour:
   _vidaJogador: {fileID: 903340006}
   _hordaPrimeiroEncontro: 10
   _hordaEncontroFinal: 20
+  _ativarCheats: 1
   _dificuldadeEncontroFinal: 1.15
   _pontosFuga: 5000
   _pontosDerrotaDefinitiva: 10000

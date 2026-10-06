@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [DisallowMultipleComponent]
 public class ProgressaoNecromante : MonoBehaviour
@@ -35,9 +36,15 @@ public class ProgressaoNecromante : MonoBehaviour
     [SerializeField, Min(0.01f)] private float _duracaoTeleporteEntrada = 1.6f;
     [SerializeField, Min(0f)] private float _duracaoFadeHudBoss = 0.5f;
 
+    [Header("Atalhos de teste")]
+    [SerializeField, Tooltip("Somente no Editor e Development Build. Shift+6/7: Cidade/Floresta; Shift+8/9: primeiro encontro/reencontro.")]
+    private bool _ativarCheats = true;
+
     [SerializeField] private EstadoProgressao _estado;
     private ControladorBoss _boss;
     private bool _preparado;
+    private bool _encontroTestePendente;
+    private TipoEncontroNecromante _tipoEncontroTeste;
     private Coroutine _apresentacaoEntrada;
     private CanvasGroup _hudClassica;
     private float _alphaHudClassica;
@@ -95,6 +102,15 @@ public class ProgressaoNecromante : MonoBehaviour
             AoGameOver();
             return;
         }
+        ProcessarCheats();
+        if (_encontroTestePendente)
+        {
+            int cenario = _tipoEncontroTeste == TipoEncontroNecromante.PrimeiroEncontro ? 0 : 1;
+            if (!PodeIniciar() || _transicao.CenarioAtual != cenario) return;
+            _encontroTestePendente = false;
+            IniciarEncontro(_tipoEncontroTeste);
+            return;
+        }
         if (_estado == EstadoProgressao.TransicaoFloresta
             && _transicao.CenarioAtual == 1 && !_transicao.EmTransicao
             && _transicao.CenarioSolicitado == 1 && !BloqueioGameplay.Bloqueado)
@@ -102,6 +118,46 @@ public class ProgressaoNecromante : MonoBehaviour
             _estado = EstadoProgressao.HordasFloresta;
             _hordas.DefinirSuspensoPorBoss(false);
         }
+    }
+
+    private void ProcessarCheats()
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        Keyboard teclado = Keyboard.current;
+        if (!_ativarCheats || teclado == null || BloqueioGameplay.BloqueadoSemTransicao
+            || (!teclado.leftShiftKey.isPressed && !teclado.rightShiftKey.isPressed)) return;
+
+        if (teclado.digit8Key.wasPressedThisFrame)
+            SolicitarEncontroTeste(TipoEncontroNecromante.PrimeiroEncontro);
+        else if (teclado.digit9Key.wasPressedThisFrame)
+            SolicitarEncontroTeste(TipoEncontroNecromante.EncontroFinal);
+        else if (!_encontroTestePendente && teclado.digit6Key.wasPressedThisFrame)
+            _transicao.SolicitarCenario(0);
+        else if (!_encontroTestePendente && teclado.digit7Key.wasPressedThisFrame)
+            _transicao.SolicitarCenario(1);
+#endif
+    }
+
+    public bool SolicitarEncontroTeste(TipoEncontroNecromante tipo)
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        if (!_preparado || !_ativarCheats || _estado == EstadoProgressao.GameOver
+            || _vidaJogador.vidasAtuais <= 0 || BloqueioGameplay.BloqueadoSemTransicao) return false;
+
+        CancelarApresentacaoEntrada();
+        _hordas.DefinirSuspensoPorBoss(true, false);
+        _boss.EncerrarExecucao();
+        _encontro.gameObject.SetActive(false);
+        _tipoEncontroTeste = tipo;
+        _encontroTestePendente = true;
+        _estado = tipo == TipoEncontroNecromante.PrimeiroEncontro
+            ? EstadoProgressao.HordasCidade : EstadoProgressao.HordasFloresta;
+        _transicao.SolicitarCenario(tipo == TipoEncontroNecromante.PrimeiroEncontro ? 0 : 1);
+        Debug.Log($"[CHEAT] Preparando {tipo}; o boss inicia apos a transicao de cenario.", this);
+        return true;
+#else
+        return false;
+#endif
     }
 
     private void AoConcluirHorda(int numeroHorda)
@@ -279,6 +335,7 @@ public class ProgressaoNecromante : MonoBehaviour
     {
         if (_estado == EstadoProgressao.GameOver) return;
         _estado = EstadoProgressao.GameOver;
+        _encontroTestePendente = false;
         CancelarApresentacaoEntrada();
         _hordas.DefinirSuspensoPorBoss(true);
         _boss.EncerrarExecucao();
@@ -295,6 +352,18 @@ public class ProgressaoNecromante : MonoBehaviour
         _encontro.EncontroEncerrado -= AoConcluirEncontro;
         _vidaJogador.OnGameOver -= AoGameOver;
         _preparado = false;
+    }
+
+    [ContextMenu("Teste/Iniciar primeiro encontro (Play)")]
+    private void TestarPrimeiroEncontro()
+    {
+        if (Application.isPlaying) SolicitarEncontroTeste(TipoEncontroNecromante.PrimeiroEncontro);
+    }
+
+    [ContextMenu("Teste/Iniciar reencontro (Play)")]
+    private void TestarEncontroFinal()
+    {
+        if (Application.isPlaying) SolicitarEncontroTeste(TipoEncontroNecromante.EncontroFinal);
     }
 
     private void OnValidate()

@@ -17,6 +17,8 @@ public class CheatAtaquesNecromante : MonoBehaviour
     [SerializeField] private Key _teclaInvocacao = Key.Digit4;
     [Tooltip("Suspende a luta e os spawns para testar apenas um Sombrio na lane do jogador.")]
     [SerializeField] private Key _teclaSombrioIsolado = Key.Digit5;
+    [SerializeField] private Key _teclaCidade = Key.Digit6;
+    [SerializeField] private Key _teclaFloresta = Key.Digit7;
     [Header("Referencias")]
     [SerializeField] private ComportamentoBossNecromante _comportamento;
     [SerializeField] private AtaqueProjetilNecromante _ataqueProjetil;
@@ -31,6 +33,7 @@ public class CheatAtaquesNecromante : MonoBehaviour
     private SpawnerManager _spawnerTeste;
     private bool _testeSombrioIsolado;
     private bool _pressaoEstavaAtiva;
+    private ControladorTransicaoCenario _transicaoCenario;
 
     private void Awake()
     {
@@ -43,12 +46,24 @@ public class CheatAtaquesNecromante : MonoBehaviour
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         Keyboard teclado = Keyboard.current;
-        if (!_ativarCheats || teclado == null || BloqueioGameplay.Bloqueado)
+        if (!_ativarCheats || teclado == null || BloqueioGameplay.BloqueadoSemTransicao)
             return;
 
         bool shiftPressionado = teclado.leftShiftKey.isPressed || teclado.rightShiftKey.isPressed;
         if (_exigirShift && !shiftPressionado)
             return;
+
+        if (teclado[_teclaCidade].wasPressedThisFrame)
+        {
+            SolicitarCenarioTeste(0);
+            return;
+        }
+        if (teclado[_teclaFloresta].wasPressedThisFrame)
+        {
+            SolicitarCenarioTeste(1);
+            return;
+        }
+        if (BloqueioGameplay.Bloqueado) return;
 
         if (teclado[_teclaProjetil].wasPressedThisFrame)
             SolicitarAtaqueTeste(_ataqueProjetil, "projetil comum");
@@ -61,6 +76,20 @@ public class CheatAtaquesNecromante : MonoBehaviour
         else if (teclado[_teclaSombrioIsolado].wasPressedThisFrame)
             InvocarSombrioIsolado();
 #endif
+    }
+
+    private void SolicitarCenarioTeste(int indice)
+    {
+        // Na cena integrada, o atalho vive na progressao, que permanece ativa sem o boss.
+        if (FindFirstObjectByType<ProgressaoNecromante>() != null) return;
+        if (_transicaoCenario == null)
+            _transicaoCenario = FindFirstObjectByType<ControladorTransicaoCenario>();
+        if (_transicaoCenario == null)
+        {
+            Debug.LogWarning("[CHEAT] Controlador de transicao ausente nesta cena.", this);
+            return;
+        }
+        _transicaoCenario.SolicitarCenario(indice);
     }
 
     [ContextMenu("Teste/Invocar somente Zumbi Sombrio (Play)")]
@@ -140,7 +169,14 @@ public class CheatAtaquesNecromante : MonoBehaviour
         const int tentativas = 5;
         for (int i = 0; i < tentativas; i++)
         {
+            while (BloqueioGameplay.Bloqueado)
+                yield return null;
             yield return new WaitForFixedUpdate();
+            if (BloqueioGameplay.Bloqueado)
+            {
+                i--;
+                continue;
+            }
 
             if (_comportamento != null && _comportamento.EstadoAtual != EstadoBoss.Inativo)
             {
