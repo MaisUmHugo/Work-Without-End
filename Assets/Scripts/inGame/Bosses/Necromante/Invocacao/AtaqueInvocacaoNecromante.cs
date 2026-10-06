@@ -28,13 +28,13 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
     [SerializeField, Range(0f, 1f)] private float _chanceMaoZumbi = 0.35f;
     [SerializeField] private bool _garantirZumbiSombrio = true;
     [SerializeField] private bool _evitarRepetirLaneSegura = true;
-    [SerializeField, Min(0f)] private float _espacamentoHorizontalInvocados = 1.25f;
+    [SerializeField, Min(0f)] private float _espacamentoHorizontalInvocados = 2f;
     [SerializeField, Min(0f)] private float _variacaoEspacamentoHorizontal = 0.2f;
 
     [Header("Tempos em segundos")]
     [SerializeField, Min(0f)] private float _tempoPreparacao = 0.8f;
-    [SerializeField, Min(0f)] private float _intervaloEntreInvocados = 0.15f;
-    [SerializeField, Min(0f)] private float _intervaloEntreOndas = 1f;
+    [SerializeField, Min(0f)] private float _intervaloEntreInvocados = 0.2f;
+    [SerializeField, Min(0f)] private float _intervaloEntreOndas = 1.5f;
     [SerializeField, Min(0f)] private float _tempoRecuperacao = 0.5f;
 
     [Header("Integracoes futuras")]
@@ -51,6 +51,8 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
     private float _deslocamentoHorizontalAtual;
     private float _tempoRestante;
     private bool _invocouZumbiSombrio;
+    private bool _garantirSombrioParaTeste;
+    private bool _garantirSombrioNesteAtaque;
     private EtapaAtaque _etapa;
     private float _multiplicadorRitmo = 1f;
 
@@ -68,6 +70,11 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
         _quantidadeOndas = Mathf.Max(1, quantidadeOndas);
         _chanceZumbiSombrio = Mathf.Clamp01(chanceZumbiSombrio);
         _garantirZumbiSombrio = garantirZumbiSombrio;
+    }
+
+    public void GarantirSombrioNaProximaInvocacaoTeste()
+    {
+        _garantirSombrioParaTeste = true;
     }
 
     public override bool Inicializar()
@@ -103,6 +110,8 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
         _ultimaLaneSegura = -1;
         _deslocamentoHorizontalAtual = 0f;
         _invocouZumbiSombrio = false;
+        _garantirSombrioNesteAtaque = _garantirZumbiSombrio || _garantirSombrioParaTeste;
+        _garantirSombrioParaTeste = false;
         _lanesOcupadas.Clear();
         CriarAvisoGeral();
         TempoPreparacaoEfetivo = Mathf.Max(0f, _tempoPreparacao / _multiplicadorRitmo);
@@ -200,11 +209,8 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
             return;
         }
 
-        bool ultimaOnda = _ondasExecutadas >= Mathf.Max(1, _quantidadeOndas) - 1;
         int indiceLane = _lanesOcupadas[_indiceInvocadoOnda];
-        bool ultimoInvocadoPlanejado = _indiceInvocadoOnda == _lanesOcupadas.Count - 1;
-        bool forcarSombrio = _garantirZumbiSombrio && !_invocouZumbiSombrio
-            && ultimaOnda && ultimoInvocadoPlanejado;
+        bool forcarSombrio = _garantirSombrioNesteAtaque && !_invocouZumbiSombrio;
         bool invocarSombrio = forcarSombrio || Random.value < _chanceZumbiSombrio;
 
         if (invocarSombrio)
@@ -333,6 +339,7 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
         _deslocamentoHorizontalAtual = 0f;
         _tempoRestante = 0f;
         _etapa = EtapaAtaque.Inativo;
+        _garantirSombrioNesteAtaque = false;
 
         if (iniciarCooldown)
             IniciarCooldown();

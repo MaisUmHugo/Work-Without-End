@@ -150,6 +150,25 @@ public class GerenciadorInvocadosNecromante : MonoBehaviour
         return TentarInvocarZumbiSombrio(lane, out _);
     }
 
+    public bool TentarInvocarZumbiSombrioNaLaneDoJogador()
+    {
+        Transform alvo = ObterAlvo();
+        Mov movimentoJogador = alvo != null ? alvo.GetComponent<Mov>() : null;
+        if (movimentoJogador == null)
+            return false;
+
+        if (!TentarInvocarZumbiSombrio((int)movimentoJogador.linhaAtual, out ZumbiSombrio invocado))
+            return false;
+
+        // No teste isolado, aparece dentro da camera para dispensar a espera pelo spawn externo.
+        Rigidbody2D corpo = invocado.GetComponent<Rigidbody2D>();
+        Vector2 posicao = corpo.position;
+        posicao.x = Camera.main.ViewportToWorldPoint(new Vector3(0.8f, 0.5f, 0f)).x;
+        corpo.position = posicao;
+        invocado.IniciarCorridaParaTeste();
+        return true;
+    }
+
     public void RemoverTodos()
     {
         for (int i = _invocados.Count - 1; i >= 0; i--)

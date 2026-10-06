@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 610000003}
   - component: {fileID: 610000004}
   - component: {fileID: 610000005}
+  - component: {fileID: 610000006}
   m_Layer: 0
   m_Name: ZumbiSombrio
   m_TagString: Untagged
@@ -33,6 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 620000002}
+  - {fileID: 630000002}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &610000003
@@ -119,11 +121,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83f4c8e15b9d4050ad5e2c3b7f8091a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ZumbiSombrio
-  ativoParaEntrega: 1
+  ativoParaEntrega: 0
   _corpo: {fileID: 610000004}
   _colisor: {fileID: 610000003}
   _animator: {fileID: 620000004}
   _spriteRenderer: {fileID: 620000003}
+  _entregavelPisca: {fileID: 610000006}
+  _pontoExclamacao: {fileID: 630000002}
+  _prefabExclamacao: {fileID: 1127054739601164410, guid: 31754b68d7fbffa4a92bee90e79f9d49, type: 3}
+  _duracaoExclamacao: 2
   _velocidadeCaminhada: 9
   _velocidadeCorrida: 14
   _velocidadeTrocaLane: 18
@@ -131,12 +137,58 @@ MonoBehaviour:
   _danoAoJogador: 1
   _tempoAposImpacto: 1.8
   _entregasNecessarias: 2
-  _tempoAtordoamento: 1.6
-  _escalaPorEntrega: 1.35
+  _tempoAtordoamento: 0.35
+  _fatorVelocidadeAposEntrega: 0.45
+  _escalaPorEntrega: 1.1
+  _distanciaEmpurraoEntrega: 0.8
+  _duracaoEmpurraoEntrega: 0.12
   _corSombria: {r: 0.22, g: 0.08, b: 0.3, a: 1}
-  _corAtordoado: {r: 0.75, g: 0.3, b: 1, a: 1}
   _margemSaidaCamera: 0.15
   _distanciaMaximaAtrasJogador: 30
+--- !u!114 &610000006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 610000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed6f1d26ba6d4f54fad6ac298a2548b7, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EntregavelPisca
+  spriteRendererAlvo: {fileID: 620000003}
+--- !u!1 &630000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 630000002}
+  m_Layer: 0
+  m_Name: PontoExclamacao
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &630000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 630000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 610000002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &620000001
 GameObject:
   m_ObjectHideFlags: 0

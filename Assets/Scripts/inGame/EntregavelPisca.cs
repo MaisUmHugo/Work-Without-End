@@ -47,7 +47,15 @@ public class EntregavelPisca : MonoBehaviour
     }
     public void PiscarAtivo()
     {
-        IniciarPiscar(corPiscarAtivo, intervaloAtivo, quantidadePiscadasAtivo);
+        PiscarAtivo(false);
+    }
+
+    public void PiscarAtivo(bool preservarOpacidade)
+    {
+        Color corPiscar = corPiscarAtivo;
+        if (preservarOpacidade)
+            corPiscar.a = corOriginal.a;
+        IniciarPiscar(corPiscar, intervaloAtivo, quantidadePiscadasAtivo);
     }
 
     public void PiscarRecebendo()

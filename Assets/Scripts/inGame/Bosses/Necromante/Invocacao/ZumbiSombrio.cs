@@ -25,6 +25,10 @@ public class ZumbiSombrio : Entregavel
     [SerializeField] private Collider2D _colisor;
     [SerializeField] private Animator _animator;
     [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private EntregavelPisca _entregavelPisca;
+    [SerializeField] private Transform _pontoExclamacao;
+    [SerializeField] private GameObject _prefabExclamacao;
+    [SerializeField, Min(0f)] private float _duracaoExclamacao = 2f;
 
     [Header("Movimento")]
     [SerializeField, Min(0.1f)] private float _velocidadeCaminhada = 6f;
@@ -41,10 +45,13 @@ public class ZumbiSombrio : Entregavel
 
     [Header("Entregas")]
     [SerializeField, Min(2)] private int _entregasNecessarias = 2;
-    [SerializeField, Min(0f)] private float _tempoAtordoamento = 1.6f;
-    [SerializeField, Min(1f)] private float _escalaPorEntrega = 1.25f;
+    [Tooltip("Duracao da desaceleracao breve apos a primeira entrega.")]
+    [SerializeField, Min(0f)] private float _tempoAtordoamento = 0.35f;
+    [SerializeField, Range(0.1f, 1f)] private float _fatorVelocidadeAposEntrega = 0.45f;
+    [SerializeField, Min(1f)] private float _escalaPorEntrega = 1.1f;
+    [SerializeField, Min(0f)] private float _distanciaEmpurraoEntrega = 0.8f;
+    [SerializeField, Min(0f)] private float _duracaoEmpurraoEntrega = 0.12f;
     [SerializeField] private Color _corSombria = new Color(0.22f, 0.08f, 0.3f, 1f);
-    [SerializeField] private Color _corAtordoado = new Color(0.75f, 0.3f, 1f, 1f);
 
     [Header("Limpeza")]
     [SerializeField, Min(0f)] private float _margemSaidaCamera = 0.15f;
@@ -58,6 +65,11 @@ public class ZumbiSombrio : Entregavel
     private Vector3 _escalaOriginalVisual;
     private int _entregasRecebidas;
     private float _tempoAtordoamentoRestante;
+    private Vector2 _origemEmpurraoEntrega;
+    private float _tempoEmpurraoRestante;
+    private float _duracaoEmpurraoAtual;
+    private GameObject _exclamacaoAtual;
+    private float _tempoExclamacaoRestante;
     private int _indiceLaneAtual;
     private float _laneInicialY;
     private float _laneDestinoY;
@@ -86,6 +98,8 @@ public class ZumbiSombrio : Entregavel
             _animator = GetComponentInChildren<Animator>();
         if (_spriteRenderer == null)
             _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (_entregavelPisca == null)
+            _entregavelPisca = GetComponent<EntregavelPisca>();
         if (_spriteRenderer != null)
             _escalaOriginalVisual = _spriteRenderer.transform.localScale;
 
@@ -128,7 +142,11 @@ public class ZumbiSombrio : Entregavel
         _tempoAvisoRestante = 0f;
         _tempoImpactoRestante = 0f;
         _tempoAtordoamentoRestante = 0f;
+        _tempoEmpurraoRestante = 0f;
         _entregasRecebidas = 0;
+        ativoParaEntrega = false;
+        _entregavelPisca?.PararPiscar();
+        RemoverExclamacao();
         _estado = EstadoZumbiSombrio.Caminhando;
         _inicializado = true;
         _finalizacaoNotificada = false;
@@ -141,6 +159,18 @@ public class ZumbiSombrio : Entregavel
         AplicarCor(_corSombria);
         RestaurarEscala();
         return true;
+    }
+
+    public void IniciarCorridaParaTeste()
+    {
+        if (!_inicializado || _estado != EstadoZumbiSombrio.Caminhando) return;
+
+        DefinirLaneDestino();
+        IniciarPerseguicao();
+        // O teste pula a caminhada; o controller antigo sai do Idle apenas pelo estado Andando.
+        int estadoCorrendo = Animator.StringToHash("Base Layer.Correndo");
+        if (_animator != null && _animator.HasState(0, estadoCorrendo))
+            _animator.Play(estadoCorrendo, 0, 0f);
     }
 
     public void ConfigurarMultiplicadorVelocidade(float multiplicador)
@@ -169,6 +199,7 @@ public class ZumbiSombrio : Entregavel
         }
 
         float deltaTime = Time.fixedDeltaTime;
+        AtualizarExclamacao(deltaTime);
         switch (_estado)
         {
             case EstadoZumbiSombrio.Caminhando:
@@ -190,6 +221,10 @@ public class ZumbiSombrio : Entregavel
 
             case EstadoZumbiSombrio.Atordoado:
                 _corpo.linearVelocity = Vector2.zero;
+                if (_tempoEmpurraoRestante > 0f)
+                    AtualizarEmpurraoEntrega(deltaTime);
+                else
+                    MoverDuranteReacaoEntrega(deltaTime);
                 _tempoAtordoamentoRestante -= deltaTime;
                 if (_tempoAtordoamentoRestante <= 0f)
                     RetomarMovimento();
@@ -292,8 +327,39 @@ public class ZumbiSombrio : Entregavel
     {
         _estado = EstadoZumbiSombrio.Perseguindo;
         _tempoAvisoRestante = 0f;
+        ativoParaEntrega = true;
         AplicarCor(_corSombria);
         AtualizarAnimator();
+        _entregavelPisca?.PiscarAtivo(true);
+        ExibirExclamacao();
+    }
+
+    private void ExibirExclamacao()
+    {
+        RemoverExclamacao();
+        if (_prefabExclamacao == null || _pontoExclamacao == null || _duracaoExclamacao <= 0f)
+            return;
+
+        _exclamacaoAtual = Instantiate(_prefabExclamacao, _pontoExclamacao.position, Quaternion.identity);
+        _exclamacaoAtual.transform.SetParent(_pontoExclamacao, true);
+        _tempoExclamacaoRestante = _duracaoExclamacao;
+    }
+
+    private void AtualizarExclamacao(float deltaTime)
+    {
+        if (_exclamacaoAtual == null) return;
+
+        _tempoExclamacaoRestante -= deltaTime;
+        if (_tempoExclamacaoRestante <= 0f)
+            RemoverExclamacao();
+    }
+
+    private void RemoverExclamacao()
+    {
+        if (_exclamacaoAtual != null)
+            Destroy(_exclamacaoAtual);
+        _exclamacaoAtual = null;
+        _tempoExclamacaoRestante = 0f;
     }
 
     private void OnTriggerEnter2D(Collider2D colisao)
@@ -315,7 +381,7 @@ public class ZumbiSombrio : Entregavel
         Caixa caixa = colisao.GetComponentInParent<Caixa>();
         if (caixa != null)
         {
-            if (caixa.TentarConsumir())
+            if (ativoParaEntrega && EntregaPendente && caixa.TentarConsumir())
                 ReceberEntrega();
             return;
         }
@@ -330,6 +396,8 @@ public class ZumbiSombrio : Entregavel
             || _estado == EstadoZumbiSombrio.AposImpacto
             || _estado == EstadoZumbiSombrio.Finalizado) return;
 
+        _entregavelPisca?.PararPiscar();
+        AplicarCor(_corSombria);
         _entregasRecebidas++;
         if (_entregasRecebidas >= _entregasNecessarias)
         {
@@ -343,11 +411,18 @@ public class ZumbiSombrio : Entregavel
         _estado = EstadoZumbiSombrio.Atordoado;
         _tempoAtordoamentoRestante = _tempoAtordoamento;
         if (_corpo != null)
+        {
             _corpo.linearVelocity = Vector2.zero;
+            _origemEmpurraoEntrega = _corpo.position;
+            _duracaoEmpurraoAtual = Mathf.Min(_duracaoEmpurraoEntrega, _tempoAtordoamento);
+            _tempoEmpurraoRestante = _duracaoEmpurraoAtual;
+            if (_duracaoEmpurraoAtual <= 0f)
+                _corpo.position += Vector2.right * _distanciaEmpurraoEntrega;
+        }
         if (_spriteRenderer != null)
             _spriteRenderer.transform.localScale = _escalaOriginalVisual
                 * Mathf.Pow(_escalaPorEntrega, _entregasRecebidas);
-        AplicarCor(_corAtordoado);
+        AplicarCor(_corSombria);
         AtualizarAnimator();
     }
 
@@ -359,8 +434,31 @@ public class ZumbiSombrio : Entregavel
         AtualizarAnimator();
     }
 
+    private void MoverDuranteReacaoEntrega(float deltaTime)
+    {
+        float progresso = 1f - Mathf.Clamp01(
+            _tempoAtordoamentoRestante / Mathf.Max(0.001f, _tempoAtordoamento));
+        float fatorVelocidade = Mathf.Lerp(_fatorVelocidadeAposEntrega, 1f, progresso);
+        if (_estadoAntesAtordoamento == EstadoZumbiSombrio.Perseguindo)
+            MoverPerseguindo(deltaTime * fatorVelocidade);
+        else
+            MoverCaminhando(deltaTime * fatorVelocidade);
+    }
+
+    private void AtualizarEmpurraoEntrega(float deltaTime)
+    {
+        if (_tempoEmpurraoRestante <= 0f) return;
+
+        _tempoEmpurraoRestante = Mathf.Max(0f, _tempoEmpurraoRestante - deltaTime);
+        float progresso = 1f - _tempoEmpurraoRestante / _duracaoEmpurraoAtual;
+        Vector2 destino = _origemEmpurraoEntrega + Vector2.right * _distanciaEmpurraoEntrega;
+        _corpo.MovePosition(Vector2.Lerp(_origemEmpurraoEntrega, destino, progresso));
+    }
+
     private void ConcluirEncontro()
     {
+        _entregavelPisca?.PararPiscar();
+        RemoverExclamacao();
         _estado = EstadoZumbiSombrio.AposImpacto;
         _tempoImpactoRestante = Mathf.Max(0f, _tempoAposImpacto);
         _colisor.enabled = false;
@@ -413,20 +511,22 @@ public class ZumbiSombrio : Entregavel
     {
         if (_animator == null) return;
 
+        EstadoZumbiSombrio estadoVisual = _estado == EstadoZumbiSombrio.Atordoado
+            ? _estadoAntesAtordoamento : _estado;
         _animator.SetBool(
             Andar,
-            _estado == EstadoZumbiSombrio.Caminhando
-                || _estado == EstadoZumbiSombrio.PreparandoPerseguicao);
-        _animator.SetBool(Correr, _estado == EstadoZumbiSombrio.Perseguindo);
+            estadoVisual == EstadoZumbiSombrio.Caminhando
+                || estadoVisual == EstadoZumbiSombrio.PreparandoPerseguicao);
+        _animator.SetBool(Correr, estadoVisual == EstadoZumbiSombrio.Perseguindo);
         bool recebeuEntrega = _estado == EstadoZumbiSombrio.AposImpacto
             && _entregasRecebidas >= _entregasNecessarias;
         _animator.SetBool(RecebeuEntrega, recebeuEntrega);
-        _animator.SetBool(Caiu, _estado == EstadoZumbiSombrio.Atordoado
-            || (_estado == EstadoZumbiSombrio.AposImpacto && !recebeuEntrega));
+        _animator.SetBool(Caiu, _estado == EstadoZumbiSombrio.AposImpacto && !recebeuEntrega);
     }
 
     private void AplicarCor(Color cor)
     {
+        cor.a = 1f;
         if (_spriteRenderer != null)
             _spriteRenderer.color = cor;
     }
@@ -452,6 +552,8 @@ public class ZumbiSombrio : Entregavel
 
     private void OnDisable()
     {
+        _entregavelPisca?.PararPiscar();
+        RemoverExclamacao();
         AplicarCor(_corSombria);
         RestaurarEscala();
     }
@@ -473,7 +575,11 @@ public class ZumbiSombrio : Entregavel
         _tempoAposImpacto = Mathf.Max(0f, _tempoAposImpacto);
         _entregasNecessarias = Mathf.Max(2, _entregasNecessarias);
         _tempoAtordoamento = Mathf.Max(0f, _tempoAtordoamento);
+        _fatorVelocidadeAposEntrega = Mathf.Clamp(_fatorVelocidadeAposEntrega, 0.1f, 1f);
+        _duracaoExclamacao = Mathf.Max(0f, _duracaoExclamacao);
         _escalaPorEntrega = Mathf.Max(1f, _escalaPorEntrega);
+        _distanciaEmpurraoEntrega = Mathf.Max(0f, _distanciaEmpurraoEntrega);
+        _duracaoEmpurraoEntrega = Mathf.Max(0f, _duracaoEmpurraoEntrega);
         _margemSaidaCamera = Mathf.Max(0f, _margemSaidaCamera);
         _distanciaMaximaAtrasJogador = Mathf.Max(1f, _distanciaMaximaAtrasJogador);
     }

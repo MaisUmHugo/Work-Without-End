@@ -832,8 +832,8 @@ MonoBehaviour:
   _duracaoMovimentoEntreLanes: 0.18
   _duracaoRetorno: 0.25
   _tempoPreparacao: 0.35
-  _tempoAvisoPorDisparo: 0.25
-  _intervaloEntreDisparos: 0.05
+  _tempoAvisoPorDisparo: 0.35
+  _intervaloEntreDisparos: 0.3
   _tempoRecuperacao: 0.35
   _velocidadeProjetil: 32
   _danoProjetil: 1
@@ -856,6 +856,7 @@ MonoBehaviour:
   _teclaTiroCarregado: 42
   _teclaSequenciaRapida: 43
   _teclaInvocacao: 44
+  _teclaSombrioIsolado: 45
   _comportamento: {fileID: 910010003}
   _ataqueProjetil: {fileID: 910030001}
   _tiroCarregado: {fileID: 910040003}
@@ -904,11 +905,11 @@ MonoBehaviour:
   _chanceMaoZumbi: 0.35
   _garantirZumbiSombrio: 1
   _evitarRepetirLaneSegura: 1
-  _espacamentoHorizontalInvocados: 1.25
+  _espacamentoHorizontalInvocados: 2
   _variacaoEspacamentoHorizontal: 0.2
   _tempoPreparacao: 0.8
-  _intervaloEntreInvocados: 0.1
-  _intervaloEntreOndas: 1
+  _intervaloEntreInvocados: 0.2
+  _intervaloEntreOndas: 1.5
   _tempoRecuperacao: 0.5
 --- !u!114 &910060001
 MonoBehaviour:
@@ -955,8 +956,8 @@ MonoBehaviour:
     - {fileID: 910030001}
     - {fileID: 910040004}
     - {fileID: 910050002}
-    _quantidadeOndas: 3
-    _limiteInvocados: 8
+    _quantidadeOndas: 2
+    _limiteInvocados: 6
     _chanceZumbiSombrio: 0.25
     _garantirZumbiSombrio: 1
     _multiplicadorDecisao: 1.3
@@ -971,9 +972,9 @@ MonoBehaviour:
     - {fileID: 910040003}
     - {fileID: 910040004}
     - {fileID: 910050002}
-    _quantidadeOndas: 4
-    _limiteInvocados: 12
-    _chanceZumbiSombrio: 0.5
+    _quantidadeOndas: 3
+    _limiteInvocados: 8
+    _chanceZumbiSombrio: 0.35
     _garantirZumbiSombrio: 1
     _multiplicadorDecisao: 2
     _multiplicadorRitmoAtaques: 1.6

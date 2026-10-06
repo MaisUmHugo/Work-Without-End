@@ -15,6 +15,8 @@ public class CheatAtaquesNecromante : MonoBehaviour
     [SerializeField] private Key _teclaSequenciaRapida = Key.Digit3;
     [FormerlySerializedAs("_teclaZumbiSombrio")]
     [SerializeField] private Key _teclaInvocacao = Key.Digit4;
+    [Tooltip("Suspende a luta e os spawns para testar apenas um Sombrio na lane do jogador.")]
+    [SerializeField] private Key _teclaSombrioIsolado = Key.Digit5;
     [Header("Referencias")]
     [SerializeField] private ComportamentoBossNecromante _comportamento;
     [SerializeField] private AtaqueProjetilNecromante _ataqueProjetil;
@@ -25,11 +27,16 @@ public class CheatAtaquesNecromante : MonoBehaviour
     private ControladorBoss _controladorBoss;
     private GerenciadorInvocadosNecromante _gerenciadorInvocados;
     private Coroutine _inicioPendente;
+    private PressaoAmbienteNecromante _pressaoAmbiente;
+    private SpawnerManager _spawnerTeste;
+    private bool _testeSombrioIsolado;
+    private bool _pressaoEstavaAtiva;
 
     private void Awake()
     {
         _controladorBoss = GetComponent<ControladorBoss>();
         _gerenciadorInvocados = GetComponent<GerenciadorInvocadosNecromante>();
+        _pressaoAmbiente = GetComponent<PressaoAmbienteNecromante>();
     }
 
     private void Update()
@@ -51,7 +58,53 @@ public class CheatAtaquesNecromante : MonoBehaviour
             SolicitarAtaqueTeste(_sequenciaRapida, "sequencia rapida");
         else if (teclado[_teclaInvocacao].wasPressedThisFrame)
             SolicitarAtaqueTeste(_ataqueInvocacao, "invocacao");
+        else if (teclado[_teclaSombrioIsolado].wasPressedThisFrame)
+            InvocarSombrioIsolado();
 #endif
+    }
+
+    [ContextMenu("Teste/Invocar somente Zumbi Sombrio (Play)")]
+    private void InvocarSombrioIsolado()
+    {
+        if (!Application.isPlaying || BloqueioGameplay.Bloqueado)
+        {
+            Debug.LogWarning("[CHEAT] Entre em Play e feche o tutorial ou a pausa antes de testar o Sombrio.", this);
+            return;
+        }
+        if (_gerenciadorInvocados == null)
+        {
+            Debug.LogWarning("[CHEAT] Gerenciador de invocados ausente para testar o Sombrio.", this);
+            return;
+        }
+
+        if (!_testeSombrioIsolado)
+        {
+            if (_inicioPendente != null)
+                StopCoroutine(_inicioPendente);
+            _inicioPendente = null;
+            _controladorBoss?.EncerrarExecucao();
+            _pressaoEstavaAtiva = _pressaoAmbiente != null && _pressaoAmbiente.enabled;
+            if (_pressaoAmbiente != null)
+                _pressaoAmbiente.enabled = false;
+            _spawnerTeste = SpawnerManager.instance;
+            _spawnerTeste?.DefinirSuspensoPorEncontroBoss(true);
+            _testeSombrioIsolado = true;
+        }
+
+        _gerenciadorInvocados.RemoverTodos();
+        foreach (Entregavel entregavel in FindObjectsByType<Entregavel>(FindObjectsSortMode.None))
+            Destroy(entregavel.gameObject);
+        foreach (ProjetilNecromante projetil in FindObjectsByType<ProjetilNecromante>(FindObjectsSortMode.None))
+            Destroy(projetil.gameObject);
+        if (_gerenciadorInvocados.TentarInvocarZumbiSombrioNaLaneDoJogador())
+        {
+            Debug.Log("[CHEAT] Zumbi Sombrio invocado na lane do jogador para testar duas entregas.", this);
+            return;
+        }
+
+        Debug.LogWarning(
+            "[CHEAT] Nao foi possivel invocar o Sombrio. Confira o prefab, o jogador, "
+            + "a Main Camera e o LanesController da cena.", this);
     }
 
     private void SolicitarAtaqueTeste(AtaqueBossBase ataque, string nomeAtaque)
@@ -62,6 +115,7 @@ public class CheatAtaquesNecromante : MonoBehaviour
             return;
         }
 
+        EncerrarTesteSombrio();
         if (_comportamento.EstadoAtual != EstadoBoss.Inativo)
         {
             TentarIniciar(ataque, nomeAtaque);
@@ -112,6 +166,9 @@ public class CheatAtaquesNecromante : MonoBehaviour
             Debug.Log("[CHEAT] Invocados anteriores removidos para testar uma nova invocacao.", this);
         }
 
+        if (ataque == _ataqueInvocacao && _ataqueInvocacao != null)
+            _ataqueInvocacao.GarantirSombrioNaProximaInvocacaoTeste();
+
         if (_comportamento != null && _comportamento.TentarIniciarAtaqueTeste(ataque))
         {
             Debug.Log($"[CHEAT] Necromante iniciou {nomeAtaque}.", this);
@@ -126,6 +183,19 @@ public class CheatAtaquesNecromante : MonoBehaviour
         if (_inicioPendente != null)
             StopCoroutine(_inicioPendente);
         _inicioPendente = null;
+        EncerrarTesteSombrio();
+    }
+
+    private void EncerrarTesteSombrio()
+    {
+        if (!_testeSombrioIsolado) return;
+
+        _gerenciadorInvocados?.RemoverTodos();
+        _spawnerTeste?.DefinirSuspensoPorEncontroBoss(false);
+        if (_pressaoAmbiente != null)
+            _pressaoAmbiente.enabled = _pressaoEstavaAtiva;
+        _testeSombrioIsolado = false;
+        _spawnerTeste = null;
     }
 
 }
