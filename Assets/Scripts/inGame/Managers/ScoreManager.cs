@@ -91,12 +91,12 @@ public class ScoreManager : MonoBehaviour
 
     public string ObterResumoPartida()
     {
-        string cidade = NecromanteFugiu ? "Necromante fugiu na Cidade"
-            : PrimeiroEncontroNecromanteIniciado ? "Necromante nao foi vencido na Cidade"
-            : "Necromante nao foi encontrado na Cidade";
-        string floresta = NecromanteDerrotadoDefinitivamente ? "Necromante derrotado definitivamente"
-            : SegundoEncontroNecromanteIniciado ? "Necromante nao foi vencido na Floresta Morta"
-            : "Necromante nao foi reencontrado na Floresta Morta";
+        string cidade = NecromanteFugiu ? "Cidade: Necromante fugiu"
+            : PrimeiroEncontroNecromanteIniciado ? "Cidade: Necromante não foi vencido"
+            : "Cidade: Necromante não foi encontrado";
+        string floresta = NecromanteDerrotadoDefinitivamente ? "Floresta Morta: Necromante derrotado definitivamente"
+            : SegundoEncontroNecromanteIniciado ? "Floresta Morta: Necromante não foi vencido"
+            : "Floresta Morta: Necromante não foi encontrado";
         return $"Entregas realizadas: {EntregasRealizadas}\nEntregas perdidas: {EntregasPerdidas}"
             + $"\nVezes atingido: {VezesAtingido}\nMaior combo: {MaiorCombo}\n{cidade}\n{floresta}";
     }

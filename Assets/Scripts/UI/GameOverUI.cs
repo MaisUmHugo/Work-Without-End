@@ -21,6 +21,9 @@ public class GameOverController : MonoBehaviour
     public TextMeshProUGUI textoPontuacaoGameOver;
     public TextMeshProUGUI textoPontuacaoRanking;
 
+    [Header("Resumo da partida")]
+    [SerializeField] private TextMeshProUGUI _textoResumoPartida;
+
 
 
     private System.Action acaoConfirmada;
@@ -58,6 +61,9 @@ public class GameOverController : MonoBehaviour
 
         int score = ScoreManager.instance.pontuacaoAtual;
         textoPontuacaoGameOver.text = "Pontuação Final: " + score;
+
+        if (_textoResumoPartida != null)
+            _textoResumoPartida.text = ScoreManager.instance.ObterResumoPartida();
 
         if (LeaderboardManager.instance.Top10(score))
             grupoSalvarNome.SetActive(true);
@@ -103,6 +109,7 @@ public class GameOverController : MonoBehaviour
     {
         painelRanking.SetActive(false);
         painelGameOver.SetActive(true);
+        grupoSalvarNome.SetActive(false);
         grupoPadrao.SetActive(true);
     }
 
