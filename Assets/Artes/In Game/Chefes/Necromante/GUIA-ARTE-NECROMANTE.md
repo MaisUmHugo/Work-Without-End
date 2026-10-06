@@ -2,7 +2,7 @@
 
 O comportamento da luta já escolhe as animações. Para integrar arte, não altere os scripts nem as transições do `Necromante.controller`.
 
-1. Crie os clips a partir das spritesheets. Mantenha cada quadro inteiro e o pivô no centro. As três spritesheets já estão recortadas em quadros de 53 x 58 pixels, com 16 pixels por unidade.
+1. Crie os clips a partir das spritesheets. Mantenha cada quadro inteiro e o pivô no centro. As spritesheets estão configuradas com 16 pixels por unidade; preserve o tamanho e o recorte dos quadros ao substituir a arte.
 2. Abra `Animacoes/Necromante_Arte.overrideController` e arraste cada clip para o campo `Override` do placeholder correspondente. Os campos ainda sem arte podem continuar com placeholder.
 3. Abra o prefab `Prefabs/Chefes/Necromante/Necromante.prefab`. Selecione o filho `Arte` e ajuste **Transform > Local Scale**. A Scene View mostra o novo tamanho imediatamente. Use a janela Animation em Preview para ver os quadros sem Play Mode.
 4. Para trocar o projétil, abra `Prefabs/Chefes/Necromante/Projetil/NecromanteProjectile.prefab` e arraste o sprite para o `SpriteRenderer` do filho `Visual`.
@@ -24,5 +24,9 @@ O comportamento da luta já escolhe as animações. Para integrar arte, não alt
 | `Placeholder_Morte` | Derrota definitiva | Uma vez |
 
 A invocação troca de `Inicio` para `Carregando` enquanto prepara o ataque. Ao começar as ondas, toca `Abaixar` uma vez e fica em `Sustentar` até o ataque acabar. O teleporte nunca é usado na movimentação comum. `ProjectileRoot` é filho da raiz, separado de `Arte`, para que a escala da arte não altere o disparo.
+
+Mantenha `SpriteRenderer > Color` branco no Necromante e no projétil, para preservar as cores originais das imagens. O feedback de dano e bloqueio usa apenas a opacidade: pisca ao receber dano e reduz brevemente a opacidade ao bloquear uma entrega, restaurando o sprite em seguida. Vulnerabilidade e morte usam suas próprias poses, sem uma cor fixa aplicada sobre a arte.
+
+Nos clips de início da invocação, abaixar o cajado, teleporte e morte, mantenha `Loop Time` desativado. As poses de idle, tiro comum, tiro carregado e vulnerabilidade atualmente usam um quadro; podem ser substituídas por clips completos nos mesmos slots. O ajuste de tamanho da arte não redimensiona o collider da raiz: confira os dois no teste da luta.
 
 Ao substituir uma imagem existente, preserve seu arquivo `.meta`. Ao adicionar um clip ou uma imagem nova, inclua o `.meta` gerado pelo Unity.

@@ -244,8 +244,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.8867924, g: 0.29699183, b: 0.7741149, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 346e559b8f24f7c4aba6a6f4df062033, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -722,10 +722,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FeedbackBoss
   _vida: {fileID: 910020001}
   _spriteRenderer: {fileID: 8511946102748384679}
-  _corVulneravel: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _corDano: {r: 1, g: 1, b: 1, a: 1}
-  _corBloqueio: {r: 0.35, g: 0.55, b: 1, a: 1}
-  _corEsgotado: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  _corVulneravel: {r: 1, g: 1, b: 1, a: 1}
+  _corDano: {r: 1, g: 1, b: 1, a: 0}
+  _corBloqueio: {r: 1, g: 1, b: 1, a: 0.35}
+  _corEsgotado: {r: 1, g: 1, b: 1, a: 1}
   _duracaoFeedback: 0.12
 --- !u!114 &910030001
 MonoBehaviour:
