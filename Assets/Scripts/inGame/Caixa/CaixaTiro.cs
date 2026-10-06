@@ -22,6 +22,7 @@ public class CaixaTiro : MonoBehaviour
         cam = Camera.main;
         mira = FindFirstObjectByType<Mira>();
         if (pontoLancamento == null) pontoLancamento = transform;
+        if (mira != null) mira.DefinirOrigemLancamento(pontoLancamento);
     }
 
     private void OnEnable()
@@ -40,10 +41,11 @@ public class CaixaTiro : MonoBehaviour
     {
         if (BloqueioGameplay.Bloqueado) return;
         // Pega posição da mira
-        Vector3 posMira = mira.transform.position;
+        if (mira == null || prefabCaixa == null) return;
+        Vector3 posMira = mira.ObterPosicaoAlvo(pontoLancamento);
 
         // Direção da caixa (da origem até a mira)
-        Vector3 direcao = (posMira - pontoLancamento.position).normalized;
+        Vector2 direcao = ((Vector2)(posMira - pontoLancamento.position)).normalized;
 
         // Instancia a caixa
         GameObject novaCaixa = Instantiate(prefabCaixa, pontoLancamento.position, Quaternion.identity);

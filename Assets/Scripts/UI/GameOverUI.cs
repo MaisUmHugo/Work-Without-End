@@ -69,6 +69,7 @@ public class GameOverController : MonoBehaviour
             grupoSalvarNome.SetActive(true);
         else
             grupoPadrao.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(painelGameOver);
     }
     // NAVEGAÇÃO ENTRE PAINÉIS
 
@@ -89,6 +90,7 @@ public class GameOverController : MonoBehaviour
     {
         painelGameOver.SetActive(false);
         painelRanking.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(painelRanking);
 
         int score = ScoreManager.instance.pontuacaoAtual;
         textoPontuacaoRanking.text = "Pontuação Final: " + score;
@@ -111,6 +113,7 @@ public class GameOverController : MonoBehaviour
         painelGameOver.SetActive(true);
         grupoSalvarNome.SetActive(false);
         grupoPadrao.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(grupoPadrao);
     }
 
     // BOTÕES GERAIS (USADOS EM AMBOS PAINÉIS)
@@ -138,6 +141,7 @@ public class GameOverController : MonoBehaviour
 
         painelOrigem.SetActive(false);
         painelConfirmacao.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(painelConfirmacao);
     }
 
     public void BotaoConfirmarSim()
@@ -150,6 +154,7 @@ public class GameOverController : MonoBehaviour
     {
         painelConfirmacao.SetActive(false);
         painelQueChamouConfirmacao.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(painelQueChamouConfirmacao);
         acaoConfirmada = null;
     }
 }

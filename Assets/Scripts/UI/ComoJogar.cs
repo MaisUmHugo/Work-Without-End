@@ -34,6 +34,7 @@ public class ComoJogarController : MonoBehaviour
         fundoCinza.SetActive(true);
         painelComoJogar.SetActive(true);
         hudCanvas.SetActive(false);
+        FocoUI.SelecionarPrimeiroBotao(painelComoJogar);
 
         if (videoTutorial != null)
         {

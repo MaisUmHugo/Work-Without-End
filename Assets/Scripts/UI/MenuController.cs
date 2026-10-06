@@ -47,6 +47,7 @@ public class MenuController : MonoBehaviour
     private void Start()
     {
         AudioManager.instance.TocarMusicaMenu();
+        FocoUI.SelecionarPrimeiroBotao(painelMenuInicial);
 
         if (painelConfirmacao != null)
             painelConfirmacao.SetActive(false);
@@ -84,6 +85,7 @@ public class MenuController : MonoBehaviour
         painelMenuInicial.SetActive(false);
         fundoCinza.SetActive(true);
         painelOpcoes.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(painelOpcoes);
     }
 
     public void FecharOpcoes()
@@ -91,6 +93,7 @@ public class MenuController : MonoBehaviour
         painelOpcoes.SetActive(false);
         fundoCinza.SetActive(false);
         painelMenuInicial.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(painelMenuInicial);
     }
 
     public void AbrirRanking()
@@ -98,6 +101,7 @@ public class MenuController : MonoBehaviour
         painelMenuInicial.SetActive(false);
         fundoCinza.SetActive(true);
         painelRanking.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(painelRanking);
     }
 
     public void FecharRanking()
@@ -105,6 +109,7 @@ public class MenuController : MonoBehaviour
         painelRanking.SetActive(false);
         fundoCinza.SetActive(false);
         painelMenuInicial.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(painelMenuInicial);
     }
 
     public void SairJogo()
@@ -140,6 +145,7 @@ public class MenuController : MonoBehaviour
         painelMenuInicial.SetActive(false);
         fundoCinza.SetActive(true);
         painelConfirmacao.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(painelConfirmacao);
     }
 
     private void LimparConfirmacao()
@@ -147,6 +153,7 @@ public class MenuController : MonoBehaviour
         painelConfirmacao.SetActive(false);
         fundoCinza.SetActive(false);
         painelMenuInicial.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(painelMenuInicial);
         acaoPersonalizada = null;
         tipoConfirm = TipoConfirmacao.Nenhuma;
         cenaParaCarregar = null;

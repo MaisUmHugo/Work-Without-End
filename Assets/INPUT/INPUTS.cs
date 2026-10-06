@@ -111,6 +111,15 @@ public partial class @INPUTS: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""MirarControle"",
+                    ""type"": ""Value"",
+                    ""id"": ""5478f413-51ae-4cbb-8fd7-41f580b94283"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
                     ""name"": ""Shoot"",
                     ""type"": ""Button"",
                     ""id"": ""8f9077b1-ff9b-4119-b738-2e1e4fd29c6a"",
@@ -292,6 +301,17 @@ public partial class @INPUTS: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9d2de16b-413b-457d-a413-8fba6b71e5a2"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MirarControle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -721,6 +741,7 @@ public partial class @INPUTS: IInputActionCollection2, IDisposable
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
         m_Gameplay_Aim = m_Gameplay.FindAction("Aim", throwIfNotFound: true);
+        m_Gameplay_MirarControle = m_Gameplay.FindAction("MirarControle", throwIfNotFound: true);
         m_Gameplay_Shoot = m_Gameplay.FindAction("Shoot", throwIfNotFound: true);
         m_Gameplay_Pause = m_Gameplay.FindAction("Pause", throwIfNotFound: true);
         // UI
@@ -818,6 +839,7 @@ public partial class @INPUTS: IInputActionCollection2, IDisposable
     private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
     private readonly InputAction m_Gameplay_Move;
     private readonly InputAction m_Gameplay_Aim;
+    private readonly InputAction m_Gameplay_MirarControle;
     private readonly InputAction m_Gameplay_Shoot;
     private readonly InputAction m_Gameplay_Pause;
     /// <summary>
@@ -839,6 +861,10 @@ public partial class @INPUTS: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/Aim".
         /// </summary>
         public InputAction @Aim => m_Wrapper.m_Gameplay_Aim;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/MirarControle".
+        /// </summary>
+        public InputAction @MirarControle => m_Wrapper.m_Gameplay_MirarControle;
         /// <summary>
         /// Provides access to the underlying input action "Gameplay/Shoot".
         /// </summary>
@@ -879,6 +905,9 @@ public partial class @INPUTS: IInputActionCollection2, IDisposable
             @Aim.started += instance.OnAim;
             @Aim.performed += instance.OnAim;
             @Aim.canceled += instance.OnAim;
+            @MirarControle.started += instance.OnMirarControle;
+            @MirarControle.performed += instance.OnMirarControle;
+            @MirarControle.canceled += instance.OnMirarControle;
             @Shoot.started += instance.OnShoot;
             @Shoot.performed += instance.OnShoot;
             @Shoot.canceled += instance.OnShoot;
@@ -902,6 +931,9 @@ public partial class @INPUTS: IInputActionCollection2, IDisposable
             @Aim.started -= instance.OnAim;
             @Aim.performed -= instance.OnAim;
             @Aim.canceled -= instance.OnAim;
+            @MirarControle.started -= instance.OnMirarControle;
+            @MirarControle.performed -= instance.OnMirarControle;
+            @MirarControle.canceled -= instance.OnMirarControle;
             @Shoot.started -= instance.OnShoot;
             @Shoot.performed -= instance.OnShoot;
             @Shoot.canceled -= instance.OnShoot;
@@ -1157,6 +1189,13 @@ public partial class @INPUTS: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAim(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MirarControle" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMirarControle(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Shoot" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

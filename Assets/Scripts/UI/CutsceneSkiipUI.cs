@@ -28,7 +28,8 @@ public class CutsceneSkipUI : MonoBehaviour
         if (pulando)
             return;
 
-        bool pressionando = Keyboard.current != null && Keyboard.current.spaceKey.isPressed;
+        bool pressionando = (Keyboard.current != null && Keyboard.current.spaceKey.isPressed)
+            || (Gamepad.current != null && Gamepad.current.buttonSouth.isPressed);
 
         if (pressionando)
         {

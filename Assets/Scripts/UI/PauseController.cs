@@ -53,6 +53,7 @@ public class PauseController : MonoBehaviour
         painelPause.SetActive(true);
         painelConfirmacao.SetActive(false);
 
+        FocoUI.SelecionarPrimeiroBotao(painelPause);
         Debug.Log("Pause aberto");
     }
 
@@ -98,6 +99,7 @@ public class PauseController : MonoBehaviour
         painelPause.SetActive(false);
         painelConfirmacao.SetActive(true);
 
+        FocoUI.SelecionarPrimeiroBotao(painelConfirmacao);
         acaoConfirmada = acao;
     }
 
@@ -112,6 +114,7 @@ public class PauseController : MonoBehaviour
         painelConfirmacao.SetActive(false);
         painelPause.SetActive(true);
 
+        FocoUI.SelecionarPrimeiroBotao(painelPause);
         acaoConfirmada = null;
     }
 

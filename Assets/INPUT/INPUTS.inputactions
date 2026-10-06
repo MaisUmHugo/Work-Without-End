@@ -24,6 +24,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "MirarControle",
+                    "type": "Value",
+                    "id": "5478f413-51ae-4cbb-8fd7-41f580b94283",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Shoot",
                     "type": "Button",
                     "id": "8f9077b1-ff9b-4119-b738-2e1e4fd29c6a",
@@ -205,6 +214,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9d2de16b-413b-457d-a413-8fba6b71e5a2",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MirarControle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
