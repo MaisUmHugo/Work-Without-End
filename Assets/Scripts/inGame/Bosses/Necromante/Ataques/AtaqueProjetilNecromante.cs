@@ -22,6 +22,7 @@ public class AtaqueProjetilNecromante : AtaqueBossBase, IAtaqueVisualNecromante
     [SerializeField, Min(0f)] private float _tempoRecuperacao = 0.35f;
     [Header("Projetil")]
     [SerializeField, Min(0.1f)] private float _velocidadeProjetil = 15f;
+    [SerializeField, Min(0.1f)] private float _escalaProjetil = 1.2f;
 
     private readonly List<ProjetilNecromante> _projeteisAtivos = new List<ProjetilNecromante>();
     private Transform _alvoAtual;
@@ -109,6 +110,7 @@ public class AtaqueProjetilNecromante : AtaqueBossBase, IAtaqueVisualNecromante
             _prefabProjetil,
             _projectileRoot.position,
             Quaternion.identity);
+        projetil.transform.localScale *= _escalaProjetil;
         projetil.Configurar(direcao, _velocidadeProjetil * _multiplicadorVelocidade);
         _projeteisAtivos.RemoveAll(item => item == null);
         _projeteisAtivos.Add(projetil);
@@ -165,5 +167,6 @@ public class AtaqueProjetilNecromante : AtaqueBossBase, IAtaqueVisualNecromante
         _tempoPreparacao = Mathf.Max(0f, _tempoPreparacao);
         _tempoRecuperacao = Mathf.Max(0f, _tempoRecuperacao);
         _velocidadeProjetil = Mathf.Max(0.1f, _velocidadeProjetil);
+        _escalaProjetil = Mathf.Max(0.1f, _escalaProjetil);
     }
 }

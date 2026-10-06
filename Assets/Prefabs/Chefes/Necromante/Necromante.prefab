@@ -750,6 +750,7 @@ MonoBehaviour:
   _tempoPreparacao: 0.8
   _tempoRecuperacao: 0.35
   _velocidadeProjetil: 15
+  _escalaProjetil: 1.2
 --- !u!114 &910040001
 MonoBehaviour:
   m_ObjectHideFlags: 0
