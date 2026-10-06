@@ -12,10 +12,15 @@ public class FeedbackBoss : MonoBehaviour
     [SerializeField] private Color _corBloqueio = new Color(0.35f, 0.55f, 1f, 1f);
     [SerializeField] private Color _corEsgotado = new Color(0.25f, 0.25f, 0.25f, 1f);
     [SerializeField, Min(0.01f)] private float _duracaoFeedback = 0.12f;
+    [Header("Piscar durante a vulnerabilidade")]
+    [SerializeField] private bool _piscarQuandoVulneravel = true;
+    [SerializeField, Min(0.01f)] private float _intervaloPiscarVulneravel = 0.18f;
+    [SerializeField, Range(0f, 1f)] private float _alphaPiscarVulneravel = 0.45f;
 
     private Color _corOriginal;
     private Coroutine _feedbackAtual;
     private bool _exibirEsgotado = true;
+    private float _tempoPiscarVulneravel;
 
     private void Awake()
     {
@@ -28,6 +33,7 @@ public class FeedbackBoss : MonoBehaviour
 
     private void OnEnable()
     {
+        _tempoPiscarVulneravel = 0f;
         if (_vida == null) return;
 
         _vida.VidaAlterada += AoAlterarVida;
@@ -36,6 +42,18 @@ public class FeedbackBoss : MonoBehaviour
         _vida.DanoBloqueado += AoBloquearDano;
         _vida.VidaEsgotada += AoEsgotarVida;
         AtualizarCorBase();
+    }
+
+    private void LateUpdate()
+    {
+        if (BloqueioGameplay.Bloqueado || _feedbackAtual != null || !_piscarQuandoVulneravel
+            || _spriteRenderer == null || _vida == null || !_vida.Vulneravel || _vida.Esgotada) return;
+
+        _tempoPiscarVulneravel += TempoGameplay.DeltaTime;
+        Color cor = _corVulneravel;
+        if (Mathf.FloorToInt(_tempoPiscarVulneravel / _intervaloPiscarVulneravel) % 2 == 1)
+            cor.a *= _alphaPiscarVulneravel;
+        _spriteRenderer.color = cor;
     }
 
     private void OnDisable()
@@ -65,6 +83,7 @@ public class FeedbackBoss : MonoBehaviour
 
     private void AoAlterarVulnerabilidade(bool vulneravel)
     {
+        _tempoPiscarVulneravel = 0f;
         if (_feedbackAtual == null)
             AtualizarCorBase();
     }
@@ -125,5 +144,7 @@ public class FeedbackBoss : MonoBehaviour
     private void OnValidate()
     {
         _duracaoFeedback = Mathf.Max(0.01f, _duracaoFeedback);
+        _intervaloPiscarVulneravel = Mathf.Max(0.01f, _intervaloPiscarVulneravel);
+        _alphaPiscarVulneravel = Mathf.Clamp01(_alphaPiscarVulneravel);
     }
 }

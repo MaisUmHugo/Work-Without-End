@@ -727,6 +727,9 @@ MonoBehaviour:
   _corBloqueio: {r: 1, g: 1, b: 1, a: 0.35}
   _corEsgotado: {r: 1, g: 1, b: 1, a: 1}
   _duracaoFeedback: 0.12
+  _piscarQuandoVulneravel: 1
+  _intervaloPiscarVulneravel: 0.18
+  _alphaPiscarVulneravel: 0.45
 --- !u!114 &910030001
 MonoBehaviour:
   m_ObjectHideFlags: 0
