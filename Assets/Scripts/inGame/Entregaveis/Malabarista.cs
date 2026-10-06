@@ -158,7 +158,7 @@ public class Malabarista : Entregavel, IAjustavelDificuldade
         {
             jaCausouDano = true;
             emFluxoDeSaida = true;
-            FalharEntrega();
+            RegistrarFalhaEntrega(porContato: true);
             podereceber = false;
             ativoParaEntrega = false;
             podeatirar = true;

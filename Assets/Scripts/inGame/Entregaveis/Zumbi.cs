@@ -182,7 +182,7 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
         correndo = false;
         ativoParaEntrega = false;
         entregavelPisca?.PararPiscar();
-        RegistrarFalhaEntrega();
+        RegistrarFalhaEntrega(porContato: Vector3.Distance(transform.position, jogador.transform.position) <= dColisao);
 
         yTravado = transform.position.y;
 

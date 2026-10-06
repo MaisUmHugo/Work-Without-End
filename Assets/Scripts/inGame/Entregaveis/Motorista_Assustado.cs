@@ -132,7 +132,7 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
         {
             jaCausouDano = true;
             emFluxoDeSaida = true;
-            FalharEntrega();
+            RegistrarFalhaEntrega(porContato: true);
             podereceber = false;
             ativoParaEntrega = false;
             entregavelPisca?.PararPiscar();

@@ -65,7 +65,7 @@ public class VidaManager : MonoBehaviour
         // Atalho de debug: perder 1 de vida com Shift + P
         if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.pKey.wasPressedThisFrame)
         {
-            ProcessarPerdaVida(false, false);
+            ProcessarPerdaVida(false, false, registrarDano: false);
         }
         // Atalho de debug: ganha 1 de vida com Shift + V
         if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.vKey.wasPressedThisFrame)
@@ -107,12 +107,24 @@ public class VidaManager : MonoBehaviour
         ProcessarPerdaVida(resetarCombo, true, quantidade);
     }
 
-    private void ProcessarPerdaVida(bool resetarCombo, bool aplicarInvulnerabilidade, int quantidade = 1)
+    public void PerderVidaPorEntrega()
+    {
+        ProcessarPerdaVida(false, true, registrarDano: false);
+    }
+
+    private void ProcessarPerdaVida(bool resetarCombo, bool aplicarInvulnerabilidade, int quantidade = 1, bool registrarDano = true)
     {
         // evita perder vida se já estiver invulnerável ou morto
         if (BloqueioGameplay.Bloqueado || invulneravel || vidasAtuais <= 0)
             return;
         vidasAtuais = Mathf.Max(0, vidasAtuais - Mathf.Max(1, quantidade));
+        if (registrarDano)
+            ScoreManager.instance?.RegistrarDanoRecebido();
+        if (vidasAtuais <= 0)
+        {
+            ScoreManager.instance?.EncerrarRegistroPartida();
+            BloqueioGameplay.Definir(MotivoBloqueioGameplay.GameOver, true);
+        }
         if (resetarCombo)
             ComboManager.instance?.ResetarCombo();
 

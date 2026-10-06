@@ -167,7 +167,7 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
         {
             jaCausouDano = true;
             emFluxoDeSaida = true;
-            FalharEntrega();
+            RegistrarFalhaEntrega(porContato: true);
             podereceber = false;
             ativoParaEntrega = false;
             entregavelPisca?.PararPiscar();

@@ -183,7 +183,7 @@ public class Bebado : Entregavel, IAjustavelDificuldade
         if (BloqueioGameplay.Bloqueado) return;
         if (collision.CompareTag("Player"))
         {
-            FalharEntrega();
+            RegistrarFalhaEntrega(porContato: true);
             podeReceber = false;
             ativoParaEntrega = false;
             colisor.enabled = false;

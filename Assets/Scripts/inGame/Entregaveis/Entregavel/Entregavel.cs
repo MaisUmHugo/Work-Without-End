@@ -62,6 +62,7 @@ public abstract class Entregavel : MonoBehaviour
 
         ScoreManager.instance.AdicionarPontos(pontosFinais);
         ComboManager.instance.AumentarCombo();
+        ScoreManager.instance.RegistrarEntrega(ComboManager.instance.comboAtual);
 
         if (contabilizarNaHorda && HordaManager.instance != null)
             HordaManager.instance.AumentarEntrega();
@@ -82,14 +83,20 @@ public abstract class Entregavel : MonoBehaviour
         ComboManager.instance.ResetarCombo();
     }
 
-    protected bool RegistrarFalhaEntrega(bool perderVida = true)
+    protected bool RegistrarFalhaEntrega(bool perderVida = true, bool porContato = false)
     {
         if (BloqueioGameplay.Bloqueado) return false;
         if (!MarcarEntregaComoFalha()) return false;
 
+        ScoreManager.instance?.RegistrarEntregaPerdida();
         PerderCombo();
         if (perderVida)
-            VidaManager.instance?.PerderVida(false);
+        {
+            if (porContato)
+                VidaManager.instance?.PerderVida(false);
+            else
+                VidaManager.instance?.PerderVidaPorEntrega();
+        }
         EntregaResolvida?.Invoke(this);
         return true;
     }
