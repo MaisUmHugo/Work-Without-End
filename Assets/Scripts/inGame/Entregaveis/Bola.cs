@@ -12,6 +12,7 @@ public class Bola : MonoBehaviour
     private void Awake()
     {
         velocidadeAtual = velocidade;
+        PausaGameplay.Registrar(gameObject);
     }
 
     public void CaminhoBola(Vector3 destino)
@@ -27,13 +28,14 @@ public class Bola : MonoBehaviour
 
     void Update()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (!chegouNaLane)
         {
             // move até a lane
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 pontoFinal,
-                velocidadeAtual * Time.deltaTime
+                velocidadeAtual * TempoGameplay.DeltaTime
             );
 
             // quando chegar na lane, começa mover para esquerda
@@ -45,7 +47,7 @@ public class Bola : MonoBehaviour
         else
         {
             // movimento contínuo para a esquerda
-            transform.position += Vector3.left * velocidadeAtual * Time.deltaTime;
+            transform.position += Vector3.left * velocidadeAtual * TempoGameplay.DeltaTime;
         }
 
         // destruir quando sair da tela
@@ -56,6 +58,7 @@ public class Bola : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (collision.CompareTag("Player"))
         {
             VidaManager.instance.PerderVida();

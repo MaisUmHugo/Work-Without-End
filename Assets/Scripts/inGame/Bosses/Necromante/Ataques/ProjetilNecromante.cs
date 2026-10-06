@@ -21,6 +21,7 @@ public class ProjetilNecromante : MonoBehaviour
 
     private void Awake()
     {
+        PausaGameplay.Registrar(gameObject);
         if (_corpo == null)
             _corpo = GetComponent<Rigidbody2D>();
     }
@@ -53,18 +54,17 @@ public class ProjetilNecromante : MonoBehaviour
 
         if (BloqueioGameplay.Bloqueado || Time.timeScale <= 0f)
         {
-            _corpo.linearVelocity = Vector2.zero;
             return;
         }
 
-        _tempoAtivo += Time.fixedDeltaTime;
+        _tempoAtivo += TempoGameplay.FixedDeltaTime;
         if (_tempoAtivo >= Mathf.Max(1f, _tempoMaximo) && (!_entrouNaCamera || _camera == null))
         {
             Destruir();
             return;
         }
 
-        Vector2 proximaPosicao = _corpo.position + _direcao * (_velocidade * Time.fixedDeltaTime);
+        Vector2 proximaPosicao = _corpo.position + _direcao * (_velocidade * TempoGameplay.FixedDeltaTime);
         _corpo.MovePosition(proximaPosicao);
         AtualizarVisibilidade(proximaPosicao);
     }

@@ -69,6 +69,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
 
     private void Update()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         TipoAtaqueAtual = TipoAtaqueNecromante.Nenhum;
 
         if (_animator == null || _comportamento == null || _movimento == null

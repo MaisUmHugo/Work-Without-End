@@ -173,7 +173,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
         {
             if (!BloqueioGameplay.Bloqueado && Time.timeScale > 0f)
             {
-                tempo += Time.deltaTime;
+                tempo += TempoGameplay.DeltaTime;
                 float progresso = Mathf.Clamp01(tempo / duracao);
                 transform.position = Vector3.Lerp(origem, destino, progresso);
             }
@@ -193,7 +193,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
         while (tempo < duracao)
         {
             if (!BloqueioGameplay.Bloqueado && Time.timeScale > 0f)
-                tempo += Time.deltaTime;
+                tempo += TempoGameplay.DeltaTime;
 
             yield return null;
         }

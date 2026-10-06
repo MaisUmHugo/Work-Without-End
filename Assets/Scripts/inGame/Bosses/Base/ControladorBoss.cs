@@ -21,6 +21,7 @@ public class ControladorBoss : MonoBehaviour
 
     private void OnEnable()
     {
+        PausaGameplay.Registrar(gameObject);
         if (_vida != null)
             _vida.VidaEsgotada += AoEsgotarVida;
 
@@ -59,7 +60,6 @@ public class ControladorBoss : MonoBehaviour
     {
         if (BloqueioGameplay.Bloqueado || Time.timeScale <= 0f)
         {
-            if (_inicializado) _movimento.Pausar();
             return;
         }
 
@@ -95,8 +95,8 @@ public class ControladorBoss : MonoBehaviour
             return;
         }
 
-        _comportamento.Atualizar(Time.fixedDeltaTime);
-        _movimento.Atualizar(Time.fixedDeltaTime);
+        _comportamento.Atualizar(TempoGameplay.FixedDeltaTime);
+        _movimento.Atualizar(TempoGameplay.FixedDeltaTime);
     }
 
     public void EncerrarExecucao()

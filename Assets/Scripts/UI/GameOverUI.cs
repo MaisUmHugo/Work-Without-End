@@ -48,7 +48,6 @@ public class GameOverController : MonoBehaviour
     private void MostrarGameOver()
     {
         BloqueioGameplay.Definir(MotivoBloqueioGameplay.GameOver, true);
-        Time.timeScale = 0f;
 
         hudCanvas.SetActive(false);
         fundoCinza.SetActive(true);
@@ -113,7 +112,6 @@ public class GameOverController : MonoBehaviour
     {
         MostrarConfirmacao(() =>
         {
-            Time.timeScale = 1f;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }, painelOrigem);
     }
@@ -122,7 +120,6 @@ public class GameOverController : MonoBehaviour
     {
         MostrarConfirmacao(() =>
         {
-            Time.timeScale = 1f;
             SceneManager.LoadScene("MenuPrincipal");
         }, painelOrigem);
     }

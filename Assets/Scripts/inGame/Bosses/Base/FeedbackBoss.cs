@@ -108,7 +108,7 @@ public class FeedbackBoss : MonoBehaviour
     private IEnumerator ExibirFeedback(Color cor)
     {
         _spriteRenderer.color = cor;
-        yield return new WaitForSeconds(_duracaoFeedback);
+        yield return new EsperaGameplay(_duracaoFeedback);
         _feedbackAtual = null;
         AtualizarCorBase();
     }

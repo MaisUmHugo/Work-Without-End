@@ -187,8 +187,6 @@ public class ZumbiSombrio : Entregavel
 
         if (BloqueioGameplay.Bloqueado || Time.timeScale <= 0f)
         {
-            if (_corpo != null)
-                _corpo.linearVelocity = Vector2.zero;
             return;
         }
 
@@ -198,7 +196,7 @@ public class ZumbiSombrio : Entregavel
             return;
         }
 
-        float deltaTime = Time.fixedDeltaTime;
+        float deltaTime = TempoGameplay.FixedDeltaTime;
         AtualizarExclamacao(deltaTime);
         switch (_estado)
         {

@@ -79,30 +79,31 @@ public class Bebado : Entregavel, IAjustavelDificuldade
         pos.y = LanesController.instance.PosicaoY(minhaLane) + offsetY;
         transform.position = pos;
 
-        tempoUltimaTroca = Time.time;
+        tempoUltimaTroca = TempoGameplay.Tempo;
     }
 
     private void Update()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (jogador == null) return;
 
         if (!parado)
         {
             // anda pra esquerda
-            transform.position += Vector3.left * velocidade * Time.deltaTime;
+            transform.position += Vector3.left * velocidade * TempoGameplay.DeltaTime;
 
             // troca de lane
-            if (Time.time >= tempoUltimaTroca + trocaLaneIntervalo)
+            if (TempoGameplay.Tempo >= tempoUltimaTroca + trocaLaneIntervalo)
             {
                 TrocarLaneAleatoria();
-                tempoUltimaTroca = Time.time;
+                tempoUltimaTroca = TempoGameplay.Tempo;
             }
 
             // suaviza mudança de lane
             float novoY = Mathf.MoveTowards(
                 transform.position.y,
                 LanesController.instance.PosicaoY(minhaLane) + offsetY,
-                velocidadeTrocaLane * Time.deltaTime
+                velocidadeTrocaLane * TempoGameplay.DeltaTime
             );
 
             transform.position = new Vector3(transform.position.x, novoY, transform.position.z);
@@ -125,7 +126,7 @@ public class Bebado : Entregavel, IAjustavelDificuldade
         {
             // travado no Y quando recebeu a entrega
             transform.position = new Vector3(
-                transform.position.x + (-velocidade * Time.deltaTime),
+                transform.position.x + (-velocidade * TempoGameplay.DeltaTime),
                 yTravado,
                 transform.position.z
             );
@@ -157,6 +158,7 @@ public class Bebado : Entregavel, IAjustavelDificuldade
     }
     public override void ReceberEntrega()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (!podeReceber || !EntregaPendente) return;
 
         anim.SetTrigger("RecebeuEntrega");
@@ -178,6 +180,7 @@ public class Bebado : Entregavel, IAjustavelDificuldade
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (collision.CompareTag("Player"))
         {
             FalharEntrega();
@@ -196,7 +199,7 @@ public class Bebado : Entregavel, IAjustavelDificuldade
 
     private IEnumerator PararPiscar()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new EsperaGameplay(1.5f);
         entregavelPisca?.PararPiscar();
     }
 
@@ -216,7 +219,7 @@ public class Bebado : Entregavel, IAjustavelDificuldade
         }
 
         // tempo que a exclamação dura
-        yield return new WaitForSeconds(tempoexclamacao);
+        yield return new EsperaGameplay(tempoexclamacao);
 
         // para exclamação
         if (instancia != null)

@@ -68,15 +68,16 @@ public class Louco : Entregavel, IAjustavelDificuldade
 
     private void Update()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (atravessando)
         {
             // Movimento diagonal (X negativo + Y até destino)
-            transform.position += new Vector3(-velocidadeFrente * Time.deltaTime, 0f, 0f);
+            transform.position += new Vector3(-velocidadeFrente * TempoGameplay.DeltaTime, 0f, 0f);
 
             float novoY = Mathf.MoveTowards(
                 transform.position.y,
                 yDestino,
-                velocidadeVertical * Time.deltaTime
+                velocidadeVertical * TempoGameplay.DeltaTime
             );
 
             transform.position = new Vector3(transform.position.x, novoY, transform.position.z);
@@ -133,7 +134,7 @@ public class Louco : Entregavel, IAjustavelDificuldade
         {
             // Depois da travessia, anda reto em X até sair da tela
             transform.position = new Vector3(
-                transform.position.x - velocidadeSaida * Time.deltaTime,
+                transform.position.x - velocidadeSaida * TempoGameplay.DeltaTime,
                 yTravado,
                 transform.position.z
             );
@@ -146,6 +147,7 @@ public class Louco : Entregavel, IAjustavelDificuldade
 
     public override void ReceberEntrega()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (!ativoParaEntrega)
         {
             Debug.Log("Entrega não ativa no momento!");  // Log para depuração
@@ -175,6 +177,7 @@ public class Louco : Entregavel, IAjustavelDificuldade
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (!ativoParaEntrega)
         {
             Debug.Log("Louco não está ativo para entrega no momento");  // Verifique a condição
@@ -203,7 +206,7 @@ public class Louco : Entregavel, IAjustavelDificuldade
 
     private IEnumerator PararPiscar()
     {
-        yield return new WaitForSeconds(0.05f);
+        yield return new EsperaGameplay(0.05f);
         sr.color = Color.white;
     }
     private Coroutine rotinaPiscar;
@@ -215,10 +218,10 @@ public class Louco : Entregavel, IAjustavelDificuldade
         for (int i = 0; i < quantidade; i++)
         {
             sr.color = corPiscar;
-            yield return new WaitForSeconds(intervalo);
+            yield return new EsperaGameplay(intervalo);
 
             sr.color = corOriginal;
-            yield return new WaitForSeconds(intervalo);
+            yield return new EsperaGameplay(intervalo);
         }
 
         sr.color = corOriginal;
@@ -227,7 +230,7 @@ public class Louco : Entregavel, IAjustavelDificuldade
 
     private IEnumerator exclamacao()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new EsperaGameplay(0.1f);
         //exclamacao
         GameObject prefab = Resources.Load<GameObject>("PontoExclamacao");
         if (prefab != null)
@@ -237,7 +240,7 @@ public class Louco : Entregavel, IAjustavelDificuldade
             float tempo = 0;
             while (tempo < tempoexclamacao)
             {
-                tempo += Time.deltaTime;
+                tempo += TempoGameplay.DeltaTime;
                 yield return null;
             }
             Destroy(instancia);

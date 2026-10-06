@@ -115,7 +115,7 @@ public class HordaManager : MonoBehaviour
         //aguardandoInicio = true;
         spawnerManager.DesativarSpawn();
 
-        yield return new WaitForSeconds(delay);
+        yield return new EsperaGameplay(delay);
 
         AtualizarInimigosPermitidos(); 
         spawnerManager.AtivarSpawn();
@@ -373,7 +373,7 @@ public class HordaManager : MonoBehaviour
     private IEnumerator DelayProximaHorda()
     {
         spawnerManager.DesativarSpawn();
-        yield return new WaitForSeconds(delayEntreHordas);
+        yield return new EsperaGameplay(delayEntreHordas);
         AtualizarInimigosPermitidos();
         spawnerManager.AtivarSpawn();
         trocandoHorda = false;

@@ -38,7 +38,7 @@ public class PontuacaoPopup : MonoBehaviour
         // fade in e subida
         while (tempo < duracao)
         {
-            tempo += Time.deltaTime;
+            tempo += TempoGameplay.DeltaTime;
             float t = tempo / duracao;
 
             textoPontuacao.alpha = Mathf.Lerp(1, 0, t);

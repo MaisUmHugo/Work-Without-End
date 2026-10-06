@@ -67,10 +67,11 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
     }
     private void Update()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (recebeu)
         {
             // Já entregou - apenas vai embora para a esquerda
-            transform.position += Vector3.left * velocidade * Time.deltaTime;
+            transform.position += Vector3.left * velocidade * TempoGameplay.DeltaTime;
             if (transform.position.x < jogador.transform.position.x - 30f)
             {
                 Destroy(gameObject);
@@ -93,13 +94,13 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
         if (emFluxoDeSaida)
         {
             // Continua andando para a esquerda mesmo que esteja esperando entrega
-            transform.position += Vector3.left * velocidade * Time.deltaTime;
+            transform.position += Vector3.left * velocidade * TempoGameplay.DeltaTime;
         }
         else
         {
             // Se ainda não está em range → segue em direção ao jogador
             Vector3 direcao = (jogador.transform.position - transform.position).normalized;
-            transform.position += new Vector3(direcao.x, 0, 0) * velocidade * Time.deltaTime;
+            transform.position += new Vector3(direcao.x, 0, 0) * velocidade * TempoGameplay.DeltaTime;
         }
 
         // saiu da tela
@@ -122,6 +123,7 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (collision.CompareTag("Caixa") && podereceber && EntregaPendente)
         {
             ReceberEntrega();
@@ -138,6 +140,7 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
     }
     public override void ReceberEntrega()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (!podereceber || !EntregaPendente) return;
 
         //sr.color = corNormal;
@@ -176,7 +179,7 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
             float tempo = 0;
             while (tempo < tempoexclamacao)
             {
-                tempo += Time.deltaTime;
+                tempo += TempoGameplay.DeltaTime;
                 yield return null;
             }
             Destroy(instancia);
@@ -184,7 +187,7 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
         }
 
         // espera a janela de tempo para aceitar a entrega
-        yield return new WaitForSeconds(tempoAtivoEntrega);
+        yield return new EsperaGameplay(tempoAtivoEntrega);
 
         if (!recebeu && RegistrarFalhaEntrega())
         {
@@ -196,7 +199,7 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
     }
     private IEnumerator FinalizarFeedbackRecebimento()
     {
-        yield return new WaitForSeconds(0.75f);
+        yield return new EsperaGameplay(0.75f);
         entregavelPisca?.PararPiscar();
 
         Color cor = sr.color;

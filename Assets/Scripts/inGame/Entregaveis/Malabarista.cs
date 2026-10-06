@@ -93,10 +93,11 @@ public class Malabarista : Entregavel, IAjustavelDificuldade
 
     private void Update()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         // Se recebeu, apenas sai andando
         if (recebeu)
         {
-            transform.position += Vector3.left * velocidade * Time.deltaTime;
+            transform.position += Vector3.left * velocidade * TempoGameplay.DeltaTime;
             if (transform.position.x < jogador.transform.position.x - 30f)
             {
                 Destroy(gameObject);
@@ -128,12 +129,12 @@ public class Malabarista : Entregavel, IAjustavelDificuldade
         // MOVIMENTO
         if (emFluxoDeSaida)
         {
-            transform.position += Vector3.left * velocidade * Time.deltaTime;
+            transform.position += Vector3.left * velocidade * TempoGameplay.DeltaTime;
         }
         else
         {
             Vector3 direcao = (jogador.transform.position - transform.position).normalized;
-            transform.position += new Vector3(direcao.x, 0, 0) * velocidade * Time.deltaTime;
+            transform.position += new Vector3(direcao.x, 0, 0) * velocidade * TempoGameplay.DeltaTime;
         }
 
         // Se sair da tela
@@ -149,6 +150,7 @@ public class Malabarista : Entregavel, IAjustavelDificuldade
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (collision.CompareTag("Caixa") && podereceber && EntregaPendente)
             ReceberEntrega();
 
@@ -167,6 +169,7 @@ public class Malabarista : Entregavel, IAjustavelDificuldade
 
     public override void ReceberEntrega()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (!podereceber || !EntregaPendente) return;
 
         int pontosRecebidos = ProcessarEntrega();
@@ -184,7 +187,7 @@ public class Malabarista : Entregavel, IAjustavelDificuldade
 
     private IEnumerator ProntoparaEntrega()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new EsperaGameplay(0.1f);
 
         if (!EntregaPendente) yield break;
 
@@ -201,7 +204,7 @@ public class Malabarista : Entregavel, IAjustavelDificuldade
         StartCoroutine(exclamacao());
         entregavelPisca?.PiscarAtivo();
 
-        yield return new WaitForSeconds(tempoAtivoEntrega);
+        yield return new EsperaGameplay(tempoAtivoEntrega);
 
         if (!recebeu && RegistrarFalhaEntrega())
         {
@@ -216,7 +219,7 @@ public class Malabarista : Entregavel, IAjustavelDificuldade
 
     private IEnumerator DelayTransparente()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new EsperaGameplay(1.5f);
         entregavelPisca?.PararPiscar();
 
         Color c = sr.color;
@@ -247,7 +250,7 @@ public class Malabarista : Entregavel, IAjustavelDificuldade
             componenteBola.CaminhoBola(destino);
             componenteBola.DefinirFatorVelocidade(fatorVelocidadeBola);
 
-            yield return new WaitForSeconds(IntervaloTiro);
+            yield return new EsperaGameplay(IntervaloTiro);
         }
 
         rotinaAtaque = null;
@@ -256,7 +259,7 @@ public class Malabarista : Entregavel, IAjustavelDificuldade
 
     private IEnumerator exclamacao()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new EsperaGameplay(0.1f);
 
         GameObject prefab = Resources.Load<GameObject>("PontoExclamacao");
         if (prefab != null)
@@ -266,7 +269,7 @@ public class Malabarista : Entregavel, IAjustavelDificuldade
 
             instancia.transform.SetParent(transform, worldPositionStays: true);
 
-            yield return new WaitForSeconds(tempoexclamacao);
+            yield return new EsperaGameplay(tempoexclamacao);
             Destroy(instancia);
         }
     }

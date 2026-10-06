@@ -2,27 +2,32 @@ using UnityEngine;
 
 public class Caixa : MonoBehaviour
 {
-    [Header("ConfiguraÁ„o")]
-    public float tempoMaximo = 5f; // some depois de 5s se n„o colidir
+    [Header("Configura√ß√£o")]
+    public float tempoMaximo = 5f; // some depois de 5s se n√£o colidir
 
     [HideInInspector] public string layerEntregavel = "Entregavel";
     private bool _consumida;
+    private void Awake()
+    {
+        PausaGameplay.Registrar(gameObject);
+    }
+
     private void Start()
     {
-        Destroy(gameObject, tempoMaximo);
+        StartCoroutine(TempoGameplay.DestruirDepois(gameObject, tempoMaximo));
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer(layerEntregavel))
         {
-            // sÛ some a caixa, quem recebeu decide se ganha ponto
+            // s√≥ some a caixa, quem recebeu decide se ganha ponto
             TentarConsumir();
         }
     }
 
     public bool TentarConsumir()
     {
-        if (_consumida) return false;
+        if (BloqueioGameplay.Bloqueado || _consumida) return false;
 
         _consumida = true;
         Destroy(gameObject);

@@ -190,7 +190,7 @@ public class SpawnerManager : MonoBehaviour
     {
         if (!spawnAtivo || _suspensoPorEncontroBoss || BloqueioGameplay.Bloqueado) return;
 
-        if (Time.time >= proximoSpawn && !batchEmAndamento && rotinaLoteStressMaximo == null)
+        if (TempoGameplay.Tempo >= proximoSpawn && !batchEmAndamento && rotinaLoteStressMaximo == null)
         {
             candidatosDoCiclo.Clear();
 
@@ -228,7 +228,7 @@ public class SpawnerManager : MonoBehaviour
             intervaloFinal = Mathf.Max(IntervaloMinimoSpawn, intervaloSpawnAtual + variacao);
         }
 
-        proximoSpawn = Time.time + intervaloFinal;
+        proximoSpawn = TempoGameplay.Tempo + intervaloFinal;
     }
 
     public void AtivarSpawn()
@@ -363,7 +363,7 @@ public class SpawnerManager : MonoBehaviour
             SpawnNormal();
 
             if (i < quantidade - 1 && intervaloInterno > 0f)
-                yield return new WaitForSeconds(intervaloInterno);
+                yield return new EsperaGameplay(intervaloInterno);
         }
 
         yield return null;
@@ -641,7 +641,7 @@ public class SpawnerManager : MonoBehaviour
                 SpawnForcado(tag);
 
             if (i < tagsLoteStressMaximo.Count - 1)
-                yield return new WaitForSeconds(intervaloLoteStressMaximo);
+                yield return new EsperaGameplay(intervaloLoteStressMaximo);
         }
 
         rotinaLoteStressMaximo = null;
@@ -679,7 +679,7 @@ public class SpawnerManager : MonoBehaviour
         for (int i = 0; i < quantidade; i++)
         {
             SpawnPorTag(tag);
-            yield return new WaitForSeconds(intervalo);
+            yield return new EsperaGameplay(intervalo);
         }
     }
 

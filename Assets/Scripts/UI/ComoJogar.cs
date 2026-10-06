@@ -21,7 +21,6 @@ public class ComoJogarController : MonoBehaviour
         {
             hudCanvas.SetActive(true);
             BloqueioGameplay.Definir(MotivoBloqueioGameplay.Tutorial, false);
-            Time.timeScale = 1f;
             return;
         }
 
@@ -31,7 +30,6 @@ public class ComoJogarController : MonoBehaviour
     private void AbrirTutorial()
     {
         BloqueioGameplay.Definir(MotivoBloqueioGameplay.Tutorial, true);
-        Time.timeScale = 0f;
 
         fundoCinza.SetActive(true);
         painelComoJogar.SetActive(true);
@@ -57,7 +55,6 @@ public class ComoJogarController : MonoBehaviour
 
         hudCanvas.SetActive(true);
         BloqueioGameplay.Definir(MotivoBloqueioGameplay.Tutorial, false);
-        Time.timeScale = 1f;
     }
 
     private void OnDestroy()

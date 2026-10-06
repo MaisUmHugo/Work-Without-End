@@ -17,6 +17,7 @@ public class Mov : MonoBehaviour
     private void Awake()
     {
         inputs = new INPUTS();
+        PausaGameplay.Registrar(gameObject);
     }
 
     private void OnEnable()

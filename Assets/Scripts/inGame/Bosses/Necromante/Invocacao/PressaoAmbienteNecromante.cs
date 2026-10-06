@@ -69,7 +69,7 @@ public class PressaoAmbienteNecromante : MonoBehaviour
         if (_invocadosAtivos.Count >= Mathf.Max(1, _limiteSimultaneo))
             return;
 
-        _tempoAteProximoSpawn -= Time.deltaTime;
+        _tempoAteProximoSpawn -= TempoGameplay.DeltaTime;
         if (_tempoAteProximoSpawn > 0f)
             return;
 

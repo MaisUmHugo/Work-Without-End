@@ -57,11 +57,11 @@ public class CaixaTiro : MonoBehaviour
     private void Atirar(InputAction.CallbackContext ctx)
     {
         if (BloqueioGameplay.Bloqueado) return;
-        if (Time.time < tempoUltimoLancamento + delayLancamento) return;
+        if (TempoGameplay.Tempo < tempoUltimoLancamento + delayLancamento) return;
         if (prefabCaixa == null) return;
 
         anim.SetTrigger("Throw");
-        tempoUltimoLancamento = Time.time;
+        tempoUltimoLancamento = TempoGameplay.Tempo;
 
         // Inicia cooldown visual
         StartCoroutine(CooldownVisual());
@@ -76,7 +76,7 @@ public class CaixaTiro : MonoBehaviour
 
         while (t < delayLancamento)
         {
-            t += Time.deltaTime;
+            t += TempoGameplay.DeltaTime;
             mira.cooldownProgresso = Mathf.Clamp01(t / delayLancamento);
             yield return null;
         }

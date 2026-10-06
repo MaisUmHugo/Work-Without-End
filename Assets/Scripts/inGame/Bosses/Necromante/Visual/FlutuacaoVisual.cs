@@ -21,7 +21,7 @@ public class FlutuacaoVisual : MonoBehaviour
     {
         if (_controlador == null || !_controlador.PodeAtualizar) return;
 
-        _tempo = Mathf.Repeat(_tempo + Time.deltaTime, Mathf.Max(0.01f, _periodo));
+        _tempo = Mathf.Repeat(_tempo + TempoGameplay.DeltaTime, Mathf.Max(0.01f, _periodo));
         float deslocamento = Mathf.Sin(_tempo * 2f * Mathf.PI / Mathf.Max(0.01f, _periodo)) * Mathf.Max(0f, _amplitude);
         Vector3 offsetMundo = Vector3.up * deslocamento;
         Vector3 offsetLocal = transform.parent != null

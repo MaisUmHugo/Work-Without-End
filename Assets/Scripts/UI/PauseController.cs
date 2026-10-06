@@ -22,7 +22,7 @@ public class PauseController : MonoBehaviour
         {
             if (JogoPausado)
                 FecharPause();
-            else if (!BloqueioGameplay.Bloqueado)
+            else if (!BloqueioGameplay.BloqueadoSemTransicao)
                 AbrirPause();
         };
 
@@ -47,7 +47,6 @@ public class PauseController : MonoBehaviour
     {
         JogoPausado = true;
         BloqueioGameplay.Definir(MotivoBloqueioGameplay.Pause, true);
-        Time.timeScale = 0f;
 
         FundoCinza.SetActive(true);
         painelPause.SetActive(true);
@@ -60,7 +59,6 @@ public class PauseController : MonoBehaviour
     {
         JogoPausado = false;
         BloqueioGameplay.Definir(MotivoBloqueioGameplay.Pause, false);
-        Time.timeScale = 1f;
 
         painelPause.SetActive(false);
         FundoCinza.SetActive(false);
@@ -81,7 +79,6 @@ public class PauseController : MonoBehaviour
         MostrarConfirmacao(() =>
         {
             JogoPausado = false;
-            Time.timeScale = 1f;
             SceneManager.LoadScene("MenuPrincipal");
         });
     }
@@ -91,7 +88,6 @@ public class PauseController : MonoBehaviour
         MostrarConfirmacao(() =>
         {
             JogoPausado = false;
-            Time.timeScale = 1f;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         });
     }
@@ -124,7 +120,6 @@ public class PauseController : MonoBehaviour
 
         if (JogoPausado)
         {
-            Time.timeScale = 1f;
             JogoPausado = false;
         }
     }

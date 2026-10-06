@@ -60,7 +60,7 @@ public class VidaBoss : MonoBehaviour
 
     public bool TentarReceberDano(int dano)
     {
-        if (dano <= 0 || Esgotada) return false;
+        if (BloqueioGameplay.Bloqueado || dano <= 0 || Esgotada) return false;
 
         if (!_vulneravel)
         {

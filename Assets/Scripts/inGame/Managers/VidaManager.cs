@@ -76,18 +76,19 @@ public class VidaManager : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (piscandoDuranteInvulnerabilidade && spriteRenderer != null)
         {
             float intervaloSeguro = Mathf.Max(0.01f, intervaloPiscar);
             bool transparente = Mathf.FloorToInt(
-                (Time.time - inicioPiscar) / intervaloSeguro) % 2 == 0;
+                (TempoGameplay.Tempo - inicioPiscar) / intervaloSeguro) % 2 == 0;
             Color corAtual = corOriginal;
             corAtual.a = transparente ? alphaInvulneravel : corOriginal.a;
             spriteRenderer.color = corAtual;
         }
 
         if (pulsandoDano)
-            AtualizarEscalaDano(Time.time - inicioPulsoDano);
+            AtualizarEscalaDano(TempoGameplay.Tempo - inicioPulsoDano);
     }
 
     public void ResetarVidas()
@@ -109,7 +110,7 @@ public class VidaManager : MonoBehaviour
     private void ProcessarPerdaVida(bool resetarCombo, bool aplicarInvulnerabilidade, int quantidade = 1)
     {
         // evita perder vida se já estiver invulnerável ou morto
-        if (invulneravel || vidasAtuais <= 0)
+        if (BloqueioGameplay.Bloqueado || invulneravel || vidasAtuais <= 0)
             return;
         vidasAtuais = Mathf.Max(0, vidasAtuais - Mathf.Max(1, quantidade));
         if (resetarCombo)
@@ -142,18 +143,23 @@ public class VidaManager : MonoBehaviour
     private IEnumerator InvulnerabilidadeTemporaria()
     {
         invulneravel = true;
-        float inicioInvulnerabilidade = Time.time;
+        float inicioInvulnerabilidade = TempoGameplay.Tempo;
         float duracaoVermelho = Mathf.Min(tempoVermelhoDano, tempoInvulneravel);
         bool encerrouAnimacaoDano = false;
         pulsandoDano = visualDano != null;
-        inicioPulsoDano = Time.time;
+        inicioPulsoDano = TempoGameplay.Tempo;
 
         if (anim != null)
             anim.SetBool("Damage", true);
 
-        while (Time.time - inicioInvulnerabilidade < tempoInvulneravel)
+        while (TempoGameplay.Tempo - inicioInvulnerabilidade < tempoInvulneravel)
         {
-            float tempoDecorrido = Time.time - inicioInvulnerabilidade;
+            if (BloqueioGameplay.Bloqueado)
+            {
+                yield return null;
+                continue;
+            }
+            float tempoDecorrido = TempoGameplay.Tempo - inicioInvulnerabilidade;
             if (!encerrouAnimacaoDano && tempoDecorrido >= duracaoVermelho)
             {
                 encerrouAnimacaoDano = true;
@@ -161,7 +167,7 @@ public class VidaManager : MonoBehaviour
                     anim.SetBool("Damage", false);
 
                 piscandoDuranteInvulnerabilidade = true;
-                inicioPiscar = Time.time;
+                inicioPiscar = TempoGameplay.Tempo;
             }
             yield return null;
         }

@@ -78,10 +78,10 @@ public class EntregavelPisca : MonoBehaviour
         for (int i = 0; i < quantidade; i++)
         {
             materialAlvo.color = corPiscar;
-            yield return new WaitForSeconds(intervalo);
+            yield return new EsperaGameplay(intervalo);
 
             materialAlvo.color = corOriginal;
-            yield return new WaitForSeconds(intervalo);
+            yield return new EsperaGameplay(intervalo);
         }
 
         materialAlvo.color = corOriginal;

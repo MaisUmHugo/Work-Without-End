@@ -84,6 +84,7 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
 
     private void Update()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (jogador == null) return;
 
         if (caiu)
@@ -93,7 +94,7 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
         else if (!correndo)
         {
             anim.SetBool("Andar", true);
-            transform.position += Vector3.left * velocidadeCaminhada * Time.deltaTime;
+            transform.position += Vector3.left * velocidadeCaminhada * TempoGameplay.DeltaTime;
 
             if (Mathf.Abs(transform.position.x - jogador.transform.position.x) <= dCorrida)
                 IniciarCorrida();
@@ -104,10 +105,10 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
             float novoY = Mathf.MoveTowards(
                 transform.position.y,
                 _laneDestinoY,
-                velocidadeTrocaLane * Time.deltaTime);
+                velocidadeTrocaLane * TempoGameplay.DeltaTime);
 
             transform.position = new Vector3(
-                transform.position.x - velocidadeCorrida * Time.deltaTime,
+                transform.position.x - velocidadeCorrida * TempoGameplay.DeltaTime,
                 novoY,
                 transform.position.z
             );
@@ -133,7 +134,7 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
     private void MoverParaEsquerda(float velocidade)
     {
         transform.position = new Vector3(
-            transform.position.x - velocidade * Time.deltaTime,
+            transform.position.x - velocidade * TempoGameplay.DeltaTime,
             yTravado,
             transform.position.z
         );
@@ -194,6 +195,7 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (correndo && ativoParaEntrega && collision.CompareTag("Caixa"))
         {
             ReceberEntrega();
@@ -204,6 +206,7 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
 
     public override void ReceberEntrega()
     {
+        if (BloqueioGameplay.Bloqueado) return;
         if (!correndo || !ativoParaEntrega || !EntregaPendente) return;
 
         int pontosRecebidos = ProcessarEntrega(_contabilizarNaHorda);
@@ -236,20 +239,20 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
 
     private IEnumerator DelayTransparente()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new EsperaGameplay(1.5f);
         entregavelPisca?.PararPiscar();
         anim.SetBool("Transparente", true);
     }
 
    /* private IEnumerator DelayCair()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new EsperaGameplay(1.5f);
         FalharEntrega();
     }
    */
     private IEnumerator exclamacao()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new EsperaGameplay(0.1f);
         //exclamacao
         GameObject prefab = Resources.Load<GameObject>("PontoExclamacao");
         if (prefab != null)
@@ -259,7 +262,7 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
             float tempo = 0;
             while (tempo < tempoexclamacao)
             {
-                tempo += Time.deltaTime;
+                tempo += TempoGameplay.DeltaTime;
                 yield return null;
             }
             Destroy(instancia);

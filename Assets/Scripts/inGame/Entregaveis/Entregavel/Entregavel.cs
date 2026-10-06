@@ -36,9 +36,14 @@ public abstract class Entregavel : MonoBehaviour
 
     public event Action<Entregavel> EntregaResolvida;
 
+    protected virtual void OnEnable()
+    {
+        PausaGameplay.Registrar(gameObject);
+    }
+
     public virtual void ReceberEntrega()
     {
-        if (!ativoParaEntrega || !EntregaPendente) return;
+        if (BloqueioGameplay.Bloqueado || !ativoParaEntrega || !EntregaPendente) return;
 
         ProcessarEntrega();
         Debug.Log($"{gameObject.name} recebeu a entrega!");
@@ -46,7 +51,7 @@ public abstract class Entregavel : MonoBehaviour
 
     protected int ProcessarEntrega(bool contabilizarNaHorda = true)
     {
-        if (!ativoParaEntrega || !EntregaPendente) return 0;
+        if (BloqueioGameplay.Bloqueado || !ativoParaEntrega || !EntregaPendente) return 0;
 
         estadoEntrega = EstadoEntrega.Sucesso;
         ativoParaEntrega = false;
@@ -79,6 +84,7 @@ public abstract class Entregavel : MonoBehaviour
 
     protected bool RegistrarFalhaEntrega(bool perderVida = true)
     {
+        if (BloqueioGameplay.Bloqueado) return false;
         if (!MarcarEntregaComoFalha()) return false;
 
         PerderCombo();
