@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
-public class HUDBoss : MonoBehaviour
+public class HUDBoss : MonoBehaviour, IHudTransicaoCenario
 {
     [Header("Boss observado")]
     [SerializeField] private string _nomeBoss = "NECROMANTE";
@@ -24,6 +24,7 @@ public class HUDBoss : MonoBehaviour
     private bool _eventosConectados;
 
     public float PercentualVida { get; private set; }
+    public GameObject GrupoHudTransicao => _painel != null ? _painel : gameObject;
 
     private void Awake()
     {

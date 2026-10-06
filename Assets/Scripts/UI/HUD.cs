@@ -1,13 +1,16 @@
 using UnityEngine;
 using TMPro;
 
-public class HUDManager : MonoBehaviour
+public class HUDManager : MonoBehaviour, IHudTransicaoCenario
 {
     [Header("Referências UI")]
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI vidasText;
     [SerializeField] private TextMeshProUGUI comboText;
     //[SerializeField] private TextMeshProUGUI TurnoText;
+
+    public GameObject GrupoHudTransicao => scoreText != null && scoreText.canvas != null
+        ? scoreText.canvas.gameObject : gameObject;
 
     private void Start()
     {

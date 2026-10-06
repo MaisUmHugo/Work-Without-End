@@ -1365,22 +1365,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5388579717524526507}
     m_Modifications:
-    - target: {fileID: 1574613104826500210, guid: f7b25b3af64da3d4198fae97638bb2df, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 410.24966
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574613104826500210, guid: f7b25b3af64da3d4198fae97638bb2df, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 132.94933
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574613104826500210, guid: f7b25b3af64da3d4198fae97638bb2df, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -972.4502
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574613104826500210, guid: f7b25b3af64da3d4198fae97638bb2df, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -550.9979
-      objectReference: {fileID: 0}
     - target: {fileID: 4700858533791424117, guid: f7b25b3af64da3d4198fae97638bb2df, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1388,26 +1372,6 @@ PrefabInstance:
     - target: {fileID: 4700858533791424117, guid: f7b25b3af64da3d4198fae97638bb2df, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6237691636487011565, guid: f7b25b3af64da3d4198fae97638bb2df, type: 3}
-      propertyPath: m_SortingLayer
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 6237691636487011565, guid: f7b25b3af64da3d4198fae97638bb2df, type: 3}
-      propertyPath: m_SortingOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6237691636487011565, guid: f7b25b3af64da3d4198fae97638bb2df, type: 3}
-      propertyPath: m_SortingLayerID
-      value: -2021885031
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563933992553468802, guid: f7b25b3af64da3d4198fae97638bb2df, type: 3}
-      propertyPath: m_Layer
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563933992553468802, guid: f7b25b3af64da3d4198fae97638bb2df, type: 3}
-      propertyPath: m_TagString
-      value: FadeIn
       objectReference: {fileID: 0}
     - target: {fileID: 7458588616912857771, guid: f7b25b3af64da3d4198fae97638bb2df, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1580,7 +1544,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
 --- !u!114 &910100001
 MonoBehaviour:
   m_ObjectHideFlags: 0
