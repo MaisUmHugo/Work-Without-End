@@ -15,6 +15,25 @@ public class HordaManager : MonoBehaviour
     [Header("Teste isolado")]
     [Tooltip("Suspende hordas e atalhos de progressao nesta cena. Configure antes de entrar em Play Mode.")]
     [SerializeField] private bool _suspenderHordasParaTeste;
+    [SerializeField] private bool _trocarCenarioPorHorda = true;
+
+    private bool _suspensoPorBoss;
+    private bool _conclusaoNotificada;
+    private bool _spawnEstavaAtivo;
+    private Coroutine _rotinaInicioHorda;
+    private bool _barraEstavaAtiva;
+    private bool _textoEntregaEstavaAtivo;
+    private bool _textoHordaEstavaAtivo;
+
+    public int NumeroHordaAtual => NumeroHorda;
+    public int EntregasAtuais => N_Entregas;
+    public bool SuspensoPorBoss => _suspensoPorBoss;
+    public event System.Action<int> HordaConcluida;
+
+    public void DefinirTrocaCenarioPorHorda(bool ativada)
+    {
+        _trocarCenarioPorHorda = ativada;
+    }
 
     [Header("Barra de Progresso")]
     public Slider barraProgresso; 
@@ -77,7 +96,7 @@ public class HordaManager : MonoBehaviour
         AtualizarParallax();
         spawnerManager.DesativarSpawn();
         if (!_suspenderHordasParaTeste)
-            StartCoroutine(IniciarHordaComDelay(delayInicial));
+            AgendarInicioHorda(delayInicial);
     }
     private void Awake()
     {
@@ -91,12 +110,12 @@ public class HordaManager : MonoBehaviour
 
     private void Update()
     {
-        if (!_suspenderHordasParaTeste && !BloqueioGameplay.Bloqueado)
+        if (!_suspenderHordasParaTeste && !_suspensoPorBoss && !BloqueioGameplay.Bloqueado)
             verificarhorda();
         TextoHorda.text = "Horda: " + NumeroHorda;
         TextoEntrega.text = $"Entregas:{N_Entregas}/{E_Necessarias}" ;
         AtualizarBarraProgresso();
-        if (!_suspenderHordasParaTeste && !BloqueioGameplay.Bloqueado && Keyboard.current != null)
+        if (!_suspenderHordasParaTeste && !_suspensoPorBoss && !BloqueioGameplay.Bloqueado && Keyboard.current != null)
         {
             bool shiftPressionado = Keyboard.current.leftShiftKey.isPressed
                 || Keyboard.current.rightShiftKey.isPressed;
@@ -112,14 +131,50 @@ public class HordaManager : MonoBehaviour
 
     private IEnumerator IniciarHordaComDelay(float delay)
     {
-        //aguardandoInicio = true;
         spawnerManager.DesativarSpawn();
-
-        yield return new EsperaGameplay(delay);
-
+        float tempoRestante = Mathf.Max(0f, delay);
+        yield return null;
+        while (tempoRestante > 0f || _suspensoPorBoss || BloqueioGameplay.Bloqueado)
+        {
+            if (!_suspensoPorBoss)
+                tempoRestante -= TempoGameplay.DeltaTime;
+            yield return null;
+        }
         AtualizarInimigosPermitidos(); 
         spawnerManager.AtivarSpawn();
-        //aguardandoInicio = false;
+        trocandoHorda = false;
+        _rotinaInicioHorda = null;
+    }
+
+    private void AgendarInicioHorda(float delay)
+    {
+        if (_rotinaInicioHorda != null)
+            StopCoroutine(_rotinaInicioHorda);
+        _rotinaInicioHorda = StartCoroutine(IniciarHordaComDelay(delay));
+    }
+
+    public void DefinirSuspensoPorBoss(bool suspenso)
+    {
+        if (_suspensoPorBoss == suspenso) return;
+        _suspensoPorBoss = suspenso;
+        if (suspenso)
+        {
+            _spawnEstavaAtivo = spawnerManager.spawnAtivo;
+            spawnerManager.DesativarSpawn();
+            _barraEstavaAtiva = barraProgresso != null && barraProgresso.gameObject.activeSelf;
+            _textoEntregaEstavaAtivo = TextoEntrega != null && TextoEntrega.gameObject.activeSelf;
+            _textoHordaEstavaAtivo = TextoHorda != null && TextoHorda.gameObject.activeSelf;
+            if (barraProgresso != null) barraProgresso.gameObject.SetActive(false);
+            if (TextoEntrega != null) TextoEntrega.gameObject.SetActive(false);
+            if (TextoHorda != null) TextoHorda.gameObject.SetActive(false);
+            return;
+        }
+        if (barraProgresso != null) barraProgresso.gameObject.SetActive(_barraEstavaAtiva);
+        if (TextoEntrega != null) TextoEntrega.gameObject.SetActive(_textoEntregaEstavaAtivo);
+        if (TextoHorda != null) TextoHorda.gameObject.SetActive(_textoHordaEstavaAtivo);
+        if (!_suspenderHordasParaTeste && _rotinaInicioHorda == null
+            && _spawnEstavaAtivo && N_Entregas < E_Necessarias)
+            spawnerManager.AtivarSpawn();
     }
 
     private void AtualizarBarraProgresso()
@@ -286,7 +341,8 @@ public class HordaManager : MonoBehaviour
         foreach (Parallax parallax in FindObjectsByType<Parallax>(FindObjectsSortMode.None))
         {
             parallax.AtualizarVelocidadeParallax(multiplicadorParallax);
-            parallax.AtualizarMaterial(NumeroHorda);
+            if (_trocarCenarioPorHorda)
+                parallax.AtualizarMaterial(NumeroHorda);
         }
     }
 
@@ -313,7 +369,13 @@ public class HordaManager : MonoBehaviour
         }
         if (Objetivo)
         {
-            AlterarHorda();
+            if (!_conclusaoNotificada)
+            {
+                _conclusaoNotificada = true;
+                HordaConcluida?.Invoke(NumeroHorda);
+            }
+            if (!_suspensoPorBoss)
+                AlterarHorda();
         }
     }
 
@@ -326,7 +388,7 @@ public class HordaManager : MonoBehaviour
 
     private void AvancarHordas(int quantidade)
     {
-        if (_suspenderHordasParaTeste || trocandoHorda || quantidade <= 0) return;
+        if (_suspenderHordasParaTeste || _suspensoPorBoss || trocandoHorda || quantidade <= 0) return;
 
         trocandoHorda = true;
 
@@ -342,9 +404,10 @@ public class HordaManager : MonoBehaviour
         HordaMudou = true;
         Objetivo = false;
         N_Entregas = 0;
+        _conclusaoNotificada = false;
 
         Mudarcondicao();
-        StartCoroutine(DelayProximaHorda());
+        AgendarInicioHorda(delayEntreHordas);
         Debug.Log($"[HordaManager] Esperando {delayEntreHordas}s antes da proxima horda ({NumeroHorda})");
     }
 
@@ -370,18 +433,9 @@ public class HordaManager : MonoBehaviour
         return Mathf.Min(valorCalculado, maxEntregasPorHorda);
     }
 
-    private IEnumerator DelayProximaHorda()
-    {
-        spawnerManager.DesativarSpawn();
-        yield return new EsperaGameplay(delayEntreHordas);
-        AtualizarInimigosPermitidos();
-        spawnerManager.AtivarSpawn();
-        trocandoHorda = false;
-    }
-
     public void AumentarEntrega()
     {
-        if (_suspenderHordasParaTeste || trocandoHorda) return;
+        if (_suspenderHordasParaTeste || _suspensoPorBoss || trocandoHorda) return;
 
         N_Entregas++;
         Debug.Log(N_Entregas);
