@@ -8,7 +8,6 @@ public static class AudioSettings
         AplicarVolume(mixer, "masterParameter", PlayerPrefs.GetFloat("masterParameter", 1f));
         AplicarVolume(mixer, "bgmParameter", PlayerPrefs.GetFloat("bgmParameter", 1f));
         AplicarVolume(mixer, "sfxParameter", PlayerPrefs.GetFloat("sfxParameter", 1f));
-        AplicarVolume(mixer, "cutsceneParameter", PlayerPrefs.GetFloat("cutsceneParameter", 1f));
     }
 
     public static void AplicarVolume(AudioMixer mixer, string parametro, float valor)

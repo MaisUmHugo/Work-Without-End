@@ -1450,7 +1450,6 @@ MonoBehaviour:
   painelRanking: {fileID: 0}
   fundoCinza: {fileID: 0}
   CenaJogar: 
-  CenaCutscene: 
   CenaFim: 
   CenaMenu: MenuPrincipal
   CenaCreditos: 

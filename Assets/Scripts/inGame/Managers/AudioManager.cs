@@ -8,12 +8,10 @@ public class AudioManager : MonoBehaviour
     [Header("Referências")]
     [SerializeField] private AudioMixer mixer;
     [SerializeField] private AudioSource bgmSource;
-    public AudioSource cutsceneSource;
     [SerializeField] private AudioSource sfxSource;
 
     [Header("Músicas")]
     [SerializeField] private AudioClip musicaMenu;
-    //[SerializeField] private AudioClip cutsceneAudio;
     [SerializeField] private AudioClip musicaJogo;
     [SerializeField] private AudioClip musicaGameOver;
 
@@ -42,13 +40,6 @@ public class AudioManager : MonoBehaviour
             sfxSource.playOnAwake = false;
             sfxSource.loop = false;
         }
-
-        if (cutsceneSource == null)
-        {
-            cutsceneSource = gameObject.AddComponent<AudioSource>();
-            cutsceneSource.playOnAwake = false;
-            cutsceneSource.loop = false;
-        }
     }
 
     private void Start()
@@ -61,7 +52,6 @@ public class AudioManager : MonoBehaviour
     {
         bgmSource.outputAudioMixerGroup = mixer.FindMatchingGroups("BGM")[0];
         sfxSource.outputAudioMixerGroup = mixer.FindMatchingGroups("SFX")[0];
-        cutsceneSource.outputAudioMixerGroup = mixer.FindMatchingGroups("Cutscene")[0];
     }
 
 

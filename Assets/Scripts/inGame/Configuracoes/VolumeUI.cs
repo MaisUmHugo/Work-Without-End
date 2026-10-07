@@ -29,7 +29,6 @@ public class VolumeUI : MonoBehaviour
         if (nome.Contains("master")) return "masterParameter";
         if (nome.Contains("bgm")) return "bgmParameter";
         if (nome.Contains("sfx")) return "sfxParameter";
-        if (nome.Contains("cutscene")) return "cutsceneParameter";
 
         Debug.LogWarning($"[VolumeUI] Não foi possível detectar parâmetro para {gameObject.name}. Usando masterParameter por padrão.");
         return "masterParameter";
