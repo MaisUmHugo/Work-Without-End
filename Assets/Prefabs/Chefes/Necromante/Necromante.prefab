@@ -911,7 +911,7 @@ MonoBehaviour:
   _evitarRepetirLaneSegura: 1
   _espacamentoHorizontalInvocados: 2
   _variacaoEspacamentoHorizontal: 0.2
-  _tempoPreparacao: 0.8
+  _tempoPreparacao: 1.6
   _intervaloEntreInvocados: 0.2
   _intervaloEntreOndas: 1.5
   _tempoRecuperacao: 0.5
@@ -1010,8 +1010,7 @@ MonoBehaviour:
   _inicioFase3EncontroFinal: 0.33
   _vidaFases1E2: 16
   _vidaFase3: 8
-  _deslocamentoFuga: {x: 12, y: 8}
-  _duracaoFuga: 1.5
+  _duracaoFuga: 2.4
   _duracaoDerrota: 1.2
   _aoIniciarFuga:
     m_PersistentCalls:

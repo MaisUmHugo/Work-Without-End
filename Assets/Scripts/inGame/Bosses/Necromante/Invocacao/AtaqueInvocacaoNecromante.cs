@@ -32,7 +32,7 @@ public class AtaqueInvocacaoNecromante : AtaqueBossBase, IAtaqueVisualNecromante
     [SerializeField, Min(0f)] private float _variacaoEspacamentoHorizontal = 0.2f;
 
     [Header("Tempos em segundos")]
-    [SerializeField, Min(0f)] private float _tempoPreparacao = 0.8f;
+    [SerializeField, Min(0f)] private float _tempoPreparacao = 1.6f;
     [SerializeField, Min(0f)] private float _intervaloEntreInvocados = 0.2f;
     [SerializeField, Min(0f)] private float _intervaloEntreOndas = 1.5f;
     [SerializeField, Min(0f)] private float _tempoRecuperacao = 0.5f;

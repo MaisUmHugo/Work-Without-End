@@ -42,11 +42,13 @@ public class ControleAnimatorNecromante : MonoBehaviour
     [SerializeField] private VidaBoss _vida;
     [SerializeField] private ControladorEncontroNecromante _encontro;
     [SerializeField] private AtaqueInvocacaoNecromante _ataqueInvocacao;
+    [SerializeField, Min(0.01f)] private float _velocidadeAnimacaoAbaixarCajado = 0.8f;
 
     private EstadoVisual _estadoAtual;
     private bool _apresentandoEntrada;
 
     public TipoAtaqueNecromante TipoAtaqueAtual { get; private set; }
+    public float DuracaoAnimacaoMorte => ObterDuracaoClip("Placeholder_Morte");
 
     private void Awake()
     {
@@ -144,7 +146,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
                 && _estadoAtual != EstadoVisual.InvocacaoCarregando)
             {
                 float duracaoInicio = Mathf.Max(0.01f, _ataqueInvocacao.TempoPreparacaoEfetivo * 0.7f);
-                float velocidade = Mathf.Max(1f,
+                float velocidade = Mathf.Max(0.01f,
                     ObterDuracaoClip("Placeholder_Invocacao_Inicio") / duracaoInicio);
                 Tocar(EstadoVisual.InvocacaoInicio, velocidade);
             }
@@ -157,7 +159,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
 
         if (_estadoAtual != EstadoVisual.InvocacaoAbaixar
             && _estadoAtual != EstadoVisual.InvocacaoSustentar)
-            Tocar(EstadoVisual.InvocacaoAbaixar);
+            Tocar(EstadoVisual.InvocacaoAbaixar, _velocidadeAnimacaoAbaixarCajado);
         else if (_estadoAtual == EstadoVisual.InvocacaoAbaixar && ClipConcluido(AbaixarCurto))
             Tocar(EstadoVisual.InvocacaoSustentar);
     }

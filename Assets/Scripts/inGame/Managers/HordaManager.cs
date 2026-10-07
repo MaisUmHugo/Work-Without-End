@@ -167,9 +167,7 @@ public class HordaManager : MonoBehaviour
             if (ocultarHud) OcultarHudHorda();
             return;
         }
-        if (barraProgresso != null) barraProgresso.gameObject.SetActive(_barraEstavaAtiva);
-        if (TextoEntrega != null) TextoEntrega.gameObject.SetActive(_textoEntregaEstavaAtivo);
-        if (TextoHorda != null) TextoHorda.gameObject.SetActive(_textoHordaEstavaAtivo);
+        RestaurarHudHorda();
         if (!_suspenderHordasParaTeste && _rotinaInicioHorda == null
             && _spawnEstavaAtivo && N_Entregas < E_Necessarias)
             spawnerManager.AtivarSpawn();
@@ -180,6 +178,13 @@ public class HordaManager : MonoBehaviour
         if (barraProgresso != null) barraProgresso.gameObject.SetActive(false);
         if (TextoEntrega != null) TextoEntrega.gameObject.SetActive(false);
         if (TextoHorda != null) TextoHorda.gameObject.SetActive(false);
+    }
+
+    public void RestaurarHudHorda()
+    {
+        if (barraProgresso != null) barraProgresso.gameObject.SetActive(_barraEstavaAtiva);
+        if (TextoEntrega != null) TextoEntrega.gameObject.SetActive(_textoEntregaEstavaAtivo);
+        if (TextoHorda != null) TextoHorda.gameObject.SetActive(_textoHordaEstavaAtivo);
     }
 
     private void AtualizarBarraProgresso()

@@ -24,9 +24,8 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
     [SerializeField, Min(2)] private int _vidaFases1E2 = 16;
     [SerializeField, Min(1)] private int _vidaFase3 = 8;
 
-    [Header("Encerramento provisório")]
-    [SerializeField] private Vector2 _deslocamentoFuga = new Vector2(12f, 8f);
-    [SerializeField, Min(0f)] private float _duracaoFuga = 1.5f;
+    [Header("Animacoes de encerramento")]
+    [SerializeField, Min(0f)] private float _duracaoFuga = 2.4f;
     [SerializeField, Min(0f)] private float _duracaoDerrota = 1.2f;
 
     [Header("Eventos para integracao")]
@@ -42,12 +41,15 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
     private bool _encerramentoIniciado;
     private bool _encontroConcluido;
     private FaseBoss _faseInicialEncontroFinal = FaseBoss.Fase1;
+    private ControleAnimatorNecromante _controleVisual;
 
     public TipoEncontroNecromante TipoEncontro => _tipoEncontro;
     public ResultadoEncontroBoss ResultadoAtual => _resultadoAtual;
     public bool Encerrado => _encerramentoIniciado;
     public bool Concluido => _encontroConcluido;
     public float DuracaoFuga => _duracaoFuga;
+    public float DuracaoDerrota => Mathf.Max(_duracaoDerrota,
+        _controleVisual != null ? _controleVisual.DuracaoAnimacaoMorte + 0.1f : 0f);
 
     public event Action<ResultadoEncontroBoss> EncerramentoIniciado;
     public event Action<ResultadoEncontroBoss> EncontroEncerrado;
@@ -55,6 +57,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
     private void Awake()
     {
         _posicaoInicial = transform.position;
+        _controleVisual = GetComponent<ControleAnimatorNecromante>();
 
         if (!ReferenciasValidas())
         {
@@ -169,13 +172,10 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
 
     private IEnumerator ExecutarFuga()
     {
-        Vector3 origem = transform.position;
-        Vector3 destino = origem + (Vector3)_deslocamentoFuga;
         float duracao = Mathf.Max(0f, _duracaoFuga);
 
         if (duracao <= 0f)
         {
-            transform.position = destino;
             ConcluirEncontro();
             yield break;
         }
@@ -186,20 +186,17 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
             if (!BloqueioGameplay.Bloqueado && Time.timeScale > 0f)
             {
                 tempo += TempoGameplay.DeltaTime;
-                float progresso = Mathf.Clamp01(tempo / duracao);
-                transform.position = Vector3.Lerp(origem, destino, progresso);
             }
 
             yield return null;
         }
 
-        transform.position = destino;
         ConcluirEncontro();
     }
 
     private IEnumerator AguardarDerrota()
     {
-        float duracao = Mathf.Max(0f, _duracaoDerrota);
+        float duracao = DuracaoDerrota;
         float tempo = 0f;
 
         while (tempo < duracao)
