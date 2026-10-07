@@ -60,6 +60,13 @@ public class HordaManager : MonoBehaviour
     private float velocidadeAtualLateGame;
     private float velocidadeAlvoLateGame;
     private bool modoTesteMaximo;
+    private bool _posNecromante;
+    private int _hordaInicioPosNecromante;
+    private float _maiorVelocidadeBasePosNecromante;
+    [Header("Dificuldade apos vencer o Necromante")]
+    [SerializeField, Min(1f)] private float _multiplicadorPosNecromante = 1.6f;
+    [SerializeField, Range(0.1f, 1f)] private float _intervaloPosNecromante = 0.6f;
+    [SerializeField, Min(0f)] private float _aumentoPorHordaPosNecromante = 0.05f;
 
     //private bool aguardandoInicio = false;
 
@@ -187,6 +194,24 @@ public class HordaManager : MonoBehaviour
         if (TextoHorda != null) TextoHorda.gameObject.SetActive(_textoHordaEstavaAtivo);
     }
 
+    public void RetomarAposEncontro(float respiro, bool derrotaDefinitiva)
+    {
+        if (derrotaDefinitiva && !_posNecromante)
+        {
+            _posNecromante = true;
+            _hordaInicioPosNecromante = NumeroHorda;
+        }
+        // Agenda antes de liberar a suspensao para impedir spawn no mesmo frame.
+        if (!_suspenderHordasParaTeste) AgendarInicioHorda(respiro);
+        DefinirSuspensoPorBoss(false);
+        if (!_suspenderHordasParaTeste && N_Entregas >= E_Necessarias && !trocandoHorda)
+        {
+            AvancarHordas(1);
+            AgendarInicioHorda(respiro);
+        }
+        AplicarDificuldadeDaHorda(false);
+    }
+
     private void AtualizarBarraProgresso()
     {
         if (barraProgresso != null)
@@ -214,6 +239,14 @@ public class HordaManager : MonoBehaviour
         float intervaloSpawn = modoTesteMaximo
             ? spawnerManager.IntervaloStressMaximo
             : AvaliarCurva(curvaIntervaloSpawn, NumeroHorda, 5f);
+
+        if (_posNecromante && !modoTesteMaximo)
+        {
+            float progressao = 1f + Mathf.Max(0, NumeroHorda - _hordaInicioPosNecromante) * _aumentoPorHordaPosNecromante;
+            _maiorVelocidadeBasePosNecromante = Mathf.Max(_maiorVelocidadeBasePosNecromante, multiplicador);
+            multiplicador = _maiorVelocidadeBasePosNecromante * _multiplicadorPosNecromante * progressao;
+            intervaloSpawn *= _intervaloPosNecromante / progressao;
+        }
 
         spawnerManager.DefinirDificuldade(multiplicador, intervaloSpawn);
     }
@@ -288,6 +321,9 @@ public class HordaManager : MonoBehaviour
         mudancaMaximaVelocidadePorHorda = Mathf.Max(0.01f, mudancaMaximaVelocidadePorHorda);
         entregasHordasIniciais = Mathf.Max(1, entregasHordasIniciais);
         maxEntregasPorHorda = Mathf.Max(1, maxEntregasPorHorda);
+        _multiplicadorPosNecromante = Mathf.Max(1f, _multiplicadorPosNecromante);
+        _intervaloPosNecromante = Mathf.Clamp(_intervaloPosNecromante, 0.1f, 1f);
+        _aumentoPorHordaPosNecromante = Mathf.Max(0f, _aumentoPorHordaPosNecromante);
     }
     private static AnimationCurve CriarCurvaVelocidadePadrao()
     {
