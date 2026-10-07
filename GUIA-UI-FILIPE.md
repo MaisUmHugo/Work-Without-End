@@ -48,11 +48,13 @@ Edite `Assets/Prefabs/GameObjects/CanvasHUD.prefab`, em `VidasCoracoes`. Há tr�
 
 `HUDManager` também aceita referências explícitas para Grupo Coracoes e Sprite Coracao no Inspector, caso a organização da cena precise mudar. Os corações continuam dentro do grupo de fade da HUD comum.
 
-## Morte, almas e progressão após o boss
+## Morte, fumaça pixel e progressão após o boss
 
-No prefab `Necromante`, `ControleAnimatorNecromante` tem **Velocidade Animacao Morte = 0.5**. A duração do encontro respeita o clipe nessa velocidade e adiciona o desaparecimento gradual, evitando cortar a animação.
+No prefab `Necromante`, `ControleAnimatorNecromante` controla a morte em três trechos: início a **0.5**, meio a **0.25** e final a **0.35**. O meio começa em 30% do clipe e o desmanche em 72%, ajustáveis no Inspector. O controlador percorre o mesmo clipe de arte, respeitando pause e esses tempos.
 
-`EfeitoMorteNecromante` controla o material de brilho, o prefab de almas, a intensidade HDR, a escala das partículas e **Duracao Desaparecimento = 3 segundos**. O efeito usa a adaptação de **CFXR2 Souls Escape** do Cartoon FX Remaster Free. `AlmasNecromante.prefab` e seus recursos estão no projeto sem depender da demonstração ou do importador customizado do pacote; os shaders foram exportados como shaders Unity comuns. O efeito é pausado junto com o jogo e removido ao finalizar/cancelar o encontro.
+`EfeitoMorteNecromante` mantém o brilho HDR e usa cinco sprites da smoke **FX001**, do Free Pixel Art FX Package importado pelo usuário. Os quadros ficam em `Efeitos/FumacaPixel`; a cópia tem GUIDs próprios e não depende da cena de demonstração. Não há fantasmas conectados ao boss.
+
+A smoke começa durante o desmanche, acompanha a parte inferior do corpo e cobre o sprite enquanto ele desaparece. **Duracao Fumaca = 1.2 segundos**, cobertura, altura no corpo e cor são ajustáveis. Antes de chegar ao último frame, o sprite do boss fica invisível. A fumaça percorre seus desenhos, dissipa e seu objeto é destruído ao terminar; o encontro aguarda essa conclusão. A pausa suspende os dois, e reiniciar restaura material e visibilidade do boss.
 
 Após a fuga, ocorre Cidade → Floresta antes do retorno da HUD. Após a morte definitiva, ocorre Floresta → Cidade antes do retorno da HUD. A partir daí o boss não reaparece: os cenários alternam a cada dez hordas concluídas (30, 40, 50...), até o game over.
 

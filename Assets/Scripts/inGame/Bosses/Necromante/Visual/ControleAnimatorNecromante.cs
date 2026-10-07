@@ -44,12 +44,23 @@ public class ControleAnimatorNecromante : MonoBehaviour
     [SerializeField] private AtaqueInvocacaoNecromante _ataqueInvocacao;
     [SerializeField, Min(0.01f)] private float _velocidadeAnimacaoAbaixarCajado = 0.8f;
     [SerializeField, Range(0.1f, 1f)] private float _velocidadeAnimacaoMorte = 0.5f;
+    [SerializeField, Range(0.1f, 1f)] private float _velocidadeMeioMorte = 0.25f;
+    [SerializeField, Range(0.1f, 1f)] private float _velocidadeFinalMorte = 0.35f;
+    [SerializeField, Range(0.1f, 0.6f)] private float _inicioMeioMorte = 0.3f;
+    [SerializeField, Range(0.6f, 0.95f)] private float _inicioDesmancheMorte = 0.72f;
 
     private EstadoVisual _estadoAtual;
     private bool _apresentandoEntrada;
+    private float _tempoMorte;
 
     public TipoAtaqueNecromante TipoAtaqueAtual { get; private set; }
-    public float DuracaoAnimacaoMorte => ObterDuracaoClip("Placeholder_Morte") / Mathf.Max(0.1f, _velocidadeAnimacaoMorte);
+    public float TempoInicioDesmancheMorte => ObterDuracaoClip("Placeholder_Morte")
+        * (_inicioMeioMorte / Mathf.Max(0.1f, _velocidadeAnimacaoMorte)
+        + (_inicioDesmancheMorte - _inicioMeioMorte) / Mathf.Max(0.1f, _velocidadeMeioMorte));
+    public float DuracaoAnimacaoMorte => TempoInicioDesmancheMorte + ObterDuracaoClip("Placeholder_Morte")
+        * (1f - _inicioDesmancheMorte) / Mathf.Max(0.1f, _velocidadeFinalMorte);
+    public float ProgressoAnimacaoMorte { get; private set; }
+    public float InicioDesmancheMorte => _inicioDesmancheMorte;
 
     private void Awake()
     {
@@ -62,6 +73,8 @@ public class ControleAnimatorNecromante : MonoBehaviour
     private void OnEnable()
     {
         _estadoAtual = EstadoVisual.Nenhum;
+        _tempoMorte = 0f;
+        ProgressoAnimacaoMorte = 0f;
     }
 
     private void OnDisable()
@@ -91,7 +104,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
 
         if (_vida.Esgotada)
         {
-            Tocar(EstadoVisual.Morte, _velocidadeAnimacaoMorte);
+            AtualizarMorte();
             return;
         }
 
@@ -113,6 +126,31 @@ public class ControleAnimatorNecromante : MonoBehaviour
         }
 
         Tocar(_movimento.EmMovimento ? EstadoVisual.Movimentacao : EstadoVisual.Idle);
+    }
+
+    private void AtualizarMorte()
+    {
+        if (_estadoAtual != EstadoVisual.Morte)
+        {
+            _tempoMorte = 0f;
+            Tocar(EstadoVisual.Morte, 0f);
+        }
+        _tempoMorte += TempoGameplay.DeltaTime;
+        float clipe = ObterDuracaoClip("Placeholder_Morte");
+        float inicio = clipe * _inicioMeioMorte / Mathf.Max(0.1f, _velocidadeAnimacaoMorte);
+        float meio = clipe * (_inicioDesmancheMorte - _inicioMeioMorte) / Mathf.Max(0.1f, _velocidadeMeioMorte);
+        if (_tempoMorte < inicio)
+            ProgressoAnimacaoMorte = _tempoMorte * _velocidadeAnimacaoMorte / clipe;
+        else if (_tempoMorte < inicio + meio)
+            ProgressoAnimacaoMorte = _inicioMeioMorte + (_tempoMorte - inicio) * _velocidadeMeioMorte / clipe;
+        else
+            ProgressoAnimacaoMorte = Mathf.Min(1f, _inicioDesmancheMorte
+                + (_tempoMorte - inicio - meio) * _velocidadeFinalMorte / clipe);
+
+        // Controla os trechos sem reiniciar o clipe nem depender da velocidade restaurada pelo pause.
+        _animator.speed = 0f;
+        _animator.Play(Morte, 0, ProgressoAnimacaoMorte);
+        _animator.Update(0f);
     }
 
     public void ApresentarEntrada(float progresso)

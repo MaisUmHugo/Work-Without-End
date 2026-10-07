@@ -49,9 +49,8 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
     public bool Encerrado => _encerramentoIniciado;
     public bool Concluido => _encontroConcluido;
     public float DuracaoFuga => _duracaoFuga;
-    public float DuracaoDerrota => Mathf.Max(_duracaoDerrota,
-        _controleVisual != null ? _controleVisual.DuracaoAnimacaoMorte + 0.1f : 0f)
-        + (_efeitoMorte != null ? _efeitoMorte.DuracaoDesaparecimento : 0f);
+    public float DuracaoDerrota => _efeitoMorte != null && _efeitoMorte.isActiveAndEnabled ? _efeitoMorte.DuracaoSequencia
+        : Mathf.Max(_duracaoDerrota, _controleVisual != null ? _controleVisual.DuracaoAnimacaoMorte : 0f);
 
     public event Action<ResultadoEncontroBoss> EncerramentoIniciado;
     public event Action<ResultadoEncontroBoss> EncontroEncerrado;
@@ -202,7 +201,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
         float duracao = DuracaoDerrota;
         float tempo = 0f;
 
-        while (tempo < duracao)
+        while (tempo < duracao || (_efeitoMorte != null && _efeitoMorte.isActiveAndEnabled && !_efeitoMorte.Concluido))
         {
             if (!BloqueioGameplay.Bloqueado && Time.timeScale > 0f)
                 tempo += TempoGameplay.DeltaTime;

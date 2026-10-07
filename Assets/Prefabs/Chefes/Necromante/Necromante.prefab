@@ -1064,6 +1064,10 @@ MonoBehaviour:
   _ataqueInvocacao: {fileID: 910050002}
   _velocidadeAnimacaoAbaixarCajado: 0.8
   _velocidadeAnimacaoMorte: 0.5
+  _velocidadeMeioMorte: 0.25
+  _velocidadeFinalMorte: 0.35
+  _inicioMeioMorte: 0.3
+  _inicioDesmancheMorte: 0.72
 --- !u!114 &398982659817732409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1118,9 +1122,15 @@ MonoBehaviour:
   _encontro: {fileID: 910060002}
   _controleVisual: {fileID: 6285394227119160127}
   _spriteRenderer: {fileID: 8511946102748384679}
-  _prefabAlmas: {fileID: 7555673548856267574, guid: d3789ea7fc0109846bad99bae6bf00da, type: 3}
   _materialBrilho: {fileID: 2100000, guid: e8e85203e02a3b740b8e153aceb0a4e5, type: 2}
-  _duracaoDesaparecimento: 3
   _intensidadeBrilho: 12
-  _escalaAlmas: 2
-  _intensidadeAlmas: 4
+  _quadrosFumaca:
+  - {fileID: 21300000, guid: b7cc134cee8884b48812bc6127d60b21, type: 3}
+  - {fileID: 21300000, guid: ca8928534f557e94e9c8eea791417cf8, type: 3}
+  - {fileID: 21300000, guid: e156dd095159cab459efe822ddfd27b4, type: 3}
+  - {fileID: 21300000, guid: 26b6194a5e447074286924077be32cbf, type: 3}
+  - {fileID: 21300000, guid: 74dc8a30a5e01b44d94958e5ac403c95, type: 3}
+  _duracaoFumaca: 1.2
+  _coberturaFumaca: 1.1
+  _alturaFumacaNoCorpo: 0.2
+  _corFumaca: {r: 0.85, g: 0.8, b: 1, a: 1}
