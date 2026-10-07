@@ -1253,10 +1253,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8003754581541494091, guid: 8f339f7fceb0c464eafd3f0d20dcca50, type: 3}
-      propertyPath: mixerParameter
-      value: cutsceneParamater
-      objectReference: {fileID: 0}
     - target: {fileID: 8270415738730715028, guid: 8f339f7fceb0c464eafd3f0d20dcca50, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
