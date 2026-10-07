@@ -40,8 +40,13 @@ public class MenuController : MonoBehaviour
 
     private void OnDisable()
     {
-        inputs.UI.Cancel.performed -= OnCancelPerformed;
         inputs.Disable();
+    }
+
+    private void OnDestroy()
+    {
+        inputs.UI.Cancel.performed -= OnCancelPerformed;
+        inputs.Dispose();
     }
 
     private void Start()
@@ -198,9 +203,11 @@ public class MenuController : MonoBehaviour
     private void OnCancelPerformed(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
     {
         // fecha opções se estiver nelas, senão fecha o confirm se aberto
-        if (painelOpcoes != null && painelOpcoes.activeSelf)
-            FecharOpcoes();
-        else if (painelConfirmacao != null && painelConfirmacao.activeSelf)
+        if (painelConfirmacao != null && painelConfirmacao.activeSelf)
             BotaoConfirmarNao();
+        else if (painelOpcoes != null && painelOpcoes.activeSelf)
+            FecharOpcoes();
+        else if (painelRanking != null && painelRanking.activeSelf)
+            FecharRanking();
     }
 }

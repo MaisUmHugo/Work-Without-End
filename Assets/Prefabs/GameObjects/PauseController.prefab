@@ -184,6 +184,7 @@ GameObject:
   - component: {fileID: 920310007}
   - component: {fileID: 920310008}
   - component: {fileID: 920310009}
+  - component: {fileID: 930410001}
   m_Layer: 5
   m_Name: SensibilidadeControleSlider
   m_TagString: Untagged
@@ -279,6 +280,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SensibilidadeControleUI
   _slider: {fileID: 920310008}
   _textoValor: {fileID: 920310005}
+--- !u!114 &930410001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920310006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
 --- !u!1 &920310010
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,6 +1199,7 @@ GameObject:
   - component: {fileID: 5551122938392667807}
   - component: {fileID: 8229371264562797523}
   - component: {fileID: 7241019829229652261}
+  - component: {fileID: 930410002}
   m_Layer: 0
   m_Name: Botao_Sair
   m_TagString: Untagged
@@ -1302,6 +1320,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &930410002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 960981765353153066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
 --- !u!1 &1033430347843590550
 GameObject:
   m_ObjectHideFlags: 0
@@ -1314,6 +1348,7 @@ GameObject:
   - component: {fileID: 8106009936140709222}
   - component: {fileID: 1932447962260828134}
   - component: {fileID: 7147142489662869028}
+  - component: {fileID: 930410003}
   m_Layer: 0
   m_Name: Botao_ConfirmarSim
   m_TagString: Untagged
@@ -1435,6 +1470,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &930410003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033430347843590550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
 --- !u!1 &1079852926804159040
 GameObject:
   m_ObjectHideFlags: 0
@@ -2099,6 +2150,7 @@ GameObject:
   - component: {fileID: 4231263052364793297}
   - component: {fileID: 2819383581410302927}
   - component: {fileID: 1903474797990756091}
+  - component: {fileID: 930410004}
   m_Layer: 0
   m_Name: ParallaxToggle
   m_TagString: Untagged
@@ -2202,6 +2254,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TooltipTrigger
   mensagem: "Com Parallax Din\xE2mico ativado, aumenta a velocidade do cen\xE1rio
     se movimentando com o passar das hordas."
+--- !u!114 &930410004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3391053821194100440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
 --- !u!1 &3539338040296056507
 GameObject:
   m_ObjectHideFlags: 0
@@ -2566,6 +2634,7 @@ GameObject:
   - component: {fileID: 7055346960223114359}
   - component: {fileID: 5339288942588507999}
   - component: {fileID: 173159746940652161}
+  - component: {fileID: 930410005}
   m_Layer: 5
   m_Name: BGMSlider
   m_TagString: Untagged
@@ -2661,6 +2730,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VolumeUI
   mixerParameter: 
   slider: {fileID: 5339288942588507999}
+--- !u!114 &930410005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3972693248979905286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
 --- !u!1 &4302869162338871403
 GameObject:
   m_ObjectHideFlags: 0
@@ -2995,6 +3080,7 @@ GameObject:
   - component: {fileID: 6104545261787780495}
   - component: {fileID: 1523948332101904409}
   - component: {fileID: 5421119838541119648}
+  - component: {fileID: 930410006}
   m_Layer: 5
   m_Name: MasterSlider
   m_TagString: Untagged
@@ -3090,6 +3176,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VolumeUI
   mixerParameter: 
   slider: {fileID: 1523948332101904409}
+--- !u!114 &930410006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4704585229293230728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
 --- !u!1 &4713117870323829769
 GameObject:
   m_ObjectHideFlags: 0
@@ -4328,6 +4430,7 @@ GameObject:
   - component: {fileID: 7726116616669757007}
   - component: {fileID: 6632380699221613085}
   - component: {fileID: 3300120251324219886}
+  - component: {fileID: 930410007}
   m_Layer: 5
   m_Name: CutsceneSlider
   m_TagString: Untagged
@@ -4423,6 +4526,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VolumeUI
   mixerParameter: 
   slider: {fileID: 6632380699221613085}
+--- !u!114 &930410007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6776202983585142425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
 --- !u!1 &7102455987622504315
 GameObject:
   m_ObjectHideFlags: 0
@@ -4435,6 +4554,7 @@ GameObject:
   - component: {fileID: 2352925529758847005}
   - component: {fileID: 6727121784601204407}
   - component: {fileID: 1253680377781220384}
+  - component: {fileID: 930410008}
   m_Layer: 0
   m_Name: Botao_Voltar
   m_TagString: Untagged
@@ -4555,6 +4675,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &930410008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7102455987622504315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
 --- !u!1 &7193040659006662967
 GameObject:
   m_ObjectHideFlags: 0
@@ -4602,6 +4738,7 @@ GameObject:
   - component: {fileID: 1285884453808170839}
   - component: {fileID: 4158023897707700762}
   - component: {fileID: 6341979208055056360}
+  - component: {fileID: 930410009}
   m_Layer: 5
   m_Name: SFXSlider
   m_TagString: Untagged
@@ -4697,6 +4834,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VolumeUI
   mixerParameter: 
   slider: {fileID: 4158023897707700762}
+--- !u!114 &930410009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7294400124734236985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
 --- !u!1 &7308037061113198998
 GameObject:
   m_ObjectHideFlags: 0
@@ -4970,6 +5123,7 @@ GameObject:
   - component: {fileID: 2406062654257385448}
   - component: {fileID: 5579388472316556681}
   - component: {fileID: 3844547764244037022}
+  - component: {fileID: 930410010}
   m_Layer: 0
   m_Name: Botao_ConfirmarNao
   m_TagString: Untagged
@@ -5091,6 +5245,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &930410010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7782579247495087573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
 --- !u!1 &8015601332403007490
 GameObject:
   m_ObjectHideFlags: 0

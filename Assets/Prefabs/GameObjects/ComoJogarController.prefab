@@ -858,6 +858,7 @@ GameObject:
   - component: {fileID: 6516504495756488488}
   - component: {fileID: 8480937009356227024}
   - component: {fileID: 998057364057363742}
+  - component: {fileID: 930410001}
   m_Layer: 0
   m_Name: ParallaxToggle
   m_TagString: Untagged
@@ -1276,6 +1277,7 @@ GameObject:
   - component: {fileID: 6143157405748986430}
   - component: {fileID: 2621637400883601404}
   - component: {fileID: 3139529903292433902}
+  - component: {fileID: 930410002}
   m_Layer: 0
   m_Name: Botao_ConfirmarSim
   m_TagString: Untagged
@@ -1482,6 +1484,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4271019665250992424}
   - component: {fileID: 3558013945593021358}
+  - component: {fileID: 930410003}
   m_Layer: 0
   m_Name: NaoAparecerMaisToggle
   m_TagString: Untagged
@@ -1926,6 +1929,7 @@ GameObject:
   - component: {fileID: 1575803164401729558}
   - component: {fileID: 302280987219329318}
   - component: {fileID: 3976019715023508638}
+  - component: {fileID: 930410004}
   m_Layer: 0
   m_Name: Botao_Voltar
   m_TagString: Untagged
@@ -2680,6 +2684,7 @@ GameObject:
   - component: {fileID: 1634337359733970918}
   - component: {fileID: 1243819684607612571}
   - component: {fileID: 2688583595004759840}
+  - component: {fileID: 930410005}
   m_Layer: 0
   m_Name: Botao_ConfirmarNao
   m_TagString: Untagged
@@ -2801,3 +2806,83 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &930410001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1940540546988242662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
+--- !u!114 &930410002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3511634790333939412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
+--- !u!114 &930410003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3852387303205482296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
+--- !u!114 &930410004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4831980895660540197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
+--- !u!114 &930410005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9049848295587560909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba54541dce4b2c847bbf8e0c8e3ee9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FeedbackSelecaoUI
+  _escalaSelecionado: 1.06
+  _anguloBalanco: 1.5
+  _frequenciaBalanco: 2
+  _tempoTransicao: 0.12
