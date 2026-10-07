@@ -1,13 +1,30 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
 public static class FocoUI
 {
+    private static GameObject _painelAtivo;
+    private static readonly Dictionary<GameObject, Selectable> _ultimosElementos = new Dictionary<GameObject, Selectable>();
+    private static int _ultimoFrameAtualizado = -1;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void LimparMemoria()
+    {
+        _painelAtivo = null;
+        _ultimosElementos.Clear();
+        _ultimoFrameAtualizado = -1;
+    }
+
     public static void SelecionarPrimeiroBotao(GameObject painel)
     {
         if (EventSystem.current == null || painel == null || !painel.activeInHierarchy) return;
+
+        if (_painelAtivo == null) _ultimosElementos.Clear();
+        _painelAtivo = painel;
 
         if (EventSystem.current.currentInputModule is InputSystemUIInputModule modulo)
             modulo.deselectOnBackgroundClick = false;
@@ -15,12 +32,53 @@ public static class FocoUI
         Canvas.ForceUpdateCanvases();
         ConfigurarNavegacao(painel);
 
-        foreach (Button botao in painel.GetComponentsInChildren<Button>(true))
+        if (_ultimosElementos.TryGetValue(painel, out Selectable ultimo) && SelecaoValida(ultimo))
         {
-            if (!botao.isActiveAndEnabled || !botao.IsInteractable()) continue;
-            EventSystem.current.SetSelectedGameObject(botao.gameObject);
+            EventSystem.current.SetSelectedGameObject(ultimo.gameObject);
             return;
         }
+
+        foreach (Selectable elemento in painel.GetComponentsInChildren<Selectable>(true))
+        {
+            if (!SelecaoValida(elemento)) continue;
+            EventSystem.current.SetSelectedGameObject(elemento.gameObject);
+            return;
+        }
+    }
+
+    public static void RegistrarSelecao(Selectable elemento)
+    {
+        if (SelecaoValida(elemento))
+            _ultimosElementos[_painelAtivo] = elemento;
+    }
+
+    public static void AtualizarSelecaoControle()
+    {
+        if (_ultimoFrameAtualizado == Time.frameCount) return;
+        _ultimoFrameAtualizado = Time.frameCount;
+        if (_painelAtivo == null || !_painelAtivo.activeInHierarchy || EventSystem.current == null) return;
+
+        GameObject selecionado = EventSystem.current.currentSelectedGameObject;
+        Selectable elemento = selecionado != null ? selecionado.GetComponent<Selectable>() : null;
+        if (SelecaoValida(elemento))
+        {
+            RegistrarSelecao(elemento);
+            return;
+        }
+
+        Gamepad controle = Gamepad.current;
+        if (controle == null) return;
+        bool navegando = controle.leftStick.ReadValue().sqrMagnitude > 0.25f
+            || controle.rightStick.ReadValue().sqrMagnitude > 0.25f
+            || controle.dpad.ReadValue().sqrMagnitude > 0.25f;
+        if (navegando) SelecionarPrimeiroBotao(_painelAtivo);
+    }
+
+    private static bool SelecaoValida(Selectable elemento)
+    {
+        return _painelAtivo != null && elemento != null && (elemento is Button || elemento is Slider || elemento is Toggle)
+            && elemento.isActiveAndEnabled && elemento.IsInteractable()
+            && elemento.transform.IsChildOf(_painelAtivo.transform);
     }
 
     private static void ConfigurarNavegacao(GameObject painel)

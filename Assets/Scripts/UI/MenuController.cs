@@ -10,6 +10,7 @@ public class MenuController : MonoBehaviour
     [SerializeField] private GameObject painelOpcoes;
     [SerializeField] private GameObject painelConfirmacao;
     [SerializeField] private GameObject painelRanking;
+    [SerializeField] private GameObject _painelControles;
     [SerializeField] private GameObject fundoCinza;
 
     [Header("Cenas")]
@@ -50,6 +51,7 @@ public class MenuController : MonoBehaviour
 
     private void Start()
     {
+        if (_painelControles != null) _painelControles.SetActive(false);
         AudioManager.instance.TocarMusicaMenu();
         FocoUI.SelecionarPrimeiroBotao(painelMenuInicial);
 
@@ -90,6 +92,22 @@ public class MenuController : MonoBehaviour
         fundoCinza.SetActive(false);
         painelMenuInicial.SetActive(true);
         FocoUI.SelecionarPrimeiroBotao(painelMenuInicial);
+    }
+
+    public void AbrirControles()
+    {
+        if (_painelControles == null) return;
+        painelOpcoes.SetActive(false);
+        _painelControles.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(_painelControles);
+    }
+
+    public void FecharControles()
+    {
+        if (_painelControles == null) return;
+        _painelControles.SetActive(false);
+        painelOpcoes.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(painelOpcoes);
     }
 
     public void AbrirRanking()
@@ -194,7 +212,9 @@ public class MenuController : MonoBehaviour
     private void OnCancelPerformed(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
     {
         // fecha opções se estiver nelas, senão fecha o confirm se aberto
-        if (painelConfirmacao != null && painelConfirmacao.activeSelf)
+        if (_painelControles != null && _painelControles.activeSelf)
+            FecharControles();
+        else if (painelConfirmacao != null && painelConfirmacao.activeSelf)
             BotaoConfirmarNao();
         else if (painelOpcoes != null && painelOpcoes.activeSelf)
             FecharOpcoes();

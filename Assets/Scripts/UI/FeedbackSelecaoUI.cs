@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -35,7 +36,8 @@ public class FeedbackSelecaoUI : MonoBehaviour, ISelectHandler, IDeselectHandler
 
     private void Update()
     {
-        if (!(_elemento is Button) && !(_elemento is Slider)) return;
+        FocoUI.AtualizarSelecaoControle();
+        if (!(_elemento is Button) && !(_elemento is Slider) && !(_elemento is Toggle)) return;
 
         bool destacar = _selecionado && _elemento.IsInteractable();
         _destaque = Mathf.MoveTowards(_destaque, destacar ? 1f : 0f, Time.unscaledDeltaTime / _tempoTransicao);
@@ -49,6 +51,7 @@ public class FeedbackSelecaoUI : MonoBehaviour, ISelectHandler, IDeselectHandler
     public void OnSelect(BaseEventData eventData)
     {
         _selecionado = true;
+        FocoUI.RegistrarSelecao(_elemento);
         _tempoBalanco = 0f;
         MostrarNaRolagem();
     }
@@ -95,9 +98,24 @@ public class FeedbackSelecaoUI : MonoBehaviour, ISelectHandler, IDeselectHandler
             superior = Mathf.Max(superior, altura);
         }
 
+        // A legenda acompanha o slider quando o controle rola ate ele.
+        if (_elemento is Slider)
+        {
+            foreach (TMP_Text texto in GetComponentsInChildren<TMP_Text>())
+            {
+                texto.rectTransform.GetWorldCorners(_cantos);
+                foreach (Vector3 canto in _cantos)
+                {
+                    float altura = rolagem.viewport.InverseTransformPoint(canto).y;
+                    inferior = Mathf.Min(inferior, altura);
+                    superior = Mathf.Max(superior, altura);
+                }
+            }
+        }
+
         Rect janela = rolagem.viewport.rect;
         // Reserva espaco para o aumento visual sem mudar o tamanho do Content.
-        if (_elemento is Button || _elemento is Slider)
+        if (_elemento is Button || _elemento is Slider || _elemento is Toggle)
         {
             float margem = (superior - inferior) * (_escalaSelecionado - 1f) * 0.5f + 4f;
             superior += margem;
@@ -117,7 +135,7 @@ public class FeedbackSelecaoUI : MonoBehaviour, ISelectHandler, IDeselectHandler
         _selecionado = false;
         _destaque = 0f;
         _tempoBalanco = 0f;
-        if (_retangulo == null || (!(_elemento is Button) && !(_elemento is Slider))) return;
+        if (_retangulo == null || (!(_elemento is Button) && !(_elemento is Slider) && !(_elemento is Toggle))) return;
         _retangulo.localScale = _escalaOriginal;
         _retangulo.localRotation = _rotacaoOriginal;
     }

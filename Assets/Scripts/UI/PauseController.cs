@@ -9,10 +9,12 @@ public class PauseController : MonoBehaviour
     [SerializeField] private GameObject FundoCinza;
     [SerializeField] private GameObject painelPause;
     [SerializeField] private GameObject painelConfirmacao;
+    [SerializeField] private GameObject _painelControles;
     //[SerializeField] private GameObject painelMenuInicial;
 
     public static bool JogoPausado { get; private set; }
     private System.Action acaoConfirmada; 
+    private int _ultimoFrameFecharControles = -1;
 
     private void Awake()
     {
@@ -20,8 +22,14 @@ public class PauseController : MonoBehaviour
 
         inputs.Gameplay.Pause.performed += ctx =>
         {
+            if (_ultimoFrameFecharControles == Time.frameCount) return;
             if (JogoPausado)
-                FecharPause();
+            {
+                if (_painelControles != null && _painelControles.activeSelf)
+                    FecharControles();
+                else
+                    FecharPause();
+            }
             else if (!BloqueioGameplay.EstaAtivo(MotivoBloqueioGameplay.Tutorial)
                 && !BloqueioGameplay.EstaAtivo(MotivoBloqueioGameplay.GameOver))
                 AbrirPause();
@@ -29,7 +37,9 @@ public class PauseController : MonoBehaviour
 
         inputs.UI.Cancel.performed += ctx =>
         {
-            if (painelConfirmacao.activeSelf)
+            if (_painelControles != null && _painelControles.activeSelf)
+                FecharControles();
+            else if (painelConfirmacao.activeSelf)
                 BotaoConfirmarNao();
         };
     }
@@ -53,6 +63,8 @@ public class PauseController : MonoBehaviour
         painelPause.SetActive(true);
         painelConfirmacao.SetActive(false);
 
+        if (_painelControles != null) _painelControles.SetActive(false);
+
         FocoUI.SelecionarPrimeiroBotao(painelPause);
         Debug.Log("Pause aberto");
     }
@@ -65,12 +77,30 @@ public class PauseController : MonoBehaviour
         painelPause.SetActive(false);
         FundoCinza.SetActive(false);
         painelConfirmacao.SetActive(false);
+        if (_painelControles != null) _painelControles.SetActive(false);
         //painelMenuInicial.SetActive(true);
 
         Debug.Log("Pause fechado");
     }
 
     // --- Botões ---
+
+    public void AbrirControles()
+    {
+        if (_painelControles == null) return;
+        painelPause.SetActive(false);
+        _painelControles.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(_painelControles);
+    }
+
+    public void FecharControles()
+    {
+        if (_painelControles == null) return;
+        _ultimoFrameFecharControles = Time.frameCount;
+        _painelControles.SetActive(false);
+        painelPause.SetActive(true);
+        FocoUI.SelecionarPrimeiroBotao(painelPause);
+    }
     public void BotaoContinuar()
     {
         FecharPause();
