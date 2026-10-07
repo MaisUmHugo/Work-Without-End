@@ -2,6 +2,15 @@
 
 Os controles são apenas uma tela de consulta por enquanto. Não há botões para remapear teclas. A sensibilidade continua ajustável nas opções e no pause.
 
+## Cenas para trabalhar e conferir
+
+- `Assets/Scenes/MenuPrincipal.unity`: menu, opções, ranking e painel de controles.
+- `Assets/Scenes/CenaJogo.unity`: cena da partida usada na build, com hordas, encontros do Necromante e transição Cidade → Floresta. Os prefabs compartilhados já contêm os ajustes da UI e do Sombrio.
+- `Assets/Scenes/Cenas Testes/NecromanteIntegracao.unity`: teste da integração entre hordas, boss, HUD e transição. Possui `ProgressaoNecromante` e os atalhos de fase 3, fuga e morte.
+- `Assets/Scenes/Cenas Testes/Necromante.unity`: teste do boss isolado, com hordas convencionais suspensas e atalhos de ataques/Sombrio. Para testar os dois encontros e a troca de cenário, use `NecromanteIntegracao`.
+
+As cenas de teste são versionadas para compartilhar o trabalho, mas não entram na lista de cenas da build final. Para conferir a partida completa, inicie pelo MenuPrincipal. Faça as alterações comuns nos prefabs para atualizar também a CenaJogo, evitando deixá-las somente como overrides de uma cena de teste.
+
 ## Painel de controles
 
 Edite `Assets/Prefabs/UI/PainelControles.prefab`. Ele é compartilhado pelo menu e pelo pause: altere o prefab para atualizar ambos.

@@ -236,8 +236,12 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7747549092625879713, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
+      propertyPath: _trocarCenarioPorHorda
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7747549092625879713, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
       propertyPath: _suspenderHordasParaTeste
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7747549092625879713, guid: 51db5e9236d182a4189b7931cfa750c7, type: 3}
       propertyPath: tagsPorHorda.Array.data[2].tagsPermitidas.Array.size
@@ -357,8 +361,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f69e7e63e231e9840ae1059d7a8c4eec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1001 &305894504
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -578,11 +582,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7bdf2af9ddfe64342b07036ff0c106b9, type: 3}
---- !u!1 &468953172 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4571045553712541340, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
-  m_PrefabInstance: {fileID: 998861243}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -620,8 +619,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_RenderShadows: 1
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
@@ -720,11 +719,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &579985900 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2043534133966052689, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
-  m_PrefabInstance: {fileID: 998861243}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -752,8 +746,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_ComponentVersion: 2
   m_LightType: 4
   m_BlendStyleIndex: 0
@@ -809,11 +803,97 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &714830197 stripped
+--- !u!1 &903340000
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 2184583083458364571, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 903340001}
+  - component: {fileID: 903340002}
+  m_Layer: 0
+  m_Name: ProgressaoNecromante
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &903340001
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 903340000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &903340002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 903340000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4126e7e2c4bd4f18a161f93e3b82c0f6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::ProgressaoNecromante
+  _hordas: {fileID: 148052389}
+  _transicao: {fileID: 903340004}
+  _encontro: {fileID: 903340005}
+  _vidaJogador: {fileID: 903340006}
+  _hordaPrimeiroEncontro: 10
+  _hordaEncontroFinal: 20
+  _dificuldadeEncontroFinal: 1.15
+  _pontosFuga: 5000
+  _pontosDerrotaDefinitiva: 10000
+  _duracaoFadeHud: 0.3
+  _duracaoTeleporteEntrada: 2.4
+  _duracaoFadeHudBoss: 0.6
+  _ativarCheats: 1
+  _estado: 0
+--- !u!114 &903340004 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 910090001, guid: 8984bd0ebdc39be4fad08e9c00409014, type: 3}
   m_PrefabInstance: {fileID: 998861243}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b70fd92c74a4f2b9c0b4cc6ef9527b8, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::ControladorTransicaoCenario
+--- !u!114 &903340005 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 910060002, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
+  m_PrefabInstance: {fileID: 3947569911633387282}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e35b91d7426c4a08bf130e7592ad684c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::ControladorEncontroNecromante
+--- !u!114 &903340006 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1868196326477802708, guid: 7fa789bc2da6d8d4081bb08d66a6541b, type: 3}
+  m_PrefabInstance: {fileID: 1406261006}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e904d6c9f2344454b81603e7cab16bd5, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1 &920010000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1160,8 +1240,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_SendPointerHoverToParent: 1
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
@@ -1191,8 +1271,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
@@ -1221,7 +1301,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8165839924850405349, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: hudCanvas
-      value: 
+      value:
       objectReference: {fileID: 2034614656}
     - target: {fileID: 67581314495777473, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_text
@@ -1478,37 +1558,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 910010001, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
+      propertyPath: _iniciarAutomaticamente
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 910010003, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
       propertyPath: _centroSuperior
-      value: 
+      value:
       objectReference: {fileID: 920010007}
-    - target: {fileID: 910060001, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
-      propertyPath: _configuracoes.Array.data[0]._garantirZumbiSombrio
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 910060001, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
-      propertyPath: _configuracoes.Array.data[0]._chanceZumbiSombrio
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 910040005, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
-      propertyPath: _ocultarProgressoEntregasNoTeste
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 910040005, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
-      propertyPath: _ocultarTextoVidaNoTeste
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 910010003, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
       propertyPath: _direitaInferior
-      value: 
+      value:
       objectReference: {fileID: 920010005}
     - target: {fileID: 910010003, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
       propertyPath: _direitaSuperior
-      value: 
+      value:
       objectReference: {fileID: 920010003}
     - target: {fileID: 2649569884267953559, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
       propertyPath: m_Name
       value: Necromante
+      objectReference: {fileID: 0}
+    - target: {fileID: 2649569884267953559, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9063641973165233150, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1553,10 +1625,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7639990545559668407, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 321c010a42a31ed40a1a7aca736aacb0, type: 3}
 --- !u!1001 &4477705859423657822
 PrefabInstance:
@@ -1665,7 +1734,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6151760308479534720, guid: cf593ae064a367d43915846c1c9292cb, type: 3}
       propertyPath: hudCanvas
-      value: 
+      value:
       objectReference: {fileID: 2034614656}
     - target: {fileID: 6489033873625866491, guid: cf593ae064a367d43915846c1c9292cb, type: 3}
       propertyPath: m_Name
@@ -1673,7 +1742,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8480937009356227024, guid: cf593ae064a367d43915846c1c9292cb, type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
+      value:
       objectReference: {fileID: 148052389}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1699,3 +1768,4 @@ SceneRoots:
   - {fileID: 309441166}
   - {fileID: 3947569911633387282}
   - {fileID: 920010001}
+  - {fileID: 903340001}
