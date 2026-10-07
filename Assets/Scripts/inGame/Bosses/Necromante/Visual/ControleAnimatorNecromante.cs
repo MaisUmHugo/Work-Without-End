@@ -43,12 +43,13 @@ public class ControleAnimatorNecromante : MonoBehaviour
     [SerializeField] private ControladorEncontroNecromante _encontro;
     [SerializeField] private AtaqueInvocacaoNecromante _ataqueInvocacao;
     [SerializeField, Min(0.01f)] private float _velocidadeAnimacaoAbaixarCajado = 0.8f;
+    [SerializeField, Range(0.1f, 1f)] private float _velocidadeAnimacaoMorte = 0.5f;
 
     private EstadoVisual _estadoAtual;
     private bool _apresentandoEntrada;
 
     public TipoAtaqueNecromante TipoAtaqueAtual { get; private set; }
-    public float DuracaoAnimacaoMorte => ObterDuracaoClip("Placeholder_Morte");
+    public float DuracaoAnimacaoMorte => ObterDuracaoClip("Placeholder_Morte") / Mathf.Max(0.1f, _velocidadeAnimacaoMorte);
 
     private void Awake()
     {
@@ -90,7 +91,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
 
         if (_vida.Esgotada)
         {
-            Tocar(EstadoVisual.Morte);
+            Tocar(EstadoVisual.Morte, _velocidadeAnimacaoMorte);
             return;
         }
 

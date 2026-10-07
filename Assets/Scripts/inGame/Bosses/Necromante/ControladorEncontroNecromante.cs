@@ -42,6 +42,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
     private bool _encontroConcluido;
     private FaseBoss _faseInicialEncontroFinal = FaseBoss.Fase1;
     private ControleAnimatorNecromante _controleVisual;
+    private EfeitoMorteNecromante _efeitoMorte;
 
     public TipoEncontroNecromante TipoEncontro => _tipoEncontro;
     public ResultadoEncontroBoss ResultadoAtual => _resultadoAtual;
@@ -49,7 +50,8 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
     public bool Concluido => _encontroConcluido;
     public float DuracaoFuga => _duracaoFuga;
     public float DuracaoDerrota => Mathf.Max(_duracaoDerrota,
-        _controleVisual != null ? _controleVisual.DuracaoAnimacaoMorte + 0.1f : 0f);
+        _controleVisual != null ? _controleVisual.DuracaoAnimacaoMorte + 0.1f : 0f)
+        + (_efeitoMorte != null ? _efeitoMorte.DuracaoDesaparecimento : 0f);
 
     public event Action<ResultadoEncontroBoss> EncerramentoIniciado;
     public event Action<ResultadoEncontroBoss> EncontroEncerrado;
@@ -58,6 +60,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
     {
         _posicaoInicial = transform.position;
         _controleVisual = GetComponent<ControleAnimatorNecromante>();
+        _efeitoMorte = GetComponent<EfeitoMorteNecromante>();
 
         if (!ReferenciasValidas())
         {
