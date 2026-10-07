@@ -34,6 +34,30 @@ Edite `Assets/Prefabs/UI/HUDBoss.prefab`. O layout anterior foi restaurado, com 
 
 Preserve as referências de `HUDBoss` a nome, fase e preenchimento, mesmo com os textos ocultos. Os fades do encontro usam o grupo `PainelBoss`: mantenha os elementos do HUD dentro dele.
 
+Durante a luta, a HUD comum mantém vidas, pontuação e combo. Apenas a barra de entregas e os textos da horda ficam ocultos. Na fuga e na morte, toda a HUD desaparece; ela retorna com fade somente depois da animação, do desaparecimento do boss e da troca de cenário.
+
+## Corações da vida
+
+Edite `Assets/Prefabs/GameObjects/CanvasHUD.prefab`, em `VidasCoracoes`. Há três imagens iniciais (`Coracao1`, `Coracao2`, `Coracao3`), com layout horizontal e tamanho definido no LayoutElement de cada uma.
+
+- Troque o Sprite de `Coracao1` pela arte final; `HUDManager` usa essa imagem como modelo e aplica o sprite aos demais ícones ao iniciar e ao atualizar as vidas.
+- Se a arte já estiver colorida, deixe a cor das imagens branca para respeitar a cor original. O placeholder branco recebe um tint vermelho.
+- Preserve o nome `VidasCoracoes` e mantenha o grupo ao lado de `VidasText`, no mesmo Canvas. O controlador existente fica no `GeralManagement`, com referências atribuídas pela cena.
+- `VidasText` fica desativado no prefab. Ele permanece como referência para cenas antigas e não precisa ser apagado.
+- Com três vidas aparecem três corações; ao perder uma, o último some e ficam dois. A cura devolve o ícone. Vidas extras de cheats também geram ícones, sem alterar a vida real para caber na HUD.
+
+`HUDManager` também aceita referências explícitas para Grupo Coracoes e Sprite Coracao no Inspector, caso a organização da cena precise mudar. Os corações continuam dentro do grupo de fade da HUD comum.
+
+## Morte, almas e progressão após o boss
+
+No prefab `Necromante`, `ControleAnimatorNecromante` tem **Velocidade Animacao Morte = 0.5**. A duração do encontro respeita o clipe nessa velocidade e adiciona o desaparecimento gradual, evitando cortar a animação.
+
+`EfeitoMorteNecromante` controla o material de brilho, o prefab de almas, a intensidade HDR, a escala das partículas e **Duracao Desaparecimento = 3 segundos**. O efeito usa a adaptação de **CFXR2 Souls Escape** do Cartoon FX Remaster Free. `AlmasNecromante.prefab` e seus recursos estão no projeto sem depender da demonstração ou do importador customizado do pacote; os shaders foram exportados como shaders Unity comuns. O efeito é pausado junto com o jogo e removido ao finalizar/cancelar o encontro.
+
+Após a fuga, ocorre Cidade → Floresta antes do retorno da HUD. Após a morte definitiva, ocorre Floresta → Cidade antes do retorno da HUD. A partir daí o boss não reaparece: os cenários alternam a cada dez hordas concluídas (30, 40, 50...), até o game over.
+
+Em `ProgressaoNecromante`, **Respiro Apos Derrota Definitiva = 8 segundos** segura novos spawns antes da próxima horda. Em `HordaManager`, os valores iniciais são **Multiplicador Pos Necromante = 1.6**, **Intervalo Pos Necromante = 0.6** e **Aumento Por Horda Pos Necromante = 0.05**. Isso aumenta a velocidade, reduz o intervalo de spawn e faz a dificuldade continuar crescendo. O intervalo mínimo seguro do SpawnerManager continua sendo respeitado. Ajuste esses valores pelo Inspector após testar o balanceamento.
+
 ## Atalhos para conferir a UI durante a partida
 
 No componente `ProgressaoNecromante`, marque `Ativar Cheats`. Os atalhos funcionam no Editor e em Development Build, respeitando pause e game over.
