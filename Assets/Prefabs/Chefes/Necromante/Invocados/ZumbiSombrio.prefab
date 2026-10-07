@@ -135,7 +135,7 @@ MonoBehaviour:
   _velocidadeCorrida: 14
   _velocidadeTrocaLane: 18
   _distanciaInicioPerseguicao: 35
-  _alcanceTrocaLane: 2
+  _alcanceTrocaLane: 1
   _tempoAvisoTrocaLane: 0.3
   _corAvisoTrocaLane: {r: 0.95, g: 0.25, b: 1, a: 1}
   _danoAoJogador: 1
@@ -146,7 +146,7 @@ MonoBehaviour:
   _escalaPorEntrega: 1.1
   _distanciaEmpurraoEntrega: 0.8
   _duracaoEmpurraoEntrega: 0.12
-  _corSombria: {r: 0.22, g: 0.08, b: 0.3, a: 1}
+  _corSombria: {r: 1, g: 1, b: 1, a: 1}
   _margemSaidaCamera: 0.15
   _distanciaMaximaAtrasJogador: 30
 --- !u!114 &610000006
@@ -275,7 +275,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7315621635809618283, guid: 8a2b184bc4f569442bb3c6115a9ee4c4, type: 3}
+  m_Sprite: {fileID: -3003750976998991966, guid: 0cd48cc3b67acf841bfadbe472ed49d7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0

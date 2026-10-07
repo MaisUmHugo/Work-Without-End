@@ -51,7 +51,7 @@ public class ZumbiSombrio : Entregavel
     [SerializeField, Min(1f)] private float _escalaPorEntrega = 1.1f;
     [SerializeField, Min(0f)] private float _distanciaEmpurraoEntrega = 0.8f;
     [SerializeField, Min(0f)] private float _duracaoEmpurraoEntrega = 0.12f;
-    [SerializeField] private Color _corSombria = new Color(0.22f, 0.08f, 0.3f, 1f);
+    [SerializeField] private Color _corSombria = Color.white;
 
     [Header("Limpeza")]
     [SerializeField, Min(0f)] private float _margemSaidaCamera = 0.15f;

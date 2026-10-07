@@ -7,7 +7,7 @@ AnimatorOverrideController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ZumbiSombrio_Arte
-  m_Controller: {fileID: 9100000, guid: 0a040476ae093f74db58e951a223d7fa, type: 2}
+  m_Controller: {fileID: 9100000, guid: 68116a89110ade34ea36baa0235bf86e, type: 2}
   m_Clips:
   - m_OriginalClip: {fileID: 7400000, guid: 9004558a96f78574cbe37fc98d037309, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: 9325368a6d9ced64c8d7fa0ebec5982e, type: 2}
