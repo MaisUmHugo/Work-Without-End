@@ -6,6 +6,7 @@ public class ReceptorEntregaBoss : MonoBehaviour
 {
     [SerializeField] private VidaBoss _vida;
     [SerializeField, Min(1)] private int _danoPorEntrega = 1;
+    public bool PodeReceberEntrega => isActiveAndEnabled && _vida != null && _vida.Vulneravel && !_vida.Esgotada;
 
     private void Awake()
     {

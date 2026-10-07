@@ -33,6 +33,7 @@ public abstract class Entregavel : MonoBehaviour
 
     protected bool EntregaPendente => estadoEntrega == EstadoEntrega.Pendente;
     public bool Resolvido => estadoEntrega != EstadoEntrega.Pendente;
+    public virtual bool PodeReceberEntrega => isActiveAndEnabled && ativoParaEntrega && EntregaPendente;
 
     public event Action<Entregavel> EntregaResolvida;
 

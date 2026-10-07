@@ -23,6 +23,7 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
     private bool emFluxoDeSaida = false;
     private Mov jogador;
     private bool recebeu, podereceber;
+    public override bool PodeReceberEntrega => base.PodeReceberEntrega && podereceber;
     private bool jaCausouDano;
     private float xAnterior;
     private bool _laneInicialDefinida;

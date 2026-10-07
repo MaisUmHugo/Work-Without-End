@@ -207,6 +207,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33146bc89cfaa1b4796164fdabdfad90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _origemLancamento: {fileID: 0}
+  _distanciaMiraControle: 12
+  _zonaMortaControle: 0.3
+  _sensibilidadeControle: 5
+  _limiarMudancaDirecao: 3
+  _velocidadeRotacaoControle: 720
+  _ativarAssistencia: 1
+  _intensidadeAssistencia: 0.35
+  _anguloAssistencia: 8
+  _correcaoMaximaAssistencia: 2
+  _alcanceAssistencia: 55
   cooldownUI: {fileID: 2053121548289843061}
   cooldownProgresso: 0
   emCooldown: 0

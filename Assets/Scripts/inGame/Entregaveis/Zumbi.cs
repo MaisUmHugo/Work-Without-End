@@ -26,6 +26,7 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
     private float velocidadeTrocaLaneBase;
 
     private bool correndo = false;
+    public override bool PodeReceberEntrega => base.PodeReceberEntrega && correndo;
     private bool caiu = false;
     private bool recebeuEntrega = false;
     private float yTravado;

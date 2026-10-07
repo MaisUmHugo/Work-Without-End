@@ -33,6 +33,7 @@ public class Bebado : Entregavel, IAjustavelDificuldade
     private SpriteRenderer sr;
 
     private bool podeReceber = false;       // agora é permanente
+    public override bool PodeReceberEntrega => base.PodeReceberEntrega && podeReceber;
     private bool avisoExecutado = false;    // controla o piscar único
 
     private float yTravado;
