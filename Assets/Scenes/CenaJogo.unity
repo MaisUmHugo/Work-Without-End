@@ -1095,7 +1095,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 336052961100785557, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_LocalScale.x
-      value: -0.8
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 442019511845637507, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_IsActive
@@ -1191,23 +1191,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7243375661701462403, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_fontColor.b
-      value: 0.10475259
+      value: 0.07075471
       objectReference: {fileID: 0}
     - target: {fileID: 7243375661701462403, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_fontColor.g
-      value: 0.12652086
+      value: 0.07075471
       objectReference: {fileID: 0}
     - target: {fileID: 7243375661701462403, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_fontColor.r
-      value: 0.20754719
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7243375661701462403, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_fontColor32.rgba
-      value: 4279967797
+      value: 4279374591
       objectReference: {fileID: 0}
     - target: {fileID: 7423071135305377137, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_text
-      value: "AT\xC9 3 CARACTERES..."
+      value: ESCREVA SUAS INICIAIS
       objectReference: {fileID: 0}
     - target: {fileID: 7423071135305377137, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_Enabled
@@ -1231,19 +1231,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8674418612196022429, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_fontColor.b
-      value: 0
+      value: 0.11372549
       objectReference: {fileID: 0}
     - target: {fileID: 8674418612196022429, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_fontColor.g
-      value: 0
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 8674418612196022429, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_fontColor.r
-      value: 0
+      value: 0.9843137
       objectReference: {fileID: 0}
     - target: {fileID: 8674418612196022429, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_fontColor32.rgba
-      value: 4278190080
+      value: 4280143099
       objectReference: {fileID: 0}
     - target: {fileID: 8674418612196022429, guid: f37544219bba8af4cbd9459dba4b1897, type: 3}
       propertyPath: m_HorizontalAlignment

@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -28,6 +29,54 @@ public class GameOverController : MonoBehaviour
 
     private System.Action acaoConfirmada;
     private GameObject painelQueChamouConfirmacao;
+    private Coroutine _balancoIniciais;
+    private Vector2 _posicaoInputAntesBalanco;
+
+    private void Awake()
+    {
+        if (inputNome == null) return;
+        inputNome.characterLimit = 3;
+        inputNome.onValidateInput = ValidarIniciais;
+    }
+
+    private char ValidarIniciais(string texto, int indice, char caractere)
+    {
+        // O TMP ja desconta o trecho selecionado antes de chamar esta validacao.
+        if (texto.Length < 3) return caractere;
+        if (_balancoIniciais != null)
+        {
+            StopCoroutine(_balancoIniciais);
+            ((RectTransform)inputNome.transform).anchoredPosition = _posicaoInputAntesBalanco;
+        }
+        _balancoIniciais = StartCoroutine(BalancarIniciais());
+        return '\0';
+    }
+
+    private IEnumerator BalancarIniciais()
+    {
+        RectTransform retangulo = (RectTransform)inputNome.transform;
+        _posicaoInputAntesBalanco = retangulo.anchoredPosition;
+        const float duracao = 0.28f;
+        float tempo = 0f;
+        while (tempo < duracao && inputNome.gameObject.activeInHierarchy)
+        {
+            float deslocamento = Mathf.Sin(tempo * 70f) * 5f * (1f - tempo / duracao);
+            retangulo.anchoredPosition = _posicaoInputAntesBalanco + Vector2.right * deslocamento;
+            tempo += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        retangulo.anchoredPosition = _posicaoInputAntesBalanco;
+        _balancoIniciais = null;
+    }
+
+    private void OnDisable()
+    {
+        if (_balancoIniciais == null) return;
+        StopCoroutine(_balancoIniciais);
+        if (inputNome != null)
+            ((RectTransform)inputNome.transform).anchoredPosition = _posicaoInputAntesBalanco;
+        _balancoIniciais = null;
+    }
 
     private void Start()
     {
