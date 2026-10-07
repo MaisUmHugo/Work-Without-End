@@ -37,7 +37,7 @@ public class ProgressaoNecromante : MonoBehaviour
     [SerializeField, Min(0f)] private float _duracaoFadeHudBoss = 0.6f;
 
     [Header("Atalhos de teste")]
-    [SerializeField, Tooltip("Somente no Editor e Development Build. Shift+6/7: Cidade/Floresta; Shift+8/9: primeiro encontro/reencontro.")]
+    [SerializeField, Tooltip("Somente no Editor e Development Build. Shift+6/7: Cidade/Floresta; Shift+8/9: encontros; Shift+F1: fase 3; Shift+F2: fuga e transicao; Shift+F3: morte.")]
     private bool _ativarCheats = true;
 
     [SerializeField] private EstadoProgressao _estado;
@@ -55,6 +55,7 @@ public class ProgressaoNecromante : MonoBehaviour
     private IntegradorHUDBoss _integradorHud;
     private ControleAnimatorNecromante _controleVisual;
     private bool _apresentacaoEmAndamento;
+    private Coroutine _testeEncerramento;
 
     public bool ApresentandoEntrada => _apresentacaoEmAndamento;
 
@@ -131,7 +132,13 @@ public class ProgressaoNecromante : MonoBehaviour
         if (!_ativarCheats || teclado == null || BloqueioGameplay.BloqueadoSemTransicao
             || (!teclado.leftShiftKey.isPressed && !teclado.rightShiftKey.isPressed)) return;
 
-        if (teclado.digit8Key.wasPressedThisFrame)
+        if (teclado.f1Key.wasPressedThisFrame)
+            SolicitarTesteFase3();
+        else if (teclado.f2Key.wasPressedThisFrame)
+            SolicitarTesteFuga();
+        else if (teclado.f3Key.wasPressedThisFrame)
+            SolicitarTesteMorte();
+        else if (teclado.digit8Key.wasPressedThisFrame)
             SolicitarEncontroTeste(TipoEncontroNecromante.PrimeiroEncontro);
         else if (teclado.digit9Key.wasPressedThisFrame)
             SolicitarEncontroTeste(TipoEncontroNecromante.EncontroFinal);
@@ -148,6 +155,7 @@ public class ProgressaoNecromante : MonoBehaviour
         if (!_preparado || !_ativarCheats || _estado == EstadoProgressao.GameOver
             || _vidaJogador.vidasAtuais <= 0 || BloqueioGameplay.BloqueadoSemTransicao) return false;
 
+        CancelarTesteEncerramento();
         CancelarApresentacaoEntrada();
         CancelarApresentacaoSaida();
         _hordas.DefinirSuspensoPorBoss(true, false);
@@ -163,6 +171,58 @@ public class ProgressaoNecromante : MonoBehaviour
 #else
         return false;
 #endif
+    }
+
+    public bool SolicitarTesteFase3() => SolicitarTesteEncerramento(TipoEncontroNecromante.EncontroFinal, false);
+
+    public bool SolicitarTesteFuga() => SolicitarTesteEncerramento(TipoEncontroNecromante.PrimeiroEncontro, true);
+
+    public bool SolicitarTesteMorte() => SolicitarTesteEncerramento(TipoEncontroNecromante.EncontroFinal, true);
+
+    private bool SolicitarTesteEncerramento(TipoEncontroNecromante tipo, bool concluirEncontro)
+    {
+        if (!SolicitarEncontroTeste(tipo)) return false;
+        _testeEncerramento = StartCoroutine(TestarEncerramento(concluirEncontro));
+        return true;
+    }
+
+    private IEnumerator TestarEncerramento(bool concluirEncontro)
+    {
+        // Aguarda a entrada real: o ControladorBoss inicializa a vida no FixedUpdate.
+        while (_encontroTestePendente || _apresentacaoEmAndamento || !_boss.PodeAtualizar)
+            yield return null;
+
+        VidaBoss vida = _boss.GetComponent<VidaBoss>();
+        ControladorFasesNecromante fases = _boss.GetComponent<ControladorFasesNecromante>();
+        if (vida == null || fases == null)
+        {
+            Debug.LogWarning("[CHEAT] O encontro precisa de vida e fases configuradas.", this);
+            _testeEncerramento = null;
+            yield break;
+        }
+
+        // Usa o mesmo dano e os mesmos eventos da partida para preservar HUD, animacoes e pontuacao.
+        vida.DefinirVulneravel(true);
+        vida.TentarReceberDano(vida.VidaAtual);
+
+        if (concluirEncontro && _encontro.TipoEncontro == TipoEncontroNecromante.EncontroFinal)
+        {
+            // A fase 3 recupera uma barra propria e reinicia o controlador antes da morte.
+            yield return new WaitForFixedUpdate();
+            while (!_boss.PodeAtualizar) yield return null;
+            if (fases.FaseAtual == FaseBoss.Fase3)
+            {
+                vida.DefinirVulneravel(true);
+                vida.TentarReceberDano(vida.VidaAtual);
+            }
+        }
+        _testeEncerramento = null;
+    }
+
+    private void CancelarTesteEncerramento()
+    {
+        if (_testeEncerramento != null) StopCoroutine(_testeEncerramento);
+        _testeEncerramento = null;
     }
 
     private void AoConcluirHorda(int numeroHorda)
@@ -380,6 +440,7 @@ public class ProgressaoNecromante : MonoBehaviour
         if (_estado == EstadoProgressao.GameOver) return;
         _estado = EstadoProgressao.GameOver;
         _encontroTestePendente = false;
+        CancelarTesteEncerramento();
         CancelarApresentacaoEntrada();
         CancelarApresentacaoSaida();
         _hordas.DefinirSuspensoPorBoss(true);
@@ -390,6 +451,7 @@ public class ProgressaoNecromante : MonoBehaviour
 
     private void OnDisable()
     {
+        CancelarTesteEncerramento();
         CancelarApresentacaoEntrada();
         CancelarApresentacaoSaida();
         if (!_preparado) return;
@@ -418,6 +480,24 @@ public class ProgressaoNecromante : MonoBehaviour
     private void TestarEncontroFinal()
     {
         if (Application.isPlaying) SolicitarEncontroTeste(TipoEncontroNecromante.EncontroFinal);
+    }
+
+    [ContextMenu("Teste/Iniciar fase 3 (Play)")]
+    private void TestarFase3()
+    {
+        if (Application.isPlaying) SolicitarTesteFase3();
+    }
+
+    [ContextMenu("Teste/Fuga e transicao para floresta (Play)")]
+    private void TestarFuga()
+    {
+        if (Application.isPlaying) SolicitarTesteFuga();
+    }
+
+    [ContextMenu("Teste/Morte definitiva (Play)")]
+    private void TestarMorte()
+    {
+        if (Application.isPlaying) SolicitarTesteMorte();
     }
 
     private void OnValidate()

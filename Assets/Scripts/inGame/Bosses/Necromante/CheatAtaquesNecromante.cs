@@ -19,6 +19,9 @@ public class CheatAtaquesNecromante : MonoBehaviour
     [SerializeField] private Key _teclaSombrioIsolado = Key.Digit5;
     [SerializeField] private Key _teclaCidade = Key.Digit6;
     [SerializeField] private Key _teclaFloresta = Key.Digit7;
+    [Header("HUD da cena de teste")]
+    [SerializeField] private bool _ocultarProgressoEntregasNoTeste;
+    [SerializeField] private bool _ocultarTextoVidaNoTeste;
     [Header("Referencias")]
     [SerializeField] private ComportamentoBossNecromante _comportamento;
     [SerializeField] private AtaqueProjetilNecromante _ataqueProjetil;
@@ -33,6 +36,7 @@ public class CheatAtaquesNecromante : MonoBehaviour
     private SpawnerManager _spawnerTeste;
     private bool _testeSombrioIsolado;
     private bool _pressaoEstavaAtiva;
+    private bool _hudTesteConfigurada;
     private ControladorTransicaoCenario _transicaoCenario;
 
     private void Awake()
@@ -90,6 +94,34 @@ public class CheatAtaquesNecromante : MonoBehaviour
             return;
         }
         _transicaoCenario.SolicitarCenario(indice);
+    }
+
+    private void LateUpdate()
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        if (_hudTesteConfigurada || (!_ocultarProgressoEntregasNoTeste && !_ocultarTextoVidaNoTeste))
+            return;
+
+        HordaManager horda = HordaManager.instance;
+        IntegradorHUDBoss integrador = GetComponent<IntegradorHUDBoss>();
+        if ((_ocultarProgressoEntregasNoTeste && horda == null)
+            || (_ocultarTextoVidaNoTeste && (integrador == null || integrador.HudAtual == null)))
+            return;
+
+        if (_ocultarProgressoEntregasNoTeste)
+        {
+            if (horda.barraProgresso != null)
+                horda.barraProgresso.gameObject.SetActive(false);
+            if (horda.TextoEntrega != null)
+                horda.TextoEntrega.gameObject.SetActive(false);
+            if (horda.TextoHorda != null)
+                horda.TextoHorda.gameObject.SetActive(false);
+        }
+
+        if (_ocultarTextoVidaNoTeste)
+            integrador.HudAtual.DefinirTextoVidaVisivel(false);
+        _hudTesteConfigurada = true;
+#endif
     }
 
     [ContextMenu("Teste/Invocar somente Zumbi Sombrio (Play)")]
