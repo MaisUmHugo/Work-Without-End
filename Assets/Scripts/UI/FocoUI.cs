@@ -107,6 +107,52 @@ public static class FocoUI
             }
             elemento.navigation = navegacao;
         }
+
+        ConfigurarNavegacaoRolagem(painel, elementos);
+    }
+
+    private static void ConfigurarNavegacaoRolagem(GameObject painel, Selectable[] elementos)
+    {
+        foreach (ScrollRect rolagem in painel.GetComponentsInChildren<ScrollRect>())
+        {
+            if (!rolagem.vertical || rolagem.content == null) continue;
+
+            List<Selectable> itens = new List<Selectable>();
+            List<Selectable> rodape = new List<Selectable>();
+            foreach (Selectable elemento in elementos)
+            {
+                if (!SelecaoValida(elemento)) continue;
+                if (elemento.transform.IsChildOf(rolagem.content)) itens.Add(elemento);
+                else if (elemento.transform.IsChildOf(rolagem.transform)) rodape.Add(elemento);
+            }
+            if (itens.Count == 0) continue;
+
+            // A ordem usa o Content, sem depender da posicao atual da rolagem.
+            itens.Sort((a, b) => CentroNoPainel(b, rolagem.content).y.CompareTo(CentroNoPainel(a, rolagem.content).y));
+            rodape.Sort((a, b) => CentroNoPainel(a, rolagem.transform).x.CompareTo(CentroNoPainel(b, rolagem.transform).x));
+            for (int i = 0; i < itens.Count; i++)
+            {
+                Navigation navegacao = itens[i].navigation;
+                navegacao.selectOnUp = i > 0 ? itens[i - 1] : null;
+                navegacao.selectOnDown = i + 1 < itens.Count ? itens[i + 1] : rodape.Count > 0 ? rodape[0] : null;
+                itens[i].navigation = navegacao;
+            }
+            for (int i = 0; i < rodape.Count; i++)
+            {
+                Navigation navegacao = rodape[i].navigation;
+                navegacao.selectOnUp = itens[itens.Count - 1];
+                navegacao.selectOnDown = null;
+                navegacao.selectOnLeft = i > 0 ? rodape[i - 1] : null;
+                navegacao.selectOnRight = i + 1 < rodape.Count ? rodape[i + 1] : null;
+                rodape[i].navigation = navegacao;
+            }
+        }
+    }
+
+    private static Vector2 CentroNoPainel(Selectable elemento, Transform painel)
+    {
+        RectTransform retangulo = (RectTransform)elemento.transform;
+        return painel.InverseTransformPoint(retangulo.TransformPoint(retangulo.rect.center));
     }
 
     private static Selectable EncontrarVizinho(Selectable origem, Selectable[] elementos, Vector2 direcao, Transform painel)

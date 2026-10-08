@@ -63,7 +63,9 @@ public class FeedbackSelecaoUI : MonoBehaviour, ISelectHandler, IDeselectHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        SelecionarComMouse();
+        // A rolagem pode colocar um botao sob o cursor parado.
+        if (eventData.delta.sqrMagnitude > 0.01f)
+            SelecionarComMouse();
     }
 
     public void OnPointerMove(PointerEventData eventData)

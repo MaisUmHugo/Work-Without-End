@@ -11,6 +11,19 @@ Os controles são apenas uma tela de consulta por enquanto. Não há botões par
 
 As cenas de teste são versionadas para compartilhar o trabalho, mas não entram na lista de cenas da build final. Para conferir a partida completa, inicie pelo MenuPrincipal. Faça as alterações comuns nos prefabs para atualizar também a CenaJogo, evitando deixá-las somente como overrides de uma cena de teste.
 
+## Painel de opções compartilhado
+
+Edite `Assets/Prefabs/UI/PainelOpcoes.prefab`. O menu e o pause usam instâncias desse mesmo prefab, com o fundo novo `Pause.png` e as medidas do painel preparado pelo Filipe.
+
+- `Fundo`: arte e dimensões do painel.
+- `PauseScroll View/Viewport/Content`: volumes, sensibilidade, parallax e botão Controles. Os itens mantêm o intervalo de 128 unidades entre centros; a área de rolagem permite alcançar todos.
+- `BotaoControles`: 220 × 120 unidades, com imagem proporcional e texto ajustado à área interna.
+- `PauseScroll View/Botao_Voltar`: centralizado no menu. No pause, retorno e saída formam um par centralizado, nas posições horizontais −100 e 100. O botão de sair fica apenas na instância do `PauseController`.
+
+As conexões com `MenuController` e `PauseController` ficam nos respectivos prefabs pais. Preserve os componentes Button, Slider, Toggle e FeedbackSelecaoUI ao alterar a arte. Não é preciso executar um setup para usar o painel nas cenas existentes.
+
+`FocoUI` mantém a ordem vertical dos itens independentemente da rolagem. Depois de Controles, descer seleciona Voltar; subir retorna a Controles. No rodapé do pause, esquerda/direita alternam entre Voltar e Sair. Um cursor parado não troca a seleção quando os itens rolam sob ele; mover o mouse continua selecionando normalmente.
+
 ## Painel de controles
 
 Edite `Assets/Prefabs/UI/PainelControles.prefab`. Ele é compartilhado pelo menu e pelo pause: altere o prefab para atualizar ambos.
@@ -26,7 +39,7 @@ Os botões Controles e Voltar usam o mesmo fundo amarelo dos botões do menu (`I
 
 O acesso fica em **Opções → Controles** e **Pause → Controles**. `MenuController` e `PauseController` possuem a referência `_painelControles`; os eventos de abrir/voltar já estão conectados em cada prefab. Preserve essas referências e os eventos ao trocar a arte.
 
-As linhas de volume e sensibilidade conservam 128 unidades entre os centros; a opção de parallax, o botão Controles e os botões finais seguem o mesmo intervalo. Os sliders continuam com 480 × 96 unidades. Amplie apenas a altura do Content se adicionar opções.
+As linhas de volume e sensibilidade conservam 128 unidades entre os centros; a opção de parallax e o botão Controles seguem o mesmo intervalo. Os sliders continuam com 480 × 96 unidades. Os botões de retorno e saída ficam no rodapé, fora da área rolável, nas medidas do painel do Filipe. Amplie apenas a altura do Content se adicionar opções.
 
 ## HUD do boss
 
