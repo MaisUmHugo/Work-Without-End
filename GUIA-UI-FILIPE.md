@@ -17,15 +17,16 @@ Edite `Assets/Prefabs/UI/PainelOpcoes.prefab`. O menu e o pause usam instâncias
 
 - `Fundo`: arte e dimensões do painel.
 - `PauseScroll View/Viewport/Content`: volumes, sensibilidade, parallax e botão Controles. Os itens mantêm o intervalo de 128 unidades entre centros; a área de rolagem permite alcançar todos.
-- `BotaoControles`: 220 × 120 unidades, com imagem proporcional e texto ajustado à área interna.
-- `MiraOitoDirecoesToggle`: ativa por padrão a mira em oito direções no controle. Desmarcar restaura a mira livre anterior, com sensibilidade e assistência. A preferência vale no menu e no pause e é salva entre partidas. O tooltip explica a opção ao passar o mouse ou selecionar pelo controle.
+- `BotaoControles`: 270 × 96 unidades, com a arte `ControlesButton.png` preparada pelo Filipe. O texto separado fica oculto porque a imagem já contém a legenda.
+- `ModoMiraControle`: esquerda/direita no controle ou clique nas metades do seletor alternam entre Direções Fixas, Livre e Cursor. Direções Fixas mantém as direções anteriores e acrescenta diagonais de 15° e 30° à frente. Livre orienta a mira pela direção do analógico direito; Cursor move a mira pela tela como um mouse. A descrição fica logo abaixo do seletor, com um tooltip próximo. O mouse continua com mira livre em todos os modos.
+- `AssistenciaMiraToggle`: permite ligar ou desligar a assistência nos modos Livre e Cursor. Ela aproxima a direção da entrega de um alvo válido, com correção limitada; não dispara automaticamente nem modifica as direções fixas. As opções são salvas e compartilhadas entre menu, pause e partidas. Intensidade, ângulo de busca e limite de correção ficam no componente `Mira` de `Assets/Prefabs/CanvasMira.prefab`.
 - `PauseScroll View/Botao_Voltar`: usa `BackButton.png`, com seta e palavra Voltar na própria arte, em 200 × 80 unidades. Fica centralizado nas opções do menu. No pause, retorno e saída formam um conjunto centralizado, nas posições horizontais −60 e 120, com espaço entre eles. O botão de sair fica apenas na instância do `PauseController`.
 
 As conexões com `MenuController` e `PauseController` ficam nos respectivos prefabs pais. Preserve os componentes Button, Slider, Toggle e FeedbackSelecaoUI ao alterar a arte. Não é preciso executar um setup para usar o painel nas cenas existentes.
 
 `FocoUI` mantém a ordem vertical dos itens independentemente da rolagem. Depois de Controles, descer seleciona Voltar; subir retorna a Controles. No rodapé do pause, esquerda/direita alternam entre Voltar e Sair. Um cursor parado não troca a seleção quando os itens rolam sob ele; mover o mouse continua selecionando normalmente.
 
-O pause começa fechado, incluindo quando a cena é reiniciada. No menu, o controle mantém a navegação normal por seleção. No pause, o analógico direito também move o ponteiro livremente; RT/R2 clica no ponteiro e A/X confirma a seleção. O cursor do sistema fica oculto durante a partida e retorna ao abrir os painéis; a mira do jogo continua visível.
+O pause começa fechado, incluindo quando a cena é reiniciada. Abrir o pause oculta a HUD comum, a HUD do boss e a mira da partida. Fechar restaura a visibilidade anterior, inclusive o preenchimento de um fade interrompido; acessar Controles ou a confirmação de saída mantém a HUD oculta. No menu, o controle mantém a navegação normal por seleção. No pause, o analógico direito também move o ponteiro livremente; RT/R2 clica no ponteiro e A/X confirma a seleção. O cursor do sistema fica oculto durante a partida e retorna ao abrir os painéis.
 
 ## Painel de controles
 
@@ -38,7 +39,7 @@ Edite `Assets/Prefabs/UI/PainelControles.prefab`. Ele é compartilhado pelo menu
 - `Dica`: informação sobre sensibilidade.
 - `BotaoVoltar`: botão funcional com navegação e destaque da seleção.
 
-O botão Controles usa o fundo amarelo `InGame_Buttons-sheet_0`. Voltar usa a arte `BackButton.png`, proporcional e com destaque de seleção no padrão do menu. O texto separado de Voltar fica desativado porque a própria imagem já contém a legenda. Preserve o Button, o FeedbackSelecaoUI e os eventos ao trocar a imagem.
+O botão Controles usa a arte `ControlesButton.png`. Os checkboxes das opções usam `CheckBoxUI.png` e `CheckBoxCheckUI.png`. Voltar usa a arte `BackButton.png`, proporcional e com destaque de seleção no padrão do menu. O texto separado de Voltar fica desativado porque a própria imagem já contém a legenda. Preserve o Button, o FeedbackSelecaoUI e os eventos ao trocar a imagem.
 
 O acesso fica em **Opções → Controles** e **Pause → Controles**. `MenuController` e `PauseController` possuem a referência `_painelControles`; os eventos de abrir/voltar já estão conectados em cada prefab. Preserve essas referências e os eventos ao trocar a arte.
 
@@ -54,7 +55,7 @@ Durante a luta, a HUD comum mantém vidas, pontuação e aviso de entregas perdi
 
 ## Aviso de entregas perdidas e tutorial
 
-O objeto `ComboText` agora exibe `PERDAS ATE DANO: 3`, reduzindo para 2 e 1 ao deixar entregáveis passarem. O aviso muda para amarelo e vermelho. Três perdas seguidas custam uma vida e reiniciam o aviso; acertar uma entrega aceita também zera a sequência. A primeira caixa aceita pelo Sombrio e um acerto no boss vulnerável contam para esse reset. Colisões continuam causando dano diretamente. O combo continua calculando pontuação, recordes e recuperação de vida, embora seu número não apareça mais nessa área da HUD.
+O objeto `ComboText` agora exibe `ENTREGAS PERDIDAS: 0/3`, aumentando para 1/3 e 2/3 ao deixar entregáveis passarem. O aviso muda para amarelo e vermelho. Três perdas seguidas custam uma vida e reiniciam o aviso em 0/3; acertar uma entrega aceita também zera a sequência. A primeira caixa aceita pelo Sombrio e um acerto no boss vulnerável contam para esse reset. Colisões continuam causando dano diretamente. Os textos e efeitos de combo continuam funcionando, assim como pontuação, recordes e recuperação de vida, embora o número do combo não apareça mais nessa área da HUD.
 
 Edite `Assets/Prefabs/GameObjects/ComoJogarController.prefab`. O fundo é compartilhado pelos dois slides. `SlideEntrega` mantém o texto e o vídeo anteriores, com somente `BotaoProximoSlide` para avançar. `SlideEntregasPerdidas` explica a regra das três perdas e contém os botões/opções anteriores. A partida permanece suspensa até clicar em começar no segundo slide; Não Aparecer Mais continua válido para todo o tutorial.
 
