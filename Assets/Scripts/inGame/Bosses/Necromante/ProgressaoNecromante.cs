@@ -40,6 +40,15 @@ public class ProgressaoNecromante : MonoBehaviour
     [SerializeField, Min(1)] private int _hordasPorCenario = 10;
     [SerializeField, Min(0f)] private float _respiroAposDerrotaDefinitiva = 8f;
     private int _proximaHordaTrocaCenario;
+    [SerializeField, Min(1)] private int _hordasEntreReaparecimentos = 15;
+    [SerializeField, Min(0f)] private float _aumentoDificuldadeReaparecimento = 0.15f;
+    private int _proximaHordaReaparecimento;
+    private int _reaparecimentos;
+    private bool _reaparecimentoPendente;
+    private bool _encontroRecorrente;
+    private bool _cicloInfinitoIniciado;
+    public int ProximaHordaReaparecimento => _proximaHordaReaparecimento;
+    public int Reaparecimentos => _reaparecimentos;
 
     [Header("Atalhos de teste")]
     [SerializeField, Tooltip("Somente no Editor e Development Build. Shift+6/7: Cidade/Floresta; Shift+8/9: encontros; Shift+F1: fase 3; Shift+F2: fuga e transicao; Shift+F3: morte.")]
@@ -113,6 +122,12 @@ public class ProgressaoNecromante : MonoBehaviour
             return;
         }
         ProcessarCheats();
+        if (_estado == EstadoProgressao.Concluido && _reaparecimentoPendente && PodeIniciar())
+        {
+            _reaparecimentoPendente = false;
+            IniciarEncontro(TipoEncontroNecromante.EncontroFinal);
+            return;
+        }
         if (_encontroTestePendente)
         {
             int cenario = _tipoEncontroTeste == TipoEncontroNecromante.PrimeiroEncontro ? 0 : 1;
@@ -229,10 +244,19 @@ public class ProgressaoNecromante : MonoBehaviour
             TentarIniciarPrimeiroEncontro();
         else if (_estado == EstadoProgressao.HordasFloresta && numeroHorda >= _hordaEncontroFinal)
             TentarIniciarEncontroFinal();
-        else if (_estado == EstadoProgressao.Concluido && numeroHorda >= _proximaHordaTrocaCenario)
+        else if (_estado == EstadoProgressao.Concluido)
         {
-            _transicao.SolicitarCenario(1 - _transicao.CenarioSolicitado);
-            _proximaHordaTrocaCenario = numeroHorda + _hordasPorCenario;
+            if (numeroHorda >= _proximaHordaTrocaCenario)
+            {
+                _transicao.SolicitarCenario(1 - _transicao.CenarioSolicitado);
+                _proximaHordaTrocaCenario = numeroHorda + _hordasPorCenario;
+            }
+            if (numeroHorda >= _proximaHordaReaparecimento)
+            {
+                // Segura a horda concluida; se os dois ciclos coincidirem, aguarda o cenario antes da entrada.
+                _reaparecimentoPendente = true;
+                _hordas.DefinirSuspensoPorBoss(true, false);
+            }
         }
     }
 
@@ -260,6 +284,8 @@ public class ProgressaoNecromante : MonoBehaviour
 
     private void IniciarEncontro(TipoEncontroNecromante tipo)
     {
+        _encontroRecorrente = _estado == EstadoProgressao.Concluido && tipo == TipoEncontroNecromante.EncontroFinal;
+        if (_encontroRecorrente) _reaparecimentos++;
         _estado = tipo == TipoEncontroNecromante.PrimeiroEncontro
             ? EstadoProgressao.PrimeiroEncontro : EstadoProgressao.EncontroFinal;
         _hordas.DefinirSuspensoPorBoss(true, false);
@@ -287,7 +313,8 @@ public class ProgressaoNecromante : MonoBehaviour
             _encontro.gameObject.SetActive(true);
             // Cancela o inicio automatico do prefab antes de apresentar a chegada.
             _encontro.PrepararEncontro(tipo, tipo == TipoEncontroNecromante.EncontroFinal,
-                tipo == TipoEncontroNecromante.EncontroFinal ? _dificuldadeEncontroFinal : 1f);
+                tipo == TipoEncontroNecromante.EncontroFinal
+                    ? _dificuldadeEncontroFinal + _reaparecimentos * _aumentoDificuldadeReaparecimento : 1f);
             ScoreManager.instance?.RegistrarInicioNecromante(tipo);
             _controleVisual?.ApresentarEntrada(0f);
 
@@ -314,7 +341,7 @@ public class ProgressaoNecromante : MonoBehaviour
                 _hudBoss.alpha = 0f;
             }
             yield return FadeEntrada(_duracaoFadeHudBoss, true);
-            // Durante o combate, mantem vidas, pontuacao e combo; somente a horda fica oculta.
+            // Durante o combate, mantem vidas, pontuacao e aviso de perdas; somente a horda fica oculta.
             yield return FadeGrupo(_hudClassica, 0f, _alphaHudClassica, _duracaoFadeHudBoss);
         }
         finally
@@ -424,7 +451,8 @@ public class ProgressaoNecromante : MonoBehaviour
     private IEnumerator RestaurarHudAposEncontro(ResultadoEncontroBoss resultado)
     {
         // A transicao salva alpha zero; nao pode restaurar a HUD antes de o fade do cenario acabar.
-        int destino = resultado == ResultadoEncontroBoss.Fuga ? 1 : 0;
+        int destino = resultado == ResultadoEncontroBoss.Fuga ? 1
+            : _encontroRecorrente ? _transicao.CenarioAtual : 0;
         if (resultado == ResultadoEncontroBoss.Fuga) _estado = EstadoProgressao.TransicaoFloresta;
         _transicao.SolicitarCenario(destino);
         while (_transicao.CenarioAtual != destino || _transicao.CenarioSolicitado != destino
@@ -441,7 +469,14 @@ public class ProgressaoNecromante : MonoBehaviour
         _estado = resultado == ResultadoEncontroBoss.Fuga
             ? EstadoProgressao.HordasFloresta : EstadoProgressao.Concluido;
         if (resultado == ResultadoEncontroBoss.DerrotaDefinitiva)
-            _proximaHordaTrocaCenario = _hordas.NumeroHordaAtual + _hordasPorCenario;
+        {
+            if (!_cicloInfinitoIniciado)
+            {
+                _cicloInfinitoIniciado = true;
+                _proximaHordaTrocaCenario = _hordas.NumeroHordaAtual + _hordasPorCenario;
+            }
+            _proximaHordaReaparecimento = _hordas.NumeroHordaAtual + _hordasEntreReaparecimentos;
+        }
         _hordas.RetomarAposEncontro(resultado == ResultadoEncontroBoss.DerrotaDefinitiva
             ? _respiroAposDerrotaDefinitiva : _hordas.delayEntreHordas,
             resultado == ResultadoEncontroBoss.DerrotaDefinitiva);
@@ -452,6 +487,7 @@ public class ProgressaoNecromante : MonoBehaviour
         if (_estado == EstadoProgressao.GameOver) return;
         _estado = EstadoProgressao.GameOver;
         _encontroTestePendente = false;
+        _reaparecimentoPendente = false;
         CancelarTesteEncerramento();
         CancelarApresentacaoEntrada();
         CancelarApresentacaoSaida();
@@ -524,5 +560,7 @@ public class ProgressaoNecromante : MonoBehaviour
         _duracaoFadeHudBoss = Mathf.Max(0f, _duracaoFadeHudBoss);
         _hordasPorCenario = Mathf.Max(1, _hordasPorCenario);
         _respiroAposDerrotaDefinitiva = Mathf.Max(0f, _respiroAposDerrotaDefinitiva);
+        _hordasEntreReaparecimentos = Mathf.Max(1, _hordasEntreReaparecimentos);
+        _aumentoDificuldadeReaparecimento = Mathf.Max(0f, _aumentoDificuldadeReaparecimento);
     }
 }

@@ -69,6 +69,8 @@ public class SpawnerManager : MonoBehaviour
     [SerializeField, Min(0.05f)] private float intervaloMinimoSpawn = 1f;
     private float intervaloSpawnAtual = 5f;
     private float multiplicadorDificuldadeAtual = 1f;
+    [SerializeField, Min(1f)] private float _multiplicadorIntervaloFloresta = 1.25f;
+    private ControladorTransicaoCenario _transicaoCenario;
     private bool stressTestMaximoAtivo;
     private bool _suspensoPorEncontroBoss;
     [Header("Batch normal")]
@@ -143,6 +145,7 @@ public class SpawnerManager : MonoBehaviour
 
     void Awake()
     {
+        _transicaoCenario = FindFirstObjectByType<ControladorTransicaoCenario>();
         if (instance == null) instance = this;
         else Destroy(gameObject);
 
@@ -226,6 +229,8 @@ public class SpawnerManager : MonoBehaviour
         {
             float variacao = Random.Range(-variacaoIntervaloSpawn, variacaoIntervaloSpawn);
             intervaloFinal = Mathf.Max(IntervaloMinimoSpawn, intervaloSpawnAtual + variacao);
+            if (_transicaoCenario != null && _transicaoCenario.CenarioAtual == 1)
+                intervaloFinal *= _multiplicadorIntervaloFloresta;
         }
 
         proximoSpawn = TempoGameplay.Tempo + intervaloFinal;

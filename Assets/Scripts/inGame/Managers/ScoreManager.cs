@@ -15,6 +15,8 @@ public class ScoreManager : MonoBehaviour
     public bool NecromanteFugiu { get; private set; }
     public bool NecromanteDerrotadoDefinitivamente { get; private set; }
     public bool PartidaEncerrada { get; private set; }
+    public int VitoriasNecromante { get; private set; }
+    private bool _resultadoNecromanteRegistrado;
 
     public event Action<int> OnScoreMudou;
 
@@ -43,6 +45,8 @@ public class ScoreManager : MonoBehaviour
         NecromanteFugiu = false;
         NecromanteDerrotadoDefinitivamente = false;
         PartidaEncerrada = false;
+        VitoriasNecromante = 0;
+        _resultadoNecromanteRegistrado = false;
         OnScoreMudou?.Invoke(pontuacaoAtual);
     }
 
@@ -66,6 +70,7 @@ public class ScoreManager : MonoBehaviour
     public void RegistrarInicioNecromante(TipoEncontroNecromante tipo)
     {
         if (PartidaEncerrada) return;
+        _resultadoNecromanteRegistrado = false;
         if (tipo == TipoEncontroNecromante.PrimeiroEncontro)
             PrimeiroEncontroNecromanteIniciado = true;
         else
@@ -74,13 +79,17 @@ public class ScoreManager : MonoBehaviour
 
     public void RegistrarResultadoNecromante(ResultadoEncontroBoss resultado, int pontos)
     {
-        if (PartidaEncerrada) return;
-        if (resultado == ResultadoEncontroBoss.Fuga && !NecromanteFugiu)
+        if (PartidaEncerrada || _resultadoNecromanteRegistrado) return;
+        if (resultado == ResultadoEncontroBoss.Fuga)
             NecromanteFugiu = true;
-        else if (resultado == ResultadoEncontroBoss.DerrotaDefinitiva && !NecromanteDerrotadoDefinitivamente)
+        else if (resultado == ResultadoEncontroBoss.DerrotaDefinitiva)
+        {
             NecromanteDerrotadoDefinitivamente = true;
+            VitoriasNecromante++;
+        }
         else
             return;
+        _resultadoNecromanteRegistrado = true;
         AdicionarPontos(Mathf.Max(0, pontos));
     }
 
@@ -95,8 +104,10 @@ public class ScoreManager : MonoBehaviour
             + $"\nVezes atingido: {VezesAtingido}\nMaior combo: {MaiorCombo}";
         if (NecromanteFugiu)
             resumo += "\nCidade: Necromante fugiu";
-        if (NecromanteDerrotadoDefinitivamente)
-            resumo += "\nFloresta Morta: Necromante derrotado definitivamente";
+        if (VitoriasNecromante > 1)
+            resumo += $"\nNecromante derrotado: {VitoriasNecromante} vezes";
+        else if (NecromanteDerrotadoDefinitivamente)
+            resumo += "\nFloresta Morta: Necromante derrotado";
         return resumo;
     }
 }

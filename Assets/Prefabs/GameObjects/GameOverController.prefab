@@ -102,7 +102,7 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 24
   m_fontStyle: 0
@@ -5179,7 +5179,7 @@ MonoBehaviour:
   grupoSalvarNome: {fileID: 8448654957975425312}
   grupoPadrao: {fileID: 5818250051566161523}
   inputNome: {fileID: 4132517722501808281}
-  _textoAvisoIniciais: {fileID: 2124576644473242177}
   textoPontuacaoGameOver: {fileID: 8674418612196022429}
   textoPontuacaoRanking: {fileID: 7686538143191743485}
+  _textoAvisoIniciais: {fileID: 2124576644473242177}
   _textoResumoPartida: {fileID: 910200004}
