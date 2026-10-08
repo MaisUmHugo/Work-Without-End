@@ -18,11 +18,14 @@ Edite `Assets/Prefabs/UI/PainelOpcoes.prefab`. O menu e o pause usam instâncias
 - `Fundo`: arte e dimensões do painel.
 - `PauseScroll View/Viewport/Content`: volumes, sensibilidade, parallax e botão Controles. Os itens mantêm o intervalo de 128 unidades entre centros; a área de rolagem permite alcançar todos.
 - `BotaoControles`: 220 × 120 unidades, com imagem proporcional e texto ajustado à área interna.
-- `PauseScroll View/Botao_Voltar`: centralizado no menu. No pause, retorno e saída formam um par centralizado, nas posições horizontais −100 e 100. O botão de sair fica apenas na instância do `PauseController`.
+- `MiraOitoDirecoesToggle`: ativa por padrão a mira em oito direções no controle. Desmarcar restaura a mira livre anterior, com sensibilidade e assistência. A preferência vale no menu e no pause e é salva entre partidas. O tooltip explica a opção ao passar o mouse ou selecionar pelo controle.
+- `PauseScroll View/Botao_Voltar`: usa `BackButton.png`, com seta e palavra Voltar na própria arte, em 200 × 80 unidades. Fica centralizado nas opções do menu. No pause, retorno e saída formam um conjunto centralizado, nas posições horizontais −60 e 120, com espaço entre eles. O botão de sair fica apenas na instância do `PauseController`.
 
 As conexões com `MenuController` e `PauseController` ficam nos respectivos prefabs pais. Preserve os componentes Button, Slider, Toggle e FeedbackSelecaoUI ao alterar a arte. Não é preciso executar um setup para usar o painel nas cenas existentes.
 
 `FocoUI` mantém a ordem vertical dos itens independentemente da rolagem. Depois de Controles, descer seleciona Voltar; subir retorna a Controles. No rodapé do pause, esquerda/direita alternam entre Voltar e Sair. Um cursor parado não troca a seleção quando os itens rolam sob ele; mover o mouse continua selecionando normalmente.
+
+O pause começa fechado, incluindo quando a cena é reiniciada. No menu, o controle mantém a navegação normal por seleção. No pause, o analógico direito também move o ponteiro livremente; RT/R2 clica no ponteiro e A/X confirma a seleção. O cursor do sistema fica oculto durante a partida e retorna ao abrir os painéis; a mira do jogo continua visível.
 
 ## Painel de controles
 
@@ -35,7 +38,7 @@ Edite `Assets/Prefabs/UI/PainelControles.prefab`. Ele é compartilhado pelo menu
 - `Dica`: informação sobre sensibilidade.
 - `BotaoVoltar`: botão funcional com navegação e destaque da seleção.
 
-Os botões Controles e Voltar usam o mesmo fundo amarelo dos botões do menu (`InGame_Buttons-sheet_0`). Preserve o Button, o FeedbackSelecaoUI e os eventos ao trocar a imagem.
+O botão Controles usa o fundo amarelo `InGame_Buttons-sheet_0`. Voltar usa a arte `BackButton.png`, proporcional e com destaque de seleção no padrão do menu. O texto separado de Voltar fica desativado porque a própria imagem já contém a legenda. Preserve o Button, o FeedbackSelecaoUI e os eventos ao trocar a imagem.
 
 O acesso fica em **Opções → Controles** e **Pause → Controles**. `MenuController` e `PauseController` possuem a referência `_painelControles`; os eventos de abrir/voltar já estão conectados em cada prefab. Preserve essas referências e os eventos ao trocar a arte.
 
@@ -47,7 +50,15 @@ Edite `Assets/Prefabs/UI/HUDBoss.prefab`. O layout anterior foi restaurado, com 
 
 Preserve as referências de `HUDBoss` a nome, fase e preenchimento, mesmo com os textos ocultos. Os fades do encontro usam o grupo `PainelBoss`: mantenha os elementos do HUD dentro dele.
 
-Durante a luta, a HUD comum mantém vidas, pontuação e combo. Apenas a barra de entregas e os textos da horda ficam ocultos. Na fuga e na morte, toda a HUD desaparece; ela retorna com fade somente depois da animação, do desaparecimento do boss e da troca de cenário.
+Durante a luta, a HUD comum mantém vidas, pontuação e aviso de entregas perdidas. Apenas a barra de entregas e os textos da horda ficam ocultos. Na fuga e na morte, toda a HUD desaparece; ela retorna com fade somente depois da animação e do desaparecimento do boss, aguardando também a troca de cenário quando prevista.
+
+## Aviso de entregas perdidas e tutorial
+
+O objeto `ComboText` agora exibe `PERDAS ATE DANO: 3`, reduzindo para 2 e 1 ao deixar entregáveis passarem. O aviso muda para amarelo e vermelho. Três perdas seguidas custam uma vida e reiniciam o aviso; acertar uma entrega aceita também zera a sequência. A primeira caixa aceita pelo Sombrio e um acerto no boss vulnerável contam para esse reset. Colisões continuam causando dano diretamente. O combo continua calculando pontuação, recordes e recuperação de vida, embora seu número não apareça mais nessa área da HUD.
+
+Edite `Assets/Prefabs/GameObjects/ComoJogarController.prefab`. O fundo é compartilhado pelos dois slides. `SlideEntrega` mantém o texto e o vídeo anteriores, com somente `BotaoProximoSlide` para avançar. `SlideEntregasPerdidas` explica a regra das três perdas e contém os botões/opções anteriores. A partida permanece suspensa até clicar em começar no segundo slide; Não Aparecer Mais continua válido para todo o tutorial.
+
+Para adicionar o segundo vídeo, atribua o clipe no componente VideoPlayer de `VideoPlayerPerdas`. Seu RenderTexture `Assets/Prefabs/UI/VideoTutorialPerdas.renderTexture` já está conectado ao `VideoRenderPerdas`. A seta provisória do primeiro slide pode receber a arte final, preservando o Button e seu evento `ProximoSlide`.
 
 ## Corações da vida
 
@@ -69,9 +80,11 @@ No prefab `Necromante`, `ControleAnimatorNecromante` controla a morte em três t
 
 A smoke começa durante o desmanche, acompanha a parte inferior do corpo e cobre o sprite enquanto ele desaparece. **Duracao Fumaca = 1.2 segundos**, cobertura, altura no corpo e cor são ajustáveis. Antes de chegar ao último frame, o sprite do boss fica invisível. A fumaça percorre seus desenhos, dissipa e seu objeto é destruído ao terminar; o encontro aguarda essa conclusão. A pausa suspende os dois, e reiniciar restaura material e visibilidade do boss.
 
-Após a fuga, ocorre Cidade → Floresta antes do retorno da HUD. Após a morte definitiva, ocorre Floresta → Cidade antes do retorno da HUD. A partir daí o boss não reaparece: os cenários alternam a cada dez hordas concluídas (30, 40, 50...), até o game over.
+Após a fuga, ocorre Cidade → Floresta antes do retorno da HUD. Após a segunda vitória, ocorre Floresta → Cidade antes do retorno da HUD. A partir daí os cenários alternam a cada dez hordas concluídas (30, 40, 50...), e o boss reaparece a cada quinze hordas (35, 50, 65...), das fases 2 a 3. Os reencontros seguintes não forçam uma troca extra de cenário; quando os ciclos coincidem, a transição termina antes da entrada do boss.
 
 Em `ProgressaoNecromante`, **Respiro Apos Derrota Definitiva = 8 segundos** segura novos spawns antes da próxima horda. Em `HordaManager`, os valores iniciais são **Multiplicador Pos Necromante = 1.6**, **Intervalo Pos Necromante = 0.6** e **Aumento Por Horda Pos Necromante = 0.05**. Isso aumenta a velocidade, reduz o intervalo de spawn e faz a dificuldade continuar crescendo. O intervalo mínimo seguro do SpawnerManager continua sendo respeitado. Ajuste esses valores pelo Inspector após testar o balanceamento.
+
+`Hordas Entre Reaparecimentos = 15` e `Aumento Dificuldade Reaparecimento = 0.15` controlam o novo ciclo. O primeiro reencontro adicional usa dificuldade 1.50, depois 1.65, 1.80 e assim por diante. Cada vitória completa concede o bônus configurado uma única vez e aumenta o total mostrado nas estatísticas quando houver várias vitórias. Em `SpawnerManager`, `Multiplicador Intervalo Floresta = 1.25` aumenta em 25% o intervalo entre grupos de spawn na Floresta, sem alterar o calendário de hordas.
 
 ## Atalhos para conferir a UI durante a partida
 
