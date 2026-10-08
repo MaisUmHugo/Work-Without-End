@@ -59,7 +59,7 @@ O objeto `ComboText` agora exibe `ENTREGAS PERDIDAS: 0/3`, aumentando para 1/3 e
 
 Edite `Assets/Prefabs/GameObjects/ComoJogarController.prefab`. O fundo é compartilhado pelos dois slides. `SlideEntrega` mantém o texto e o vídeo anteriores, com somente `BotaoProximoSlide` para avançar. `SlideEntregasPerdidas` explica a regra das três perdas e contém os botões/opções anteriores. A partida permanece suspensa até clicar em começar no segundo slide; Não Aparecer Mais continua válido para todo o tutorial.
 
-Para adicionar o segundo vídeo, atribua o clipe no componente VideoPlayer de `VideoPlayerPerdas`. Seu RenderTexture `Assets/Prefabs/UI/VideoTutorialPerdas.renderTexture` já está conectado ao `VideoRenderPerdas`. A seta provisória do primeiro slide pode receber a arte final, preservando o Button e seu evento `ProximoSlide`.
+O segundo vídeo usa `Assets/Artes/Videos/Tutorial_Perca_Entrega.mp4`, conectado ao componente VideoPlayer de `VideoPlayerPerdas`. Ele começa ao avançar para o segundo slide e repete até começar a partida. Seu RenderTexture `Assets/Prefabs/UI/VideoTutorialPerdas.renderTexture` está conectado ao `VideoRenderPerdas`. Preserve o Button da seta do primeiro slide e seu evento `ProximoSlide` ao trocar a arte.
 
 ## Corações da vida
 
