@@ -21,7 +21,8 @@ public class ReceptorEntregaBoss : MonoBehaviour
         Caixa caixa = colisao.GetComponentInParent<Caixa>();
         if (caixa == null || !caixa.TentarConsumir()) return;
 
-        _vida.TentarReceberDano(_danoPorEntrega);
+        if (_vida.TentarReceberDano(_danoPorEntrega))
+            VidaManager.instance?.RegistrarEntregaBemSucedida();
     }
 
     private void OnValidate()

@@ -478,6 +478,7 @@ public class ZumbiSombrio : Entregavel
         _entregavelPisca?.PararPiscar();
         AplicarCor(_corSombria);
         _entregasRecebidas++;
+        VidaManager.instance?.RegistrarEntregaBemSucedida();
         if (_entregasRecebidas >= _entregasNecessarias)
         {
             int pontosRecebidos = ProcessarEntrega(false);

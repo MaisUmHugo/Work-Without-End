@@ -13,6 +13,7 @@ public class HUDManager : MonoBehaviour, IHudTransicaoCenario
     [SerializeField] private RectTransform _grupoCoracoes;
     [SerializeField] private Sprite _spriteCoracao;
     private readonly List<Image> _coracoes = new List<Image>();
+    private Color _corCombo;
     //[SerializeField] private TextMeshProUGUI TurnoText;
 
     public GameObject GrupoHudTransicao => scoreText != null && scoreText.canvas != null
@@ -20,6 +21,7 @@ public class HUDManager : MonoBehaviour, IHudTransicaoCenario
 
     private void Start()
     {
+        _corCombo = comboText != null ? comboText.color : Color.white;
         // A HUD usa referencias da cena; o grupo novo acompanha o texto antigo no mesmo Canvas.
         if (_grupoCoracoes == null && vidasText != null)
             _grupoCoracoes = vidasText.transform.parent.Find("VidasCoracoes") as RectTransform;
@@ -31,12 +33,12 @@ public class HUDManager : MonoBehaviour, IHudTransicaoCenario
         // Inicializa HUD com valores atuais
         AtualizarScore(ScoreManager.instance.pontuacaoAtual);
         AtualizarVidas(VidaManager.instance.vidasAtuais);
-        AtualizarCombo(ComboManager.instance.comboAtual);
+        AtualizarAvisoEntregas(VidaManager.instance.EntregasPerdidasSeguidas);
 
         // Conecta eventos
         ScoreManager.instance.OnScoreMudou += AtualizarScore;
         VidaManager.instance.OnVidaMudou += AtualizarVidas;
-        ComboManager.instance.OnComboMudou += AtualizarCombo;
+        VidaManager.instance.PerdasSeguidasAlteradas += AtualizarAvisoEntregas;
     }
 
     private void OnDestroy()
@@ -46,10 +48,11 @@ public class HUDManager : MonoBehaviour, IHudTransicaoCenario
             ScoreManager.instance.OnScoreMudou -= AtualizarScore;
 
         if (VidaManager.instance != null)
+        {
             VidaManager.instance.OnVidaMudou -= AtualizarVidas;
+            VidaManager.instance.PerdasSeguidasAlteradas -= AtualizarAvisoEntregas;
+        }
 
-        if (ComboManager.instance != null)
-            ComboManager.instance.OnComboMudou -= AtualizarCombo;
     }
 
     private void AtualizarScore(int pontos)
@@ -79,11 +82,12 @@ public class HUDManager : MonoBehaviour, IHudTransicaoCenario
         }
     }
 
-    private void AtualizarCombo(int combo)
+    private void AtualizarAvisoEntregas(int perdas)
     {
-        if (combo > 0)
-            comboText.text = $"COMBO: {combo}";
-        else
-            comboText.text = ""; // esconde quando não há combo
+        if (comboText == null) return;
+        int restantes = VidaManager.instance != null ? VidaManager.instance.PerdasRestantesParaDano : 3;
+        comboText.color = perdas == 0 ? _corCombo
+            : restantes == 1 ? new Color(1f, .3f, .25f) : new Color(1f, .85f, .15f);
+        comboText.text = $"PERDAS ATE DANO: {restantes}";
     }
 }

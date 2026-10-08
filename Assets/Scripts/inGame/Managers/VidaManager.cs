@@ -14,6 +14,11 @@ public class VidaManager : MonoBehaviour
 
     public event Action<int> OnVidaMudou; // evento para HUD
     public event Action OnGameOver;
+    [SerializeField, Min(1)] private int _perdasSeguidasParaDano = 3;
+    private int _entregasPerdidasSeguidas;
+    public int EntregasPerdidasSeguidas => _entregasPerdidasSeguidas;
+    public int PerdasRestantesParaDano => Mathf.Max(0, _perdasSeguidasParaDano - _entregasPerdidasSeguidas);
+    public event Action<int> PerdasSeguidasAlteradas;
     private Animator anim;
     private SpriteRenderer spriteRenderer;
     private Color corOriginal;
@@ -95,6 +100,7 @@ public class VidaManager : MonoBehaviour
 
     public void ResetarVidas()
     {
+        RegistrarEntregaBemSucedida();
         vidasAtuais = vidasIniciais;
         OnVidaMudou?.Invoke(vidasAtuais);
     }
@@ -111,14 +117,35 @@ public class VidaManager : MonoBehaviour
 
     public void PerderVidaPorEntrega()
     {
-        ProcessarPerdaVida(false, true, registrarDano: false);
+        if (BloqueioGameplay.Bloqueado || vidasAtuais <= 0) return;
+        _entregasPerdidasSeguidas++;
+        if (_entregasPerdidasSeguidas < _perdasSeguidasParaDano)
+        {
+            PerdasSeguidasAlteradas?.Invoke(_entregasPerdidasSeguidas);
+            return;
+        }
+        RegistrarEntregaBemSucedida();
+        // As tres perdas formam uma penalidade propria, mesmo durante o piscar de um contato.
+        ProcessarPerdaVida(false, true, registrarDano: false, respeitarInvulnerabilidade: false);
     }
 
-    private void ProcessarPerdaVida(bool resetarCombo, bool aplicarInvulnerabilidade, int quantidade = 1, bool registrarDano = true)
+    public void RegistrarEntregaBemSucedida()
+    {
+        _entregasPerdidasSeguidas = 0;
+        PerdasSeguidasAlteradas?.Invoke(0);
+    }
+
+    private void ProcessarPerdaVida(bool resetarCombo, bool aplicarInvulnerabilidade, int quantidade = 1, bool registrarDano = true, bool respeitarInvulnerabilidade = true)
     {
         // evita perder vida se já estiver invulnerável ou morto
-        if (BloqueioGameplay.Bloqueado || invulneravel || vidasAtuais <= 0)
+        if (BloqueioGameplay.Bloqueado || (respeitarInvulnerabilidade && invulneravel) || vidasAtuais <= 0)
             return;
+        if (rotinaInvulnerabilidade != null)
+        {
+            StopCoroutine(rotinaInvulnerabilidade);
+            rotinaInvulnerabilidade = null;
+            FinalizarFeedbackDano();
+        }
         vidasAtuais = Mathf.Max(0, vidasAtuais - Mathf.Max(1, quantidade));
         if (registrarDano)
             ScoreManager.instance?.RegistrarDanoRecebido();
@@ -250,6 +277,7 @@ public class VidaManager : MonoBehaviour
         fatorEscalaDano = Mathf.Max(1f, fatorEscalaDano);
         quantidadePulsosDano = Mathf.Max(1, quantidadePulsosDano);
         duracaoPulsoDano = Mathf.Max(0.01f, duracaoPulsoDano);
+        _perdasSeguidasParaDano = Mathf.Max(1, _perdasSeguidasParaDano);
     }
 
 }

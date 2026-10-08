@@ -56,6 +56,7 @@ public abstract class Entregavel : MonoBehaviour
 
         estadoEntrega = EstadoEntrega.Sucesso;
         ativoParaEntrega = false;
+        VidaManager.instance?.RegistrarEntregaBemSucedida();
 
         int comboAposEntrega = ComboManager.instance.comboAtual + 1;
         int multiplicador = ComboManager.instance.GetMultiplicadorParaCombo(comboAposEntrega);
