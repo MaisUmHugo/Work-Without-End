@@ -60,6 +60,7 @@ public class VidaManager : MonoBehaviour
     }
     private void Update()
     {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         if (BloqueioGameplay.Bloqueado) return;
 
         // Atalho de debug: perder 1 de vida com Shift + P
@@ -72,6 +73,7 @@ public class VidaManager : MonoBehaviour
         {
             GanharVida();
         }
+#endif
     }
 
     private void LateUpdate()

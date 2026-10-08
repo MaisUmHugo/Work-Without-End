@@ -122,6 +122,7 @@ public class HordaManager : MonoBehaviour
         TextoHorda.text = "Horda: " + NumeroHorda;
         TextoEntrega.text = $"Entregas:{N_Entregas}/{E_Necessarias}" ;
         AtualizarBarraProgresso();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         if (!_suspenderHordasParaTeste && !_suspensoPorBoss && !BloqueioGameplay.Bloqueado && Keyboard.current != null)
         {
             bool shiftPressionado = Keyboard.current.leftShiftKey.isPressed
@@ -134,6 +135,7 @@ public class HordaManager : MonoBehaviour
             else if (Keyboard.current.mKey.wasPressedThisFrame)
                 AvancarHordas(10);
         }
+#endif
     }
 
     private IEnumerator IniciarHordaComDelay(float delay)
