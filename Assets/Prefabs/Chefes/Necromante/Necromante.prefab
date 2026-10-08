@@ -851,6 +851,7 @@ MonoBehaviour:
   _tempoPreparacao: 0.35
   _tempoAvisoPorDisparo: 0.35
   _intervaloEntreDisparos: 0.3
+  _intervaloRespiroFase3: {x: 0.3, y: 0.45}
   _tempoRecuperacao: 0.35
   _velocidadeProjetil: 32
   _danoProjetil: 1
@@ -1015,7 +1016,7 @@ MonoBehaviour:
     - {fileID: 910040004}
     - {fileID: 910050002}
     _quantidadeOndas: 3
-    _limiteInvocados: 8
+    _limiteInvocados: 7
     _chanceZumbiSombrio: 0.35
     _garantirZumbiSombrio: 1
     _multiplicadorDecisao: 2
@@ -1023,7 +1024,7 @@ MonoBehaviour:
     _multiplicadorVelocidadeProjeteis: 1.6
     _multiplicadorVelocidadeInvocados: 1.6
     _limitePressaoAmbiente: 6
-    _intervaloPressaoAmbiente: {x: 0.9, y: 1.6}
+    _intervaloPressaoAmbiente: {x: 1, y: 1.8}
 --- !u!114 &910060002
 MonoBehaviour:
   m_ObjectHideFlags: 0

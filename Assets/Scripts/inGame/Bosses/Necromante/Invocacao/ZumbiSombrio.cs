@@ -33,7 +33,7 @@ public class ZumbiSombrio : Entregavel
     [SerializeField, Min(0f)] private float _duracaoExclamacao = 2f;
 
     [Header("Movimento")]
-    [SerializeField, Min(0.1f)] private float _velocidadeCaminhada = 11.5f;
+    [SerializeField, Min(0.1f)] private float _velocidadeCaminhada = 12.5f;
     [SerializeField, Min(0.1f)] private float _velocidadeCorrida = 18f;
     [SerializeField, Min(0.1f)] private float _velocidadeTrocaLane = 22f;
     [SerializeField, Min(0f)] private float _distanciaInicioPerseguicao = 35f;

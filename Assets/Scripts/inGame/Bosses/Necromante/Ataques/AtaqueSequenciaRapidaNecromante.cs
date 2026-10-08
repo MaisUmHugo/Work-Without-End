@@ -32,6 +32,8 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
     [SerializeField, Min(0f)] private float _tempoPreparacao = 0.35f;
     [SerializeField, Min(0f)] private float _tempoAvisoPorDisparo = 0.35f;
     [SerializeField, Min(0f)] private float _intervaloEntreDisparos = 0.3f;
+    [SerializeField, Tooltip("Minimo e maximo do tempo adicional em um intervalo sorteado por sequencia na fase 3. Nao e reduzido pelo multiplicador de ritmo.")]
+    private Vector2 _intervaloRespiroFase3 = new Vector2(0.3f, 0.45f);
     [SerializeField, Min(0f)] private float _tempoRecuperacao = 0.35f;
     [Header("Projetil")]
     [SerializeField, Min(0.1f)] private float _velocidadeProjetil = 32f;
@@ -50,11 +52,14 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
     private int _laneEscolhida = -1;
     private int _ultimaLane = -1;
     private int _disparosRealizados;
+    private int _disparoAntesRespiro;
+    private float _respiroSorteado;
     private Vector2 _posicaoInicial;
     private float _tempoRestante;
     private EtapaAtaque _etapa;
     private float _multiplicadorRitmo = 1f;
     private float _multiplicadorVelocidade = 1f;
+    private bool _fase3Ativa;
 
     public override bool EmExecucao => _etapa != EtapaAtaque.Inativo;
     public override bool EmPreparacao => _etapa == EtapaAtaque.Preparando
@@ -95,6 +100,15 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
         _laneEscolhida = -1;
         _ultimaLane = -1;
         _disparosRealizados = 0;
+        _disparoAntesRespiro = 0;
+        _respiroSorteado = 0f;
+        if (_fase3Ativa && _quantidadeDisparos > 1)
+        {
+            _disparoAntesRespiro = Random.Range(1, _quantidadeDisparos);
+            float minimo = Mathf.Max(0f, _intervaloRespiroFase3.x);
+            float maximo = Mathf.Max(minimo, _intervaloRespiroFase3.y);
+            _respiroSorteado = Random.Range(minimo, maximo);
+        }
         CriarAvisoGeral();
         _tempoRestante = Mathf.Max(0f, _tempoPreparacao / _multiplicadorRitmo);
         _etapa = EtapaAtaque.Preparando;
@@ -134,6 +148,8 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
                 else
                 {
                     _tempoRestante = Mathf.Max(0f, _intervaloEntreDisparos / _multiplicadorRitmo);
+                    if (_disparosRealizados == _disparoAntesRespiro)
+                        _tempoRestante += _respiroSorteado;
                     _etapa = EtapaAtaque.Intervalo;
                 }
                 break;
@@ -278,6 +294,8 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
         _laneEscolhida = -1;
         _ultimaLane = -1;
         _disparosRealizados = 0;
+        _disparoAntesRespiro = 0;
+        _respiroSorteado = 0f;
         _posicaoInicial = Vector2.zero;
         _tempoRestante = 0f;
         _etapa = EtapaAtaque.Inativo;
@@ -299,10 +317,11 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
         _projeteisAtivos.Clear();
     }
 
-    public void ConfigurarRitmo(float multiplicadorRitmo, float multiplicadorVelocidade)
+    public void ConfigurarRitmo(float multiplicadorRitmo, float multiplicadorVelocidade, bool fase3Ativa = false)
     {
         _multiplicadorRitmo = Mathf.Max(0.1f, multiplicadorRitmo);
         _multiplicadorVelocidade = Mathf.Max(0.1f, multiplicadorVelocidade);
+        _fase3Ativa = fase3Ativa;
     }
 
     private void OnDisable()
@@ -318,6 +337,8 @@ public class AtaqueSequenciaRapidaNecromante : AtaqueBossBase, IAtaqueVisualNecr
         _tempoPreparacao = Mathf.Max(0f, _tempoPreparacao);
         _tempoAvisoPorDisparo = Mathf.Max(0f, _tempoAvisoPorDisparo);
         _intervaloEntreDisparos = Mathf.Max(0f, _intervaloEntreDisparos);
+        _intervaloRespiroFase3.x = Mathf.Max(0f, _intervaloRespiroFase3.x);
+        _intervaloRespiroFase3.y = Mathf.Max(_intervaloRespiroFase3.x, _intervaloRespiroFase3.y);
         _tempoRecuperacao = Mathf.Max(0f, _tempoRecuperacao);
         _velocidadeProjetil = Mathf.Max(0.1f, _velocidadeProjetil);
         _danoProjetil = Mathf.Max(1, _danoProjetil);

@@ -49,7 +49,8 @@ public class ControladorFasesNecromante : ControladorFasesBossBase
             configuracao.MultiplicadorVelocidadeProjeteis * _multiplicadorEncontro);
         _sequenciaRapida.ConfigurarRitmo(
             configuracao.MultiplicadorRitmoAtaques * _multiplicadorEncontro,
-            configuracao.MultiplicadorVelocidadeProjeteis * _multiplicadorEncontro);
+            configuracao.MultiplicadorVelocidadeProjeteis * _multiplicadorEncontro,
+            fase == FaseBoss.Fase3);
         _ataqueInvocacao.ConfigurarRitmo(configuracao.MultiplicadorRitmoAtaques * _multiplicadorEncontro);
         _pressaoAmbiente.ConfigurarFase(
             configuracao.LimitePressaoAmbiente,

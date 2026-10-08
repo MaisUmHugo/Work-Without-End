@@ -133,7 +133,7 @@ MonoBehaviour:
   _pontoExclamacao: {fileID: 630000002}
   _prefabExclamacao: {fileID: 1127054739601164410, guid: 31754b68d7fbffa4a92bee90e79f9d49, type: 3}
   _duracaoExclamacao: 2
-  _velocidadeCaminhada: 11.5
+  _velocidadeCaminhada: 12.5
   _velocidadeCorrida: 18
   _velocidadeTrocaLane: 22
   _distanciaInicioPerseguicao: 35
