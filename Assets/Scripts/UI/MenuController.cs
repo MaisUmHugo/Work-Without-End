@@ -1,11 +1,11 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
     private INPUTS inputs;
 
-    [Header("PainÈis")]
+    [Header("Pain√©is")]
     [SerializeField] private GameObject painelMenuInicial;
     [SerializeField] private GameObject painelOpcoes;
     [SerializeField] private GameObject painelConfirmacao;
@@ -59,7 +59,7 @@ public class MenuController : MonoBehaviour
             painelConfirmacao.SetActive(false);
     }
 
-    // Botıes(UI)
+    // Bot√µes(UI)
    
     public void Jogar()
     {
@@ -74,7 +74,7 @@ public class MenuController : MonoBehaviour
 
     public void VoltarMenu()
     {
-        // Se quiser mostrar confirmaÁ„o antes de sair, use MostrarConfirmacaoCarregarCena(CenaMenu)
+        // Se quiser mostrar confirma√ß√£o antes de sair, use MostrarConfirmacaoCarregarCena(CenaMenu)
         SceneManager.LoadScene(CenaMenu);
     }
 
@@ -131,7 +131,7 @@ public class MenuController : MonoBehaviour
         MostrarConfirmacaoSair();
     }
 
-    // mostra confirmaÁ„o para carregar uma cena especÌfica
+    // mostra confirma√ß√£o para carregar uma cena espec√≠fica
     public void MostrarConfirmacaoCarregarCena(string nomeCena)
     {
         tipoConfirm = TipoConfirmacao.CarregarCena;
@@ -139,14 +139,14 @@ public class MenuController : MonoBehaviour
         MostrarPainelConfirmacao();
     }
 
-    // mostra confirmaÁ„o para sair
+    // mostra confirma√ß√£o para sair
     public void MostrarConfirmacaoSair()
     {
         tipoConfirm = TipoConfirmacao.Sair;
         MostrarPainelConfirmacao();
     }
 
-    // mostra confirmaÁ„o com aÁ„o custom 
+    // mostra confirma√ß√£o com a√ß√£o personalizada
     public void MostrarConfirmacaoPersonalizada(System.Action acao)
     {
         tipoConfirm = TipoConfirmacao.Personalizada;
@@ -197,7 +197,7 @@ public class MenuController : MonoBehaviour
 
             case TipoConfirmacao.Nenhuma:
             default:
-                Debug.LogWarning("[Menu] Confirmar sem aÁ„o definida!");
+                Debug.LogWarning("[Menu] Confirmar sem a√ß√£o definida!");
                 break;
         }
 
@@ -211,7 +211,7 @@ public class MenuController : MonoBehaviour
     }
     private void OnCancelPerformed(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
     {
-        // fecha opÁıes se estiver nelas, sen„o fecha o confirm se aberto
+        // fecha op√ß√µes se estiver nelas, sen√£o fecha a confirma√ß√£o se estiver aberta
         if (_painelControles != null && _painelControles.activeSelf)
             FecharControles();
         else if (painelConfirmacao != null && painelConfirmacao.activeSelf)
