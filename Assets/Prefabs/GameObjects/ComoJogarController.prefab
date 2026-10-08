@@ -2906,12 +2906,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'SE NAO ENTREGAR, VOCE TOMA DANO!
+  m_text: 'PERDER 3 ENTREGAS SEGUIDAS CUSTA UMA VIDA.
 
-    3 PERDAS SEGUIDAS = 1 VIDA A MENOS.
-
-    ACERTAR
-    UMA ENTREGA ZERA O AVISO.'
+    ACERTAR UMA ENTREGA ZERA A CONTAGEM.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b0c57ae1e5976c045bc6410cb5fdaf72, type: 2}
   m_sharedMaterial: {fileID: -7195188193920619961, guid: b0c57ae1e5976c045bc6410cb5fdaf72, type: 2}

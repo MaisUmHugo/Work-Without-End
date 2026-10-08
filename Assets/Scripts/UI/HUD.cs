@@ -88,6 +88,7 @@ public class HUDManager : MonoBehaviour, IHudTransicaoCenario
         int restantes = VidaManager.instance != null ? VidaManager.instance.PerdasRestantesParaDano : 3;
         comboText.color = perdas == 0 ? _corCombo
             : restantes == 1 ? new Color(1f, .3f, .25f) : new Color(1f, .85f, .15f);
-        comboText.text = $"PERDAS ATE DANO: {restantes}";
+        int limite = perdas + restantes;
+        comboText.text = $"ENTREGAS PERDIDAS: {perdas}/{limite}";
     }
 }
