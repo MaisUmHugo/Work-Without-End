@@ -853,7 +853,7 @@ MonoBehaviour:
   _vidaJogador: {fileID: 903340006}
   _hordaPrimeiroEncontro: 10
   _hordaEncontroFinal: 20
-  _dificuldadeEncontroFinal: 1.15
+  _dificuldadeEncontroFinal: 1.35
   _pontosFuga: 5000
   _pontosDerrotaDefinitiva: 10000
   _duracaoFadeHud: 0.3
