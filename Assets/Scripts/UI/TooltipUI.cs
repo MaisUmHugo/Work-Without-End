@@ -20,6 +20,14 @@ public class TooltipUI : MonoBehaviour
 
     public void Mostrar(string msg)
     {
+        Canvas canvasTooltip = GetComponent<Canvas>();
+        if (canvasTooltip != null)
+        {
+            Canvas canvasRaiz = canvasTooltip.rootCanvas;
+            canvasTooltip.overrideSorting = true;
+            canvasTooltip.sortingLayerID = canvasRaiz.sortingLayerID;
+            canvasTooltip.sortingOrder = canvasRaiz.sortingOrder + 1;
+        }
         if (!_posicaoRegistrada)
         {
             _posicaoOriginal = painel.anchoredPosition;

@@ -139,6 +139,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5619315709550228002
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -184,6 +185,7 @@ SpriteRenderer:
   m_SortingLayerID: -1622571857
   m_SortingLayer: 6
   m_SortingOrder: 999
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: df292d79dafa81241a000438db8fb42e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -193,7 +195,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &7774517618035465200
 MonoBehaviour:
@@ -213,10 +214,30 @@ MonoBehaviour:
   _sensibilidadeControle: 5
   _limiarMudancaDirecao: 3
   _velocidadeRotacaoControle: 720
+  _miraOitoDirecoes: 1
+  _modoMiraControle: 0
+  _angulosDirecoesFixas:
+  - -180
+  - -135
+  - -90
+  - -75
+  - -60
+  - -45
+  - -30
+  - -15
+  - 0
+  - 15
+  - 30
+  - 45
+  - 60
+  - 75
+  - 90
+  - 135
+  _velocidadeCursorControle: 900
   _ativarAssistencia: 1
-  _intensidadeAssistencia: 0.35
-  _anguloAssistencia: 8
-  _correcaoMaximaAssistencia: 2
+  _intensidadeAssistencia: 0.7
+  _anguloAssistencia: 12
+  _correcaoMaximaAssistencia: 6
   _alcanceAssistencia: 55
   cooldownUI: {fileID: 2053121548289843061}
   cooldownProgresso: 0
