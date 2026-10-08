@@ -81,8 +81,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279507487
-  m_fontColor: {r: 0.12, g: 0.1, b: 0.08, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5179,6 +5179,7 @@ MonoBehaviour:
   grupoSalvarNome: {fileID: 8448654957975425312}
   grupoPadrao: {fileID: 5818250051566161523}
   inputNome: {fileID: 4132517722501808281}
+  _textoAvisoIniciais: {fileID: 2124576644473242177}
   textoPontuacaoGameOver: {fileID: 8674418612196022429}
   textoPontuacaoRanking: {fileID: 7686538143191743485}
   _textoResumoPartida: {fileID: 910200004}

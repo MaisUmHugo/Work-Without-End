@@ -21,6 +21,7 @@ public class GameOverController : MonoBehaviour
     public TMP_InputField inputNome;
     public TextMeshProUGUI textoPontuacaoGameOver;
     public TextMeshProUGUI textoPontuacaoRanking;
+    [SerializeField] private TextMeshProUGUI _textoAvisoIniciais;
 
     [Header("Resumo da partida")]
     [SerializeField] private TextMeshProUGUI _textoResumoPartida;
@@ -31,25 +32,61 @@ public class GameOverController : MonoBehaviour
     private GameObject painelQueChamouConfirmacao;
     private Coroutine _balancoIniciais;
     private Vector2 _posicaoInputAntesBalanco;
+    private string _instrucaoIniciais;
+    private Color _corInstrucaoIniciais;
 
     private void Awake()
     {
+        if (_textoAvisoIniciais != null)
+        {
+            _instrucaoIniciais = _textoAvisoIniciais.text;
+            _corInstrucaoIniciais = _textoAvisoIniciais.color;
+        }
         if (inputNome == null) return;
         inputNome.characterLimit = 3;
         inputNome.onValidateInput = ValidarIniciais;
+        inputNome.onValueChanged.AddListener(AtualizarAvisoIniciais);
     }
 
     private char ValidarIniciais(string texto, int indice, char caractere)
     {
         // O TMP ja desconta o trecho selecionado antes de chamar esta validacao.
         if (texto.Length < 3) return caractere;
+        IniciarBalancoIniciais();
+        return '\0';
+    }
+
+    private void IniciarBalancoIniciais()
+    {
+        if (inputNome == null) return;
         if (_balancoIniciais != null)
         {
             StopCoroutine(_balancoIniciais);
             ((RectTransform)inputNome.transform).anchoredPosition = _posicaoInputAntesBalanco;
         }
         _balancoIniciais = StartCoroutine(BalancarIniciais());
-        return '\0';
+    }
+
+    private bool PossuiLetra(string texto)
+    {
+        if (string.IsNullOrEmpty(texto)) return false;
+        foreach (char caractere in texto)
+        {
+            if (char.IsLetter(caractere)) return true;
+        }
+        return false;
+    }
+
+    private void AtualizarAvisoIniciais(string texto)
+    {
+        if (PossuiLetra(texto)) RestaurarInstrucaoIniciais();
+    }
+
+    private void RestaurarInstrucaoIniciais()
+    {
+        if (_textoAvisoIniciais == null) return;
+        _textoAvisoIniciais.text = _instrucaoIniciais;
+        _textoAvisoIniciais.color = _corInstrucaoIniciais;
     }
 
     private IEnumerator BalancarIniciais()
@@ -91,6 +128,8 @@ public class GameOverController : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (inputNome != null)
+            inputNome.onValueChanged.RemoveListener(AtualizarAvisoIniciais);
         BloqueioGameplay.Definir(MotivoBloqueioGameplay.GameOver, false);
 
         if (VidaManager.instance != null)
@@ -107,6 +146,7 @@ public class GameOverController : MonoBehaviour
 
         grupoSalvarNome.SetActive(false);
         grupoPadrao.SetActive(false);
+        RestaurarInstrucaoIniciais();
 
         int score = ScoreManager.instance.pontuacaoAtual;
         textoPontuacaoGameOver.text = "Pontuação Final: " + score;
@@ -124,8 +164,20 @@ public class GameOverController : MonoBehaviour
 
     public void BotaoSalvarNome()
     {
-        string nome = inputNome.text;
-        if (string.IsNullOrWhiteSpace(nome)) nome = "---";
+        string nome = inputNome != null ? inputNome.text.Trim() : string.Empty;
+        if (!PossuiLetra(nome))
+        {
+            if (_textoAvisoIniciais != null)
+            {
+                _textoAvisoIniciais.text = "DIGITE UMA LETRA";
+                _textoAvisoIniciais.color = new Color(0.75f, 0.08f, 0.05f, 1f);
+            }
+            IniciarBalancoIniciais();
+            if (inputNome != null)
+                inputNome.ActivateInputField();
+            return;
+        }
+        RestaurarInstrucaoIniciais();
 
         int score = ScoreManager.instance.pontuacaoAtual;
 
