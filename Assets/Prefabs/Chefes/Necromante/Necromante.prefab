@@ -695,6 +695,8 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::VidaBoss
   _vidaMaxima: 16
+  _vidaAtual: 0
+  _vulneravel: 0
 --- !u!114 &910020002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -743,6 +745,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f60a1224d7e84cdfa8b016750346c5a9, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::AtaqueProjetilNecromante
+  _cooldown: 0
   _prefabProjetil: {fileID: 920030002, guid: 65d68ba71b764bb4c9abfe34a3eace1e, type: 3}
   _projectileRoot: {fileID: 860588345486713658}
   _pontoAviso: {fileID: 6792749868548559501}
@@ -812,6 +815,15 @@ MonoBehaviour:
   _danoProjetil: 1
   _escalaVisual: 2.8
   _margemCoberturaLanes: 0.6
+  _aoIniciarCarregamento:
+    m_PersistentCalls:
+      m_Calls: []
+  _aoDisparar:
+    m_PersistentCalls:
+      m_Calls: []
+  _aoFinalizar:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &910040004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -843,6 +855,18 @@ MonoBehaviour:
   _velocidadeProjetil: 32
   _danoProjetil: 1
   _escalaVisual: 1
+  _aoIniciarSequencia:
+    m_PersistentCalls:
+      m_Calls: []
+  _aoAvisarDisparo:
+    m_PersistentCalls:
+      m_Calls: []
+  _aoDisparar:
+    m_PersistentCalls:
+      m_Calls: []
+  _aoFinalizar:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &910040005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -862,6 +886,10 @@ MonoBehaviour:
   _teclaSequenciaRapida: 43
   _teclaInvocacao: 44
   _teclaSombrioIsolado: 45
+  _teclaCidade: 46
+  _teclaFloresta: 47
+  _ocultarProgressoEntregasNoTeste: 0
+  _ocultarTextoVidaNoTeste: 0
   _comportamento: {fileID: 910010003}
   _ataqueProjetil: {fileID: 910030001}
   _tiroCarregado: {fileID: 910040003}
@@ -881,7 +909,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GerenciadorInvocadosNecromante
   _vidaBoss: {fileID: 910020001}
   _prefabZumbi: {fileID: 8498067144817464451, guid: fd2ed285d5f2eb647bb92e60686f81cb, type: 3}
-  _prefabMaoZumbi: {fileID: 9061229168869557155, guid: 05d66da6eb88e6f4fbcddd8da6a9184a, type: 3}
+  _prefabMaoZumbi: {fileID: 1554191862308413471, guid: 05d66da6eb88e6f4fbcddd8da6a9184a, type: 3}
   _prefabZumbiSombrio: {fileID: 610000005, guid: b6c7fb048ec04383d0815f6ea2b3c4d5, type: 3}
   _alvoPadrao: {fileID: 0}
   _viewportXSpawn: 1.15
@@ -916,6 +944,15 @@ MonoBehaviour:
   _intervaloEntreInvocados: 0.2
   _intervaloEntreOndas: 1.5
   _tempoRecuperacao: 0.5
+  _aoIniciarRitual:
+    m_PersistentCalls:
+      m_Calls: []
+  _aoInvocarOnda:
+    m_PersistentCalls:
+      m_Calls: []
+  _aoFinalizar:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &910060001
 MonoBehaviour:
   m_ObjectHideFlags: 0
