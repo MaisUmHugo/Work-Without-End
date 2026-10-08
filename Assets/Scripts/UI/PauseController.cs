@@ -18,6 +18,12 @@ public class PauseController : MonoBehaviour
 
     private void Awake()
     {
+        JogoPausado = false;
+        BloqueioGameplay.Definir(MotivoBloqueioGameplay.Pause, false);
+        painelPause.SetActive(false);
+        painelConfirmacao.SetActive(false);
+        FundoCinza.SetActive(false);
+        if (_painelControles != null) _painelControles.SetActive(false);
         inputs = new INPUTS();
 
         inputs.Gameplay.Pause.performed += ctx =>

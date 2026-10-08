@@ -1763,6 +1763,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3047321364028152794}
   - component: {fileID: 4379413966157647750}
+  - component: {fileID: 948997820618904498}
   m_Layer: 0
   m_Name: MenuController
   m_TagString: Untagged
@@ -1808,6 +1809,21 @@ MonoBehaviour:
   CenaFim: CenaFimDemo
   CenaMenu: MenuPrincipal
   CenaCreditos: Creditos
+--- !u!114 &948997820618904498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2792283733562743002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 094dc9cf5dfc55c4b8d99488235db61e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ControleCursorUI
+  _permitirPonteiroControle: 0
+  _velocidadePonteiro: 900
+  _zonaMorta: 0.25
 --- !u!1 &3280592207921650689
 GameObject:
   m_ObjectHideFlags: 0

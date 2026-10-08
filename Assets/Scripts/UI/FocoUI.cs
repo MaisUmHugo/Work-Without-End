@@ -69,7 +69,6 @@ public static class FocoUI
         Gamepad controle = Gamepad.current;
         if (controle == null) return;
         bool navegando = controle.leftStick.ReadValue().sqrMagnitude > 0.25f
-            || controle.rightStick.ReadValue().sqrMagnitude > 0.25f
             || controle.dpad.ReadValue().sqrMagnitude > 0.25f;
         if (navegando) SelecionarPrimeiroBotao(_painelAtivo);
     }

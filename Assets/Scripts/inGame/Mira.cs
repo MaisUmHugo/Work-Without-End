@@ -6,6 +6,7 @@ public class Mira : MonoBehaviour
 {
     public const string ChaveSensibilidadeControle = "SensibilidadeControle";
     public const float SensibilidadeControlePadrao = 5f;
+    public const string ChaveMiraOitoDirecoes = "MiraOitoDirecoes";
     private Camera cam;
     private INPUTS inputs;
     private SpriteRenderer sr;
@@ -20,6 +21,7 @@ public class Mira : MonoBehaviour
     private float _limiarMudancaDirecao = 3f;
     [SerializeField, Min(1f), Tooltip("Velocidade de ajuste da direcao, em graus por segundo.")]
     private float _velocidadeRotacaoControle = 720f;
+    [SerializeField] private bool _miraOitoDirecoes = true;
 
     [Header("Assistencia de mira no controle")]
     [SerializeField] private bool _ativarAssistencia = true;
@@ -34,6 +36,7 @@ public class Mira : MonoBehaviour
     private Vector2 _direcaoControle = Vector2.right;
     private Vector2 _direcaoDesejada = Vector2.right;
     public float SensibilidadeControle => _sensibilidadeControle;
+    public bool MiraOitoDirecoes => _miraOitoDirecoes;
 
     [Header("Cooldown Visual")]
     public Image cooldownUI;
@@ -45,6 +48,7 @@ public class Mira : MonoBehaviour
         cam = Camera.main;
         inputs = new INPUTS();
         DefinirSensibilidadeControle(PlayerPrefs.GetFloat(ChaveSensibilidadeControle, SensibilidadeControlePadrao));
+        DefinirMiraOitoDirecoes(PlayerPrefs.GetInt(ChaveMiraOitoDirecoes, 1) == 1);
         _mirarControle = inputs.asset.FindAction("Gameplay/MirarControle", true);
         sr = GetComponent<SpriteRenderer>();
 
@@ -85,6 +89,19 @@ public class Mira : MonoBehaviour
         _sensibilidadeControle = Mathf.Clamp(valor, 0f, 10f);
     }
 
+    public void DefinirMiraOitoDirecoes(bool ativada)
+    {
+        _miraOitoDirecoes = ativada;
+        if (ativada)
+            _direcaoControle = _direcaoDesejada = AjustarOitoDirecoes(_direcaoDesejada);
+    }
+
+    private Vector2 AjustarOitoDirecoes(Vector2 direcao)
+    {
+        float angulo = Mathf.Round(Mathf.Atan2(direcao.y, direcao.x) * Mathf.Rad2Deg / 45f) * 45f * Mathf.Deg2Rad;
+        return new Vector2(Mathf.Cos(angulo), Mathf.Sin(angulo));
+    }
+
     public Vector3 ObterPosicaoAlvo(Transform origem)
     {
         if (_usandoControle && origem != null)
@@ -108,13 +125,18 @@ public class Mira : MonoBehaviour
 
     private void AtualizarDirecaoDesejada(Vector2 direcao)
     {
+        if (_miraOitoDirecoes)
+        {
+            _direcaoControle = _direcaoDesejada = AjustarOitoDirecoes(direcao);
+            return;
+        }
         if (Vector2.Angle(_direcaoDesejada, direcao) >= _limiarMudancaDirecao)
             _direcaoDesejada = direcao.normalized;
     }
 
     private Vector2 ObterDirecaoAssistida(Vector2 origem)
     {
-        if (!_ativarAssistencia || _intensidadeAssistencia <= 0f || BloqueioGameplay.Bloqueado)
+        if (_miraOitoDirecoes || !_ativarAssistencia || _intensidadeAssistencia <= 0f || BloqueioGameplay.Bloqueado)
             return _direcaoControle;
         if (cam == null) cam = Camera.main;
         if (cam == null) return _direcaoControle;
