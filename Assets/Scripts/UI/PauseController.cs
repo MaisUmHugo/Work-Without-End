@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class PauseController : MonoBehaviour
 {
@@ -15,6 +16,16 @@ public class PauseController : MonoBehaviour
     public static bool JogoPausado { get; private set; }
     private System.Action acaoConfirmada; 
     private int _ultimoFrameFecharControles = -1;
+    private class EstadoHudPause
+    {
+        public CanvasGroup Grupo;
+        public float Alpha;
+        public bool Interagivel;
+        public bool BloqueiaRaycasts;
+    }
+    private readonly List<EstadoHudPause> _hudsOcultas = new List<EstadoHudPause>();
+    private SpriteRenderer _miraOculta;
+    private bool _miraEstavaVisivel;
 
     private void Awake()
     {
@@ -58,12 +69,16 @@ public class PauseController : MonoBehaviour
     private void OnDisable()
     {
         inputs.Disable();
+        if (JogoPausado) FecharPause();
+        else RestaurarHud();
     }
 
     public void AbrirPause()
     {
+        if (JogoPausado) return;
         JogoPausado = true;
         BloqueioGameplay.Definir(MotivoBloqueioGameplay.Pause, true);
+        OcultarHud();
 
         FundoCinza.SetActive(true);
         painelPause.SetActive(true);
@@ -79,6 +94,7 @@ public class PauseController : MonoBehaviour
     {
         JogoPausado = false;
         BloqueioGameplay.Definir(MotivoBloqueioGameplay.Pause, false);
+        RestaurarHud();
 
         painelPause.SetActive(false);
         FundoCinza.SetActive(false);
@@ -87,6 +103,54 @@ public class PauseController : MonoBehaviour
         //painelMenuInicial.SetActive(true);
 
         Debug.Log("Pause fechado");
+    }
+
+    private void OcultarHud()
+    {
+        _hudsOcultas.Clear();
+        var grupos = new HashSet<GameObject>();
+        foreach (MonoBehaviour componente in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (!(componente is IHudTransicaoCenario hud)) continue;
+            GameObject objeto = hud.GrupoHudTransicao;
+            if (objeto == null || !grupos.Add(objeto)) continue;
+            OcultarGrupoHud(objeto);
+        }
+        Mira mira = FindFirstObjectByType<Mira>(FindObjectsInactive.Include);
+        if (mira != null && mira.cooldownUI != null && mira.cooldownUI.canvas != null
+            && grupos.Add(mira.cooldownUI.canvas.gameObject))
+            OcultarGrupoHud(mira.cooldownUI.canvas.gameObject);
+        _miraOculta = mira != null ? mira.GetComponent<SpriteRenderer>() : null;
+        if (_miraOculta != null)
+        {
+            _miraEstavaVisivel = _miraOculta.enabled;
+            _miraOculta.enabled = false;
+        }
+    }
+
+    private void OcultarGrupoHud(GameObject objeto)
+    {
+        CanvasGroup grupo = objeto.GetComponent<CanvasGroup>();
+        if (grupo == null) grupo = objeto.AddComponent<CanvasGroup>();
+        _hudsOcultas.Add(new EstadoHudPause { Grupo = grupo, Alpha = grupo.alpha,
+            Interagivel = grupo.interactable, BloqueiaRaycasts = grupo.blocksRaycasts });
+        grupo.alpha = 0f;
+        grupo.interactable = false;
+        grupo.blocksRaycasts = false;
+    }
+
+    private void RestaurarHud()
+    {
+        foreach (EstadoHudPause estado in _hudsOcultas)
+        {
+            if (estado.Grupo == null) continue;
+            estado.Grupo.alpha = estado.Alpha;
+            estado.Grupo.interactable = estado.Interagivel;
+            estado.Grupo.blocksRaycasts = estado.BloqueiaRaycasts;
+        }
+        _hudsOcultas.Clear();
+        if (_miraOculta != null) _miraOculta.enabled = _miraEstavaVisivel;
+        _miraOculta = null;
     }
 
     // --- Botões ---
@@ -156,6 +220,7 @@ public class PauseController : MonoBehaviour
 
     private void OnDestroy()
     {
+        RestaurarHud();
         BloqueioGameplay.Definir(MotivoBloqueioGameplay.Pause, false);
 
         if (JogoPausado)
