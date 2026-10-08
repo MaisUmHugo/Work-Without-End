@@ -52,7 +52,7 @@ Edite `Assets/Prefabs/GameObjects/CanvasHUD.prefab`, em `VidasCoracoes`. Há tr�
 
 No prefab `Necromante`, `ControleAnimatorNecromante` controla a morte em três trechos: início a **0.5**, meio a **0.25** e final a **0.35**. O meio começa em 30% do clipe e o desmanche em 72%, ajustáveis no Inspector. O controlador percorre o mesmo clipe de arte, respeitando pause e esses tempos.
 
-`EfeitoMorteNecromante` mantém o brilho HDR e usa cinco sprites da smoke **FX001**, do Free Pixel Art FX Package importado pelo usuário. Os quadros ficam em `Efeitos/FumacaPixel`; a cópia tem GUIDs próprios e não depende da cena de demonstração. Não há fantasmas conectados ao boss.
+`EfeitoMorteNecromante` usa cinco sprites da smoke **FX001**, do Free Pixel Art FX Package importado pelo usuário. **Intensidade Brilho = 1** mantém a morte sem glow, conforme aprovado em teste. Os quadros ficam em `Efeitos/FumacaPixel`; a cópia tem GUIDs próprios e não depende da cena de demonstração. Não há fantasmas conectados ao boss.
 
 A smoke começa durante o desmanche, acompanha a parte inferior do corpo e cobre o sprite enquanto ele desaparece. **Duracao Fumaca = 1.2 segundos**, cobertura, altura no corpo e cor são ajustáveis. Antes de chegar ao último frame, o sprite do boss fica invisível. A fumaça percorre seus desenhos, dissipa e seu objeto é destruído ao terminar; o encontro aguarda essa conclusão. A pausa suspende os dois, e reiniciar restaura material e visibilidade do boss.
 
