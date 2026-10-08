@@ -25,7 +25,7 @@ public class ProgressaoNecromante : MonoBehaviour
     [Header("Encontros apos concluir a horda")]
     [SerializeField, Min(1)] private int _hordaPrimeiroEncontro = 10;
     [SerializeField, Min(2)] private int _hordaEncontroFinal = 20;
-    [SerializeField, Min(1f)] private float _dificuldadeEncontroFinal = 1.15f;
+    [SerializeField, Min(1f)] private float _dificuldadeEncontroFinal = 1.35f;
 
     [Header("Pontuacao dos encontros")]
     [SerializeField, Min(0)] private int _pontosFuga = 5000;

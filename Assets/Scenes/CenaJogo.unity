@@ -1714,7 +1714,7 @@ MonoBehaviour:
   _hordaPrimeiroEncontro: 10
   _hordaEncontroFinal: 20
   _ativarCheats: 1
-  _dificuldadeEncontroFinal: 1.15
+  _dificuldadeEncontroFinal: 1.35
   _pontosFuga: 5000
   _pontosDerrotaDefinitiva: 10000
   _duracaoFadeHud: 0.3
