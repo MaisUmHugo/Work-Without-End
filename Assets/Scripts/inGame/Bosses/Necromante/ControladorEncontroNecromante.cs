@@ -23,6 +23,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
     [Header("Vida por trecho")]
     [SerializeField, Min(2)] private int _vidaFases1E2 = 16;
     [SerializeField, Min(1)] private int _vidaFase3 = 8;
+    [SerializeField, Min(0.1f)] private float _duracaoRecuperacaoFase3 = 1.5f;
 
     [Header("Animacoes de encerramento")]
     [SerializeField, Min(0f)] private float _duracaoFuga = 2.4f;
@@ -38,6 +39,9 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
 
     private Vector3 _posicaoInicial;
     private Coroutine _sequenciaEncerramento;
+    private Coroutine _recuperacaoVida;
+
+    public bool RecuperandoVida { get; private set; }
     private bool _encerramentoIniciado;
     private bool _encontroConcluido;
     private FaseBoss _faseInicialEncontroFinal = FaseBoss.Fase1;
@@ -82,6 +86,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
 
     private void OnDisable()
     {
+        CancelarRecuperacaoVida();
         if (_vida != null)
         {
             _vida.VidaAlterada -= AoAlterarVida;
@@ -143,8 +148,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
         {
             _controladorBoss.EncerrarExecucao();
             _gerenciadorInvocados.RemoverTodos();
-            _vida.DefinirVidaMaxima(_vidaFase3, true);
-            _controladorBoss.IniciarEncontro();
+            _recuperacaoVida = StartCoroutine(RecuperarVidaFase3());
             return;
         }
 
@@ -170,6 +174,41 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
             _aoDerrotaDefinitiva?.Invoke();
             _sequenciaEncerramento = StartCoroutine(AguardarDerrota());
         }
+    }
+
+    private IEnumerator RecuperarVidaFase3()
+    {
+        RecuperandoVida = true;
+        _colisor.enabled = false;
+        _feedback.DefinirRecuperandoVida(true);
+        _vida.DefinirVidaMaxima(_vidaFase3, false);
+        _vida.DefinirVulneravel(false);
+        _vida.RecuperarVida(1);
+
+        float tempo = 0f;
+        float duracao = Mathf.Max(0.1f, _duracaoRecuperacaoFase3);
+        while (tempo < duracao)
+        {
+            yield return null;
+            tempo += TempoGameplay.DeltaTime;
+            int vidaDesejada = Mathf.Max(1, Mathf.FloorToInt(_vida.VidaMaxima * Mathf.Clamp01(tempo / duracao)));
+            _vida.RecuperarVida(vidaDesejada - _vida.VidaAtual);
+        }
+
+        _vida.RecuperarVida(_vida.VidaMaxima - _vida.VidaAtual);
+        _recuperacaoVida = null;
+        RecuperandoVida = false;
+        _feedback.DefinirRecuperandoVida(false);
+        _colisor.enabled = true;
+        _controladorBoss.IniciarEncontro();
+    }
+
+    private void CancelarRecuperacaoVida()
+    {
+        if (_recuperacaoVida != null) StopCoroutine(_recuperacaoVida);
+        _recuperacaoVida = null;
+        RecuperandoVida = false;
+        if (_feedback != null) _feedback.DefinirRecuperandoVida(false);
     }
 
     private IEnumerator ExecutarFuga()
@@ -222,6 +261,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
 
     private void ReiniciarEstadoEncontro()
     {
+        CancelarRecuperacaoVida();
         if (_sequenciaEncerramento != null)
             StopCoroutine(_sequenciaEncerramento);
 
@@ -253,6 +293,7 @@ public class ControladorEncontroNecromante : MonoBehaviour, IControladorEncontro
         _inicioFase2EncontroFinal = Mathf.Clamp01(_inicioFase2EncontroFinal);
         _inicioFase3EncontroFinal = Mathf.Clamp(
             _inicioFase3EncontroFinal, 0f, _inicioFase2EncontroFinal);
+        _duracaoRecuperacaoFase3 = Mathf.Max(0.1f, _duracaoRecuperacaoFase3);
         _vidaFases1E2 = Mathf.Max(2, _vidaFases1E2);
         _vidaFase3 = Mathf.Clamp(_vidaFase3, 1, _vidaFases1E2 - 1);
         _duracaoFuga = Mathf.Max(0f, _duracaoFuga);

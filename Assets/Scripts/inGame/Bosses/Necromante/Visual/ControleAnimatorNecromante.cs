@@ -110,6 +110,13 @@ public class ControleAnimatorNecromante : MonoBehaviour
             return;
         }
 
+        if (_encontro.RecuperandoVida)
+        {
+            _tempoReacaoDano = 0f;
+            Tocar(EstadoVisual.Idle);
+            return;
+        }
+
         if (_vida.Esgotada)
         {
             _tempoReacaoDano = 0f;

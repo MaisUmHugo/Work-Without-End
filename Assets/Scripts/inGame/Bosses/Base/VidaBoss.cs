@@ -49,6 +49,18 @@ public class VidaBoss : MonoBehaviour
         VidaAlterada?.Invoke(_vidaAtual, _vidaMaxima);
     }
 
+    public void RecuperarVida(int quantidade)
+    {
+        if (quantidade <= 0) return;
+
+        int novaVida = (int)Math.Min((long)_vidaMaxima, (long)_vidaAtual + quantidade);
+        if (novaVida == _vidaAtual) return;
+
+        _vidaAtual = novaVida;
+        _esgotamentoNotificado = false;
+        VidaAlterada?.Invoke(_vidaAtual, _vidaMaxima);
+    }
+
     public void DefinirVulneravel(bool vulneravel)
     {
         bool novoValor = vulneravel && !Esgotada;

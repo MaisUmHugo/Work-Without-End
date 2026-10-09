@@ -21,6 +21,7 @@ public class FeedbackBoss : MonoBehaviour
     private Coroutine _feedbackAtual;
     private bool _exibirEsgotado = true;
     private float _tempoPiscarVulneravel;
+    private bool _recuperandoVida;
 
     private void Awake()
     {
@@ -46,11 +47,12 @@ public class FeedbackBoss : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (BloqueioGameplay.Bloqueado || _feedbackAtual != null || !_piscarQuandoVulneravel
-            || _spriteRenderer == null || _vida == null || !_vida.Vulneravel || _vida.Esgotada) return;
+        if (BloqueioGameplay.Bloqueado || _feedbackAtual != null
+            || _spriteRenderer == null || _vida == null) return;
+        if (!_recuperandoVida && (!_piscarQuandoVulneravel || !_vida.Vulneravel || _vida.Esgotada)) return;
 
         _tempoPiscarVulneravel += TempoGameplay.DeltaTime;
-        Color cor = _corVulneravel;
+        Color cor = _recuperandoVida ? _corOriginal : _corVulneravel;
         if (Mathf.FloorToInt(_tempoPiscarVulneravel / _intervaloPiscarVulneravel) % 2 == 1)
             cor.a *= _alphaPiscarVulneravel;
         _spriteRenderer.color = cor;
@@ -58,6 +60,7 @@ public class FeedbackBoss : MonoBehaviour
 
     private void OnDisable()
     {
+        _recuperandoVida = false;
         if (_vida != null)
         {
             _vida.VidaAlterada -= AoAlterarVida;
@@ -107,6 +110,15 @@ public class FeedbackBoss : MonoBehaviour
         AtualizarCorBase();
     }
 
+    public void DefinirRecuperandoVida(bool recuperandoVida)
+    {
+        _recuperandoVida = recuperandoVida;
+        _tempoPiscarVulneravel = 0f;
+        if (_feedbackAtual != null) StopCoroutine(_feedbackAtual);
+        _feedbackAtual = null;
+        AtualizarCorBase();
+    }
+
     public void DefinirExibirEsgotado(bool exibirEsgotado)
     {
         _exibirEsgotado = exibirEsgotado;
@@ -116,7 +128,7 @@ public class FeedbackBoss : MonoBehaviour
 
     private void IniciarFeedback(Color cor)
     {
-        if (_spriteRenderer == null || _vida == null || _vida.Esgotada) return;
+        if (_recuperandoVida || _spriteRenderer == null || _vida == null || _vida.Esgotada) return;
 
         if (_feedbackAtual != null)
             StopCoroutine(_feedbackAtual);
@@ -136,7 +148,7 @@ public class FeedbackBoss : MonoBehaviour
     {
         if (_spriteRenderer == null || _vida == null) return;
 
-        _spriteRenderer.color = _vida.Esgotada && _exibirEsgotado
+        _spriteRenderer.color = _recuperandoVida ? _corOriginal : _vida.Esgotada && _exibirEsgotado
             ? _corEsgotado
             : (_vida.Vulneravel ? _corVulneravel : _corOriginal);
     }
