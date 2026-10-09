@@ -39,6 +39,8 @@ public class HUDManager : MonoBehaviour, IHudTransicaoCenario
         ScoreManager.instance.OnScoreMudou += AtualizarScore;
         VidaManager.instance.OnVidaMudou += AtualizarVidas;
         VidaManager.instance.PerdasSeguidasAlteradas += AtualizarAvisoEntregas;
+        if (ComboManager.instance != null)
+            ComboManager.instance.OnComboMudou += AtualizarCombo;
     }
 
     private void OnDestroy()
@@ -52,6 +54,8 @@ public class HUDManager : MonoBehaviour, IHudTransicaoCenario
             VidaManager.instance.OnVidaMudou -= AtualizarVidas;
             VidaManager.instance.PerdasSeguidasAlteradas -= AtualizarAvisoEntregas;
         }
+        if (ComboManager.instance != null)
+            ComboManager.instance.OnComboMudou -= AtualizarCombo;
 
     }
 
@@ -82,12 +86,23 @@ public class HUDManager : MonoBehaviour, IHudTransicaoCenario
         }
     }
 
+    private void AtualizarCombo(int combo)
+    {
+        AtualizarAvisoEntregas(VidaManager.instance != null ? VidaManager.instance.EntregasPerdidasSeguidas : 0);
+    }
+
     private void AtualizarAvisoEntregas(int perdas)
     {
         if (comboText == null) return;
+        int combo = ComboManager.instance != null ? ComboManager.instance.comboAtual : 0;
+        if (combo > 0 || perdas == 0)
+        {
+            comboText.color = _corCombo;
+            comboText.text = combo > 0 ? $"COMBO: {combo}" : "";
+            return;
+        }
         int restantes = VidaManager.instance != null ? VidaManager.instance.PerdasRestantesParaDano : 3;
-        comboText.color = perdas == 0 ? _corCombo
-            : restantes == 1 ? new Color(1f, .3f, .25f) : new Color(1f, .85f, .15f);
+        comboText.color = restantes == 1 ? new Color(1f, .3f, .25f) : new Color(1f, .85f, .15f);
         int limite = perdas + restantes;
         comboText.text = $"ENTREGAS PERDIDAS: {perdas}/{limite}";
     }
