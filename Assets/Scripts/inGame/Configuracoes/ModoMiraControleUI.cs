@@ -81,7 +81,9 @@ public class ModoMiraControleUI : MonoBehaviour, IPointerClickHandler, ISubmitHa
         TooltipTrigger ajuda = GetComponent<TooltipTrigger>();
         if (ajuda != null)
         {
-            ajuda.mensagem = "Esquerda/direita ou clique troca o modo. " + descricao + " O mouse continua com mira livre.";
+            ajuda.mensagem = "Direções fixas: o analógico escolhe direções predefinidas.\n"
+                + "Livre: o analógico orienta a mira em qualquer direção.\n"
+                + "Cursor: o analógico move a mira pela tela como um mouse.";
             TooltipUI tooltip = GetComponentInChildren<TooltipUI>(true);
             if (tooltip != null && tooltip.painel.gameObject.activeInHierarchy) tooltip.Mostrar(ajuda.mensagem);
         }

@@ -214,8 +214,8 @@ MonoBehaviour:
   _sensibilidadeControle: 5
   _limiarMudancaDirecao: 3
   _velocidadeRotacaoControle: 720
-  _miraOitoDirecoes: 1
-  _modoMiraControle: 0
+  _miraOitoDirecoes: 0
+  _modoMiraControle: 2
   _angulosDirecoesFixas:
   - -180
   - -135

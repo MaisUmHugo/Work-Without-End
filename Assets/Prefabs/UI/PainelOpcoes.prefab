@@ -3698,8 +3698,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 291ce3f12cffe3b439cf275da013c69b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TooltipTrigger
-  mensagem: "Esquerda/direita troca entre Dire\xE7\xF5es Fixas, Livre e Cursor. O
-    mouse continua com mira livre."
+  mensagem: "Dire\xE7\xF5es fixas: o anal\xF3gico escolhe dire\xE7\xF5es predefinidas.\nLivre: o anal\xF3gico orienta a mira em qualquer dire\xE7\xE3o.\nCursor: o anal\xF3gico move a mira pela tela como um mouse."
 --- !u!114 &1457443617396499862
 MonoBehaviour:
   m_ObjectHideFlags: 0

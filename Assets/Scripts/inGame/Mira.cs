@@ -30,8 +30,8 @@ public class Mira : MonoBehaviour
     private float _limiarMudancaDirecao = 3f;
     [SerializeField, Min(1f), Tooltip("Velocidade de ajuste da direcao, em graus por segundo.")]
     private float _velocidadeRotacaoControle = 720f;
-    [SerializeField, HideInInspector] private bool _miraOitoDirecoes = true;
-    [SerializeField] private ModoMiraControle _modoMiraControle;
+    [SerializeField, HideInInspector] private bool _miraOitoDirecoes;
+    [SerializeField] private ModoMiraControle _modoMiraControle = ModoMiraControle.Cursor;
     [SerializeField, Tooltip("Graus em relacao a direita. Inclui mais diagonais para frente.")]
     private float[] _angulosDirecoesFixas = { -180f, -135f, -90f, -75f, -60f, -45f, -30f, -15f, 0f, 15f, 30f, 45f, 60f, 75f, 90f, 135f };
     [SerializeField, Min(1f)] private float _velocidadeCursorControle = 900f;
@@ -58,7 +58,9 @@ public class Mira : MonoBehaviour
 
     public static ModoMiraControle ObterModoSalvo()
     {
-        int anterior = PlayerPrefs.GetInt(ChaveMiraOitoDirecoes, 1) == 1 ? 0 : 1;
+        int anterior = PlayerPrefs.HasKey(ChaveMiraOitoDirecoes)
+            ? (PlayerPrefs.GetInt(ChaveMiraOitoDirecoes) == 1 ? 0 : 1)
+            : (int)ModoMiraControle.Cursor;
         return (ModoMiraControle)Mathf.Clamp(PlayerPrefs.GetInt(ChaveModoMiraControle, anterior), 0, 2);
     }
 
