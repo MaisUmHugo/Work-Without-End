@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Slider))]
-public class ModoMiraControleUI : MonoBehaviour, IPointerClickHandler
+public class ModoMiraControleUI : MonoBehaviour, IPointerClickHandler, ISubmitHandler, ICancelHandler
 {
     [SerializeField] private TMP_Text _textoModo;
     [SerializeField] private TMP_Text _textoDescricao;
@@ -34,6 +34,30 @@ public class ModoMiraControleUI : MonoBehaviour, IPointerClickHandler
             eventData.position, eventData.pressEventCamera, out Vector2 posicao);
         int passo = posicao.x < 0f ? -1 : 1;
         _slider.value = ((int)_slider.value + passo + 3) % 3;
+    }
+
+    public void OnSubmit(BaseEventData eventData)
+    {
+        SairDoSeletor(eventData);
+    }
+
+    public void OnCancel(BaseEventData eventData)
+    {
+        SairDoSeletor(eventData);
+    }
+
+    private void SairDoSeletor(BaseEventData eventData)
+    {
+        if (_slider == null || !_slider.IsInteractable() || EventSystem.current == null) return;
+
+        Navigation navegacao = _slider.navigation;
+        Selectable destino = navegacao.selectOnDown;
+        if (destino == null || !destino.isActiveAndEnabled || !destino.IsInteractable())
+            destino = navegacao.selectOnUp;
+        if (destino == null || !destino.isActiveAndEnabled || !destino.IsInteractable()) return;
+
+        EventSystem.current.SetSelectedGameObject(destino.gameObject);
+        eventData.Use();
     }
 
     private void Aplicar(float valor)
