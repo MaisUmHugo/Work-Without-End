@@ -18,11 +18,17 @@ public class ReceptorEntregaBoss : MonoBehaviour
     {
         if (!colisao.CompareTag("Caixa")) return;
 
-        Caixa caixa = colisao.GetComponentInParent<Caixa>();
-        if (caixa == null || !caixa.TentarConsumir()) return;
+        TentarReceberCaixa(colisao.GetComponentInParent<Caixa>());
+    }
 
-        if (_vida.TentarReceberDano(_danoPorEntrega))
+    public bool TentarReceberCaixa(Caixa caixa)
+    {
+        if (!isActiveAndEnabled || _vida == null || caixa == null || !caixa.TentarConsumir()) return false;
+
+        bool recebeuDano = _vida.TentarReceberDano(_danoPorEntrega);
+        if (recebeuDano)
             VidaManager.instance?.RegistrarEntregaBemSucedida();
+        return recebeuDano;
     }
 
     private void OnValidate()

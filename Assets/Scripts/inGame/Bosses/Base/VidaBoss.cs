@@ -84,14 +84,26 @@ public class VidaBoss : MonoBehaviour
         _vidaAtual = Mathf.Max(0, _vidaAtual - dano);
         int danoAplicado = vidaAnterior - _vidaAtual;
 
-        DanoRecebido?.Invoke(danoAplicado);
-        VidaAlterada?.Invoke(_vidaAtual, _vidaMaxima);
-
-        if (Esgotada && !_esgotamentoNotificado)
+        try
         {
-            _esgotamentoNotificado = true;
-            DefinirVulneravel(false);
-            VidaEsgotada?.Invoke();
+            DanoRecebido?.Invoke(danoAplicado);
+            VidaAlterada?.Invoke(_vidaAtual, _vidaMaxima);
+        }
+        finally
+        {
+            // A falha de um feedback nao pode impedir a fuga, troca de fase ou derrota.
+            if (Esgotada && !_esgotamentoNotificado)
+            {
+                _esgotamentoNotificado = true;
+                try
+                {
+                    DefinirVulneravel(false);
+                }
+                finally
+                {
+                    VidaEsgotada?.Invoke();
+                }
+            }
         }
 
         return true;

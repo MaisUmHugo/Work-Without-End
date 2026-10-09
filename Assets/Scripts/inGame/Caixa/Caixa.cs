@@ -31,20 +31,26 @@ public class Caixa : MonoBehaviour
         filtro.useTriggers = true;
         int quantidade = _colisor.Cast(deslocamento.normalized, filtro, _contatosTrajeto, deslocamento.magnitude);
         ZumbiSombrio sombrioMaisProximo = null;
+        ReceptorEntregaBoss bossMaisProximo = null;
         float menorDistancia = float.MaxValue;
         for (int i = 0; i < quantidade; i++)
         {
             Collider2D contato = _contatosTrajeto[i].collider;
             if (contato == null || contato.CompareTag("Player")) continue;
             ZumbiSombrio sombrio = contato.GetComponentInParent<ZumbiSombrio>();
-            if (sombrio == null && contato.isTrigger && contato.GetComponentInParent<Entregavel>() == null)
+            ReceptorEntregaBoss boss = contato.GetComponentInParent<ReceptorEntregaBoss>();
+            if (sombrio == null && boss == null && contato.isTrigger && contato.GetComponentInParent<Entregavel>() == null)
                 continue;
             if (_contatosTrajeto[i].distance >= menorDistancia) continue;
             menorDistancia = _contatosTrajeto[i].distance;
             sombrioMaisProximo = sombrio;
+            bossMaisProximo = boss;
         }
         // Outros destinatarios continuam usando suas colisoes; nao entrega atraves deles.
-        sombrioMaisProximo?.TentarReceberCaixa(this);
+        if (bossMaisProximo != null)
+            bossMaisProximo.TentarReceberCaixa(this);
+        else
+            sombrioMaisProximo?.TentarReceberCaixa(this);
     }
 
     private void Start()
@@ -53,6 +59,14 @@ public class Caixa : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        ReceptorEntregaBoss receptorBoss = collision.GetComponentInParent<ReceptorEntregaBoss>();
+        if (receptorBoss != null)
+        {
+            // Ambos os callbacks encaminham ao receptor antes de consumir a caixa.
+            receptorBoss.TentarReceberCaixa(this);
+            return;
+        }
+
         if (collision.gameObject.layer == LayerMask.NameToLayer(layerEntregavel))
         {
             // só some a caixa, quem recebeu decide se ganha ponto
