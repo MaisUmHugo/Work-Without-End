@@ -370,6 +370,7 @@ MonoBehaviour:
   velocidadeVertical: 2.5
   velocidadeFrente: 1
   velocidadeSaida: 3
+  _multiplicadorSaidaAposEntrega: 2
   tempoAtivoEntrega: 3.5
   tempoexclamacao: 1.5
   intensidadeEscalaFrente: 0.635

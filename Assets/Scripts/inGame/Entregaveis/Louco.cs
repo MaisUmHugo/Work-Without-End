@@ -8,6 +8,8 @@ public class Louco : Entregavel, IAjustavelDificuldade
     public float velocidadeVertical = 5f;   // velocidade no eixo Y
     public float velocidadeFrente = 2f;     // velocidade no eixo X (frente = esquerda)
     public float velocidadeSaida = 6f;      // velocidade depois que atravessou
+    [SerializeField, Min(1f), Tooltip("Multiplica a velocidade horizontal depois de receber a entrega.")]
+    private float _multiplicadorSaidaAposEntrega = 2f;
     public float tempoAtivoEntrega = 1.2f;
     public float tempoexclamacao;
 
@@ -133,8 +135,9 @@ public class Louco : Entregavel, IAjustavelDificuldade
         else if (terminouTravessia)
         {
             // Depois da travessia, anda reto em X até sair da tela
+            float velocidadeAtual = velocidadeSaida * (entregaRecebida ? _multiplicadorSaidaAposEntrega : 1f);
             transform.position = new Vector3(
-                transform.position.x - velocidadeSaida * TempoGameplay.DeltaTime,
+                transform.position.x - velocidadeAtual * TempoGameplay.DeltaTime,
                 yTravado,
                 transform.position.z
             );
