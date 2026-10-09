@@ -11,8 +11,8 @@ public class Mao_Zumbi : Entregavel, IAjustavelDificuldade
     public float tempoexclamacao;
 
     [Header("Dificuldade")]
-    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaMovimento = 0.79f;
-    [SerializeField, Min(1f)] private float fatorMaximoMovimento = 16f;
+    [SerializeField, Range(0f, 1f)] private float intensidadeEscalaMovimento = 0.35f;
+    [SerializeField, Min(1f)] private float fatorMaximoMovimento = 7.6f;
     private float velocidadeBase;
 
     // Sprite renderer para fazer o efeito de piscar

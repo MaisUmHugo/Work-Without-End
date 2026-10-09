@@ -586,12 +586,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ativoParaEntrega: 1
   Exclamacao: {fileID: 4279375068704336945}
-  velocidade: 9
+  velocidade: 7.5
   intervaloPiscar: 0.15
   distanciaEntrega: 60
   tempoexclamacao: 1.5
-  intensidadeEscalaMovimento: 0.79
-  fatorMaximoMovimento: 16
+  intensidadeEscalaMovimento: 0.35
+  fatorMaximoMovimento: 7.6
   duracaoTelegraphBase: 1.5
   duracaoTelegraphMinima: 0.45
   corNormal: {r: 1, g: 1, b: 1, a: 1}
