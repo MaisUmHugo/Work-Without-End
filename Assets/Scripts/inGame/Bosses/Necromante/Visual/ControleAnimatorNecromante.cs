@@ -17,7 +17,8 @@ public class ControleAnimatorNecromante : MonoBehaviour
         InvocacaoSustentar,
         TeleporteFuga,
         Vulneravel,
-        Morte
+        Morte,
+        Dano
     }
 
     private static readonly int Idle = Animator.StringToHash("Base Layer.Idle");
@@ -31,6 +32,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
     private static readonly int InvocacaoSustentar = Animator.StringToHash("Base Layer.Invocacao_Sustentar");
     private static readonly int TeleporteFuga = Animator.StringToHash("Base Layer.Teleporte_Fuga");
     private static readonly int Vulneravel = Animator.StringToHash("Base Layer.Vulneravel");
+    private static readonly int Dano = Animator.StringToHash("Base Layer.Dano");
     private static readonly int Morte = Animator.StringToHash("Base Layer.Morte");
     private static readonly int InicioCurto = Animator.StringToHash("Invocacao_Inicio");
     private static readonly int AbaixarCurto = Animator.StringToHash("Invocacao_Abaixar");
@@ -52,6 +54,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
     private EstadoVisual _estadoAtual;
     private bool _apresentandoEntrada;
     private float _tempoMorte;
+    private float _tempoReacaoDano;
 
     public TipoAtaqueNecromante TipoAtaqueAtual { get; private set; }
     public float TempoInicioDesmancheMorte => ObterDuracaoClip("Placeholder_Morte")
@@ -75,10 +78,14 @@ public class ControleAnimatorNecromante : MonoBehaviour
         _estadoAtual = EstadoVisual.Nenhum;
         _tempoMorte = 0f;
         ProgressoAnimacaoMorte = 0f;
+        _tempoReacaoDano = 0f;
+        if (_vida != null) _vida.DanoRecebido += AoReceberDano;
     }
 
     private void OnDisable()
     {
+        if (_vida != null) _vida.DanoRecebido -= AoReceberDano;
+        _tempoReacaoDano = 0f;
         _apresentandoEntrada = false;
         if (_animator != null)
             _animator.speed = 1f;
@@ -96,6 +103,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
 
         if (_encontro.ResultadoAtual == ResultadoEncontroBoss.Fuga)
         {
+            _tempoReacaoDano = 0f;
             float duracao = Mathf.Max(0.01f, _encontro.DuracaoFuga);
             float velocidade = ObterDuracaoClip("Placeholder_Teleporte_Fuga") / duracao;
             Tocar(EstadoVisual.TeleporteFuga, Mathf.Max(0.01f, velocidade));
@@ -104,16 +112,24 @@ public class ControleAnimatorNecromante : MonoBehaviour
 
         if (_vida.Esgotada)
         {
+            _tempoReacaoDano = 0f;
             AtualizarMorte();
             return;
         }
 
         if (_vida.Vulneravel)
         {
+            if (_tempoReacaoDano > 0f)
+            {
+                Tocar(EstadoVisual.Dano);
+                _tempoReacaoDano -= TempoGameplay.DeltaTime;
+                return;
+            }
             Tocar(EstadoVisual.Vulneravel);
             return;
         }
 
+        _tempoReacaoDano = 0f;
         AtaqueBossBase ataque = _comportamento.AtaqueAtual;
         if (ataque != null && ataque.EmExecucao && AtaqueEmExecucao())
         {
@@ -126,6 +142,17 @@ public class ControleAnimatorNecromante : MonoBehaviour
         }
 
         Tocar(_movimento.EmMovimento ? EstadoVisual.Movimentacao : EstadoVisual.Idle);
+    }
+
+    private void AoReceberDano(int dano)
+    {
+        if (_vida == null || _vida.Esgotada || !_vida.Vulneravel
+            || _apresentandoEntrada || _encontro == null
+            || _encontro.ResultadoAtual == ResultadoEncontroBoss.Fuga
+            || _animator == null || !_animator.HasState(0, Dano)) return;
+
+        _tempoReacaoDano = ObterDuracaoClip("Placeholder_Dano");
+        if (_estadoAtual == EstadoVisual.Dano) _estadoAtual = EstadoVisual.Nenhum;
     }
 
     private void AtualizarMorte()
@@ -241,6 +268,7 @@ public class ControleAnimatorNecromante : MonoBehaviour
             case EstadoVisual.TeleporteFuga: return TeleporteFuga;
             case EstadoVisual.Vulneravel: return Vulneravel;
             case EstadoVisual.Morte: return Morte;
+            case EstadoVisual.Dano: return Dano;
             default: return Idle;
         }
     }
