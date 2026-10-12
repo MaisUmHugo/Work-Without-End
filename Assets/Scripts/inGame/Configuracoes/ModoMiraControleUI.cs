@@ -13,8 +13,8 @@ public class ModoMiraControleUI : MonoBehaviour, IPointerClickHandler, ISubmitHa
     private void Awake()
     {
         _slider = GetComponent<Slider>();
-        _slider.minValue = 0f;
-        _slider.maxValue = 2f;
+        _slider.minValue = (int)ModoMiraControle.Livre;
+        _slider.maxValue = (int)ModoMiraControle.Cursor;
         _slider.wholeNumbers = true;
     }
 
@@ -33,7 +33,9 @@ public class ModoMiraControleUI : MonoBehaviour, IPointerClickHandler, ISubmitHa
         RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)transform,
             eventData.position, eventData.pressEventCamera, out Vector2 posicao);
         int passo = posicao.x < 0f ? -1 : 1;
-        _slider.value = ((int)_slider.value + passo + 3) % 3;
+        int quantidade = (int)(_slider.maxValue - _slider.minValue) + 1;
+        int indice = (int)(_slider.value - _slider.minValue);
+        _slider.value = _slider.minValue + (indice + passo + quantidade) % quantidade;
     }
 
     public void OnSubmit(BaseEventData eventData)
@@ -62,7 +64,7 @@ public class ModoMiraControleUI : MonoBehaviour, IPointerClickHandler, ISubmitHa
 
     private void Aplicar(float valor)
     {
-        var modo = (ModoMiraControle)Mathf.Clamp(Mathf.RoundToInt(valor), 0, 2);
+        var modo = Mira.NormalizarModoControle((ModoMiraControle)Mathf.RoundToInt(valor));
         PlayerPrefs.SetInt(Mira.ChaveModoMiraControle, (int)modo);
         PlayerPrefs.Save();
         Mira mira = FindFirstObjectByType<Mira>(FindObjectsInactive.Include);
@@ -72,18 +74,15 @@ public class ModoMiraControleUI : MonoBehaviour, IPointerClickHandler, ISubmitHa
 
     private void AtualizarTexto(ModoMiraControle modo)
     {
-        string nome = modo == ModoMiraControle.DirecoesFixas ? "DIREÇÕES FIXAS"
-            : modo == ModoMiraControle.Livre ? "LIVRE" : "CURSOR";
-        string descricao = modo == ModoMiraControle.DirecoesFixas ? "Mais diagonais para mirar à frente."
-            : modo == ModoMiraControle.Livre ? "Aponte o analógico para orientar a mira." : "Mova a mira pela tela como um mouse.";
+        string nome = modo == ModoMiraControle.Livre ? "LIVRE" : "CURSOR";
+        string descricao = modo == ModoMiraControle.Livre ? "Aponte o analógico para mirar em qualquer direção."
+            : "Mova a mira pela tela com o analógico, como um mouse.";
         if (_textoModo != null) _textoModo.text = $"< {nome} >";
         if (_textoDescricao != null) _textoDescricao.text = descricao;
         TooltipTrigger ajuda = GetComponent<TooltipTrigger>();
         if (ajuda != null)
         {
-            ajuda.mensagem = "Direções fixas: o analógico escolhe direções predefinidas.\n"
-                + "Livre: o analógico orienta a mira em qualquer direção.\n"
-                + "Cursor: o analógico move a mira pela tela como um mouse.";
+            ajuda.mensagem = descricao;
             TooltipUI tooltip = GetComponentInChildren<TooltipUI>(true);
             if (tooltip != null && tooltip.painel.gameObject.activeInHierarchy) tooltip.Mostrar(ajuda.mensagem);
         }

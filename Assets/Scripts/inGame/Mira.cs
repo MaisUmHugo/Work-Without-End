@@ -61,7 +61,13 @@ public class Mira : MonoBehaviour
         int anterior = PlayerPrefs.HasKey(ChaveMiraOitoDirecoes)
             ? (PlayerPrefs.GetInt(ChaveMiraOitoDirecoes) == 1 ? 0 : 1)
             : (int)ModoMiraControle.Cursor;
-        return (ModoMiraControle)Mathf.Clamp(PlayerPrefs.GetInt(ChaveModoMiraControle, anterior), 0, 2);
+        return NormalizarModoControle((ModoMiraControle)PlayerPrefs.GetInt(ChaveModoMiraControle, anterior));
+    }
+
+    public static ModoMiraControle NormalizarModoControle(ModoMiraControle modo)
+    {
+        // Manter os valores do enum e a implementacao antiga para poder retomar os testes depois.
+        return modo == ModoMiraControle.Livre ? ModoMiraControle.Livre : ModoMiraControle.Cursor;
     }
 
     [Header("Cooldown Visual")]
@@ -125,7 +131,7 @@ public class Mira : MonoBehaviour
 
     public void DefinirModoControle(ModoMiraControle modo)
     {
-        _modoMiraControle = (ModoMiraControle)Mathf.Clamp((int)modo, 0, 2);
+        _modoMiraControle = NormalizarModoControle(modo);
         _miraOitoDirecoes = _modoMiraControle == ModoMiraControle.DirecoesFixas;
         _alvoAssistencia = null;
         if (_miraOitoDirecoes)
