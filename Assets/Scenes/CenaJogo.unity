@@ -957,6 +957,8 @@ MonoBehaviour:
   _duracaoFadeHudBoss: 0.6
   _hordasPorCenario: 10
   _respiroAposDerrotaDefinitiva: 8
+  _hordasEntreReaparecimentos: 15
+  _aumentoDificuldadeReaparecimento: 0.15
   _ativarCheats: 1
   _estado: 0
 --- !u!114 &903340004 stripped
