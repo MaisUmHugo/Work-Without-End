@@ -50,6 +50,12 @@ public abstract class Entregavel : MonoBehaviour
         Debug.Log($"{gameObject.name} recebeu a entrega!");
     }
 
+    protected bool ConsumirCaixaParaEntrega(Collider2D colisao)
+    {
+        Caixa caixa = colisao.GetComponentInParent<Caixa>();
+        return caixa != null && caixa.TentarConsumirPara(this);
+    }
+
     protected int ProcessarEntrega(bool contabilizarNaHorda = true)
     {
         if (BloqueioGameplay.Bloqueado || !ativoParaEntrega || !EntregaPendente) return 0;

@@ -196,13 +196,11 @@ public class Louco : Entregavel, IAjustavelDificuldade
             return;  // Evita processar a colisão se não for o momento certo
         }
 
-        if (collision.CompareTag("Caixa"))
+        if (collision.CompareTag("Caixa") && EntregaPendente && ConsumirCaixaParaEntrega(collision))
         {
             Debug.Log("Louco colidiu com a caixa! Iniciando entrega...");
             ReceberEntrega();
 
-            // Opcional: destruir a caixa depois de processar a entrega
-            Destroy(collision.gameObject);
         }
     }
     public void PiscarAtivo()

@@ -192,7 +192,7 @@ public class Bebado : Entregavel, IAjustavelDificuldade
         }
         else if (collision.CompareTag("Caixa"))
         {
-            if (podeReceber && EntregaPendente)
+            if (podeReceber && EntregaPendente && ConsumirCaixaParaEntrega(collision))
                 ReceberEntrega();
         }
     }

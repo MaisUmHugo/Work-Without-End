@@ -197,7 +197,7 @@ public class Zumbi : Entregavel, IAjustavelDificuldade
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (BloqueioGameplay.Bloqueado) return;
-        if (correndo && ativoParaEntrega && collision.CompareTag("Caixa"))
+        if (correndo && ativoParaEntrega && collision.CompareTag("Caixa") && ConsumirCaixaParaEntrega(collision))
         {
             ReceberEntrega();
             return;

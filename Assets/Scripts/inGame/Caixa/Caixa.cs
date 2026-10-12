@@ -7,6 +7,7 @@ public class Caixa : MonoBehaviour
 
     [HideInInspector] public string layerEntregavel = "Entregavel";
     private bool _consumida;
+    private Entregavel _destinatario;
     private Rigidbody2D _corpo;
     private Collider2D _colisor;
     private readonly RaycastHit2D[] _contatosTrajeto = new RaycastHit2D[32];
@@ -67,11 +68,28 @@ public class Caixa : MonoBehaviour
             return;
         }
 
+        ZumbiSombrio sombrio = collision.GetComponentInParent<ZumbiSombrio>();
+        if (sombrio != null)
+        {
+            sombrio.TentarReceberCaixa(this);
+            return;
+        }
+
         if (collision.gameObject.layer == LayerMask.NameToLayer(layerEntregavel))
         {
-            // só some a caixa, quem recebeu decide se ganha ponto
-            TentarConsumir();
+            Entregavel destinatario = collision.GetComponentInParent<Entregavel>();
+            if (destinatario != null) TentarConsumirPara(destinatario);
+            else TentarConsumir();
         }
+    }
+
+    public bool TentarConsumirPara(Entregavel destinatario)
+    {
+        if (BloqueioGameplay.Bloqueado || destinatario == null) return false;
+        // A fisica pode avisar a caixa antes ou depois do destinatario no mesmo contato.
+        if (_consumida) return _destinatario == destinatario;
+        _destinatario = destinatario;
+        return TentarConsumir();
     }
 
     public bool TentarConsumir()

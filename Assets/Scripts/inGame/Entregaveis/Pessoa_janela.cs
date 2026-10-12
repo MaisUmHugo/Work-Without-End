@@ -126,7 +126,7 @@ public class Pessoa_janela : Entregavel, IAjustavelDificuldade
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (BloqueioGameplay.Bloqueado) return;
-        if (collision.CompareTag("Caixa") && podereceber && EntregaPendente)
+        if (collision.CompareTag("Caixa") && podereceber && EntregaPendente && ConsumirCaixaParaEntrega(collision))
         {
             ReceberEntrega();
         }
