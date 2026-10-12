@@ -13,6 +13,8 @@ public class Bebado : Entregavel, IAjustavelDificuldade
     [Header("Entrega")]
     public float distanciaEntrega;
     public float tempoexclamacao;
+    [SerializeField, Min(1f), Tooltip("Multiplica a velocidade horizontal depois de receber a entrega.")]
+    private float _multiplicadorSaidaAposEntrega = 2f;
 
     [Header("Dificuldade")]
     [SerializeField, Range(0f, 1f)] private float intensidadeEscalaHorizontal = 0.79f;
@@ -127,7 +129,7 @@ public class Bebado : Entregavel, IAjustavelDificuldade
         {
             // travado no Y quando recebeu a entrega
             transform.position = new Vector3(
-                transform.position.x + (-velocidade * TempoGameplay.DeltaTime),
+                transform.position.x - velocidade * _multiplicadorSaidaAposEntrega * TempoGameplay.DeltaTime,
                 yTravado,
                 transform.position.z
             );
