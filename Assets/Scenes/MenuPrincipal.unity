@@ -343,6 +343,14 @@ PrefabInstance:
       propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8240040437590103229, guid: 23878fe161cf3224cb42501ff5f32e69, type: 3}
+      propertyPath: _intervalo
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8240040437590103229, guid: 23878fe161cf3224cb42501ff5f32e69, type: 3}
+      propertyPath: _velocidadeCenario
+      value: 300
+      objectReference: {fileID: 0}
     - target: {fileID: 8272385127337503621, guid: 23878fe161cf3224cb42501ff5f32e69, type: 3}
       propertyPath: m_Sprite
       value: 
