@@ -129,9 +129,9 @@ public class ComoJogarController : MonoBehaviour
         if (videoTutorial != null)
         {
             videoTutorial.gameObject.SetActive(true);
-            if (videoTutorial.clip != null) videoTutorial.Prepare();
+            if (videoTutorial.clip != null || !string.IsNullOrEmpty(videoTutorial.url)) videoTutorial.Prepare();
         }
-        if (_videoSegundoSlide != null && _videoSegundoSlide.clip != null)
+        if (_videoSegundoSlide != null && (_videoSegundoSlide.clip != null || !string.IsNullOrEmpty(_videoSegundoSlide.url)))
         {
             _videoSegundoSlide.gameObject.SetActive(true);
             _videoSegundoSlide.Prepare();
@@ -156,7 +156,7 @@ public class ComoJogarController : MonoBehaviour
         Canvas.ForceUpdateCanvases();
         foreach (TMP_Text texto in _segundoSlide.GetComponentsInChildren<TMP_Text>())
             texto.ForceMeshUpdate();
-        if (_videoSegundoSlide != null && _videoSegundoSlide.clip != null)
+        if (_videoSegundoSlide != null && (_videoSegundoSlide.clip != null || !string.IsNullOrEmpty(_videoSegundoSlide.url)))
             ReproduzirVideoPreparado(_videoSegundoSlide);
         SelecionarSlide(_segundoSlide);
     }
