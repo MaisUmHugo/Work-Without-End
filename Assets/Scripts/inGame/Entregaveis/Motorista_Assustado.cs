@@ -16,6 +16,13 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
     [SerializeField, Min(1f)] private float fatorMaximoMovimento = 16f;
     private float velocidadeBase;
 
+    [Header("Alinhamento na Floresta Morta")]
+    [SerializeField, Min(0f), Tooltip("Eleva apenas o Motorista na L4 da Floresta para manter as rodas dentro da rua.")]
+    private float _ajusteAlturaL4Floresta = 1.2f;
+    private ControladorTransicaoCenario _transicaoCenario;
+    private LanesController.Linhas _laneInicial;
+    private float _alturaLaneInicial;
+
     private SpriteRenderer sr;
     //public Color corNormal = Color.white; // cor padrão
     //public Color corAtivo = Color.red;    // cor quando está ativo para receber entrega
@@ -36,6 +43,7 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
         //sr = GetComponent<SpriteRenderer>();
         sr = GetComponentInChildren<SpriteRenderer>();
         velocidadeBase = velocidade;
+        _transicaoCenario = FindFirstObjectByType<ControladorTransicaoCenario>();
         anim = GetComponentInChildren<Animator>();
     }
     private void Start()
@@ -50,25 +58,16 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
             Debug.LogWarning("Player não encontrado! Verifique se o objeto do jogador tem a tag 'Player'.");
         }
 
-        Vector3 pos = transform.position;
-
-        if (jogador != null)
-        {
-            pos.y = LanesController.instance.PosicaoY(jogador.linhaAtual);
-        }
-        else
-        {
-            Debug.Log("F PLAYER, SOBROU NADA P BETINHA");
-            pos.y = LanesController.instance.PosicaoY(
-            (LanesController.Linhas)Random.Range(0, 4)
-        );
-        }
-        transform.position = pos;
+        _laneInicial = jogador != null ? jogador.linhaAtual
+            : (LanesController.Linhas)Random.Range(0, 4);
+        _alturaLaneInicial = LanesController.instance.PosicaoY(_laneInicial);
+        AjustarAlturaCenario();
         xAnterior = transform.position.x;
     }
     private void Update()
     {
         if (BloqueioGameplay.Bloqueado) return;
+        AjustarAlturaCenario();
         if (recebeu)
         {
             // Já entregou - apenas vai embora para a esquerda
@@ -120,6 +119,17 @@ public class Motorista_Assustado : Entregavel, IAjustavelDificuldade
 
             Destroy(gameObject);
         }
+    }
+
+    private void AjustarAlturaCenario()
+    {
+        bool ajustar = _laneInicial == LanesController.Linhas.L4
+            && _transicaoCenario != null && _transicaoCenario.CenarioAtual == 1;
+        float altura = _alturaLaneInicial + (ajustar ? _ajusteAlturaL4Floresta : 0f);
+        Vector3 posicao = transform.position;
+        if (Mathf.Approximately(posicao.y, altura)) return;
+        posicao.y = altura;
+        transform.position = posicao;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
