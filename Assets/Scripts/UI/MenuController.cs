@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
@@ -27,6 +27,13 @@ public class MenuController : MonoBehaviour
 
     private void Awake()
     {
+        if (painelMenuInicial != null) painelMenuInicial.SetActive(true);
+        if (painelOpcoes != null) painelOpcoes.SetActive(false);
+        if (painelRanking != null) painelRanking.SetActive(false);
+        if (painelConfirmacao != null) painelConfirmacao.SetActive(false);
+        if (_painelControles != null) _painelControles.SetActive(false);
+        if (fundoCinza != null) fundoCinza.SetActive(false);
+
         inputs = new INPUTS();
         inputs.UI.Cancel.performed += OnCancelPerformed;
     }

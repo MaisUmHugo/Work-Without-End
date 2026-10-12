@@ -1599,6 +1599,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8030060728211632322, guid: 8f339f7fceb0c464eafd3f0d20dcca50, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9024803893265074521, guid: 8f339f7fceb0c464eafd3f0d20dcca50, type: 3}
       propertyPath: m_Name
       value: PauseController

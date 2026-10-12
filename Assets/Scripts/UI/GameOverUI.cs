@@ -37,6 +37,11 @@ public class GameOverController : MonoBehaviour
 
     private void Awake()
     {
+        if (fundoCinza != null) fundoCinza.SetActive(false);
+        if (painelGameOver != null) painelGameOver.SetActive(false);
+        if (painelRanking != null) painelRanking.SetActive(false);
+        if (painelConfirmacao != null) painelConfirmacao.SetActive(false);
+
         if (_textoAvisoIniciais != null)
         {
             _instrucaoIniciais = _textoAvisoIniciais.text;
